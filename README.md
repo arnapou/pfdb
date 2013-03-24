@@ -45,6 +45,7 @@ Querying
 Extending Queries
 =================
 Class :
+
     class IsUppercaseQuery implements \PFDB\Query\QueryInterface {
 
         protected $field;
@@ -69,6 +70,7 @@ Class :
     }
 
 Use :
+
     include 'lib/autoload.php';
     
     $storage = new \PFDB\Storage\PhpStorage($somePath);
@@ -82,3 +84,11 @@ Use :
     foreach($table->find($query) as $key => $row) {
         // do whatever you want
     }
+
+Build your own storage
+======================
+You want to use CSV file instead of php dumped array ?
+
+Easy : extends or implements your own storage and use it to load/store/delete data.
+
+Look at the existing storages and write your own.
