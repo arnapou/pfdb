@@ -85,6 +85,28 @@ Use :
         // do whatever you want
     }
 
+Use PFDB Iterator out of storage concept
+========================================
+
+    include 'lib/autoload.php';
+
+    $array = array(
+        array('name' => 'John', 'age' => 20),
+        array('name' => 'Edith', 'age' => 25),
+        array('name' => 'Steve', 'age' => 30),
+        array('name' => 'Matthew', 'age' => 22),
+    );
+
+    $arrayIterator = new \PFDB\Iterator\ArrayIterator($array);
+    $query = \PFDB\Query\QueryBuilder::createAnd()
+        ->greaterThan('age', 24);
+    $iterator = new \PFDB\Iterator\Iterator($arrayIterator, $query);
+
+    foreach($iterator as $key => $row) {
+        // do whatever you want
+    }
+
+
 Build your own storage
 ======================
 You want to use CSV file instead of php dumped array ?
