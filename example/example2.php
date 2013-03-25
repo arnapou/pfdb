@@ -5,7 +5,7 @@ use Arnapou\PFDB\Query\QueryBuilder;
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../lib/autoload.php';
 
-$storage = new Arnapou\PFDB\Storage\PhpStorage(__DIR__ . '/../database');
+$storage = new Arnapou\PFDB\Storage\PhpStorage(__DIR__ . '/database');
 $database = new Arnapou\PFDB\Database($storage);
 $database->setAutoFlush(false); // avoid automatic save at end of script
 
