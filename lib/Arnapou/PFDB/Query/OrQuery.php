@@ -9,11 +9,17 @@
  * file that was distributed with this source code.
  */
 
-spl_autoload_register(function($class) {
-		if ( 0 == strpos($class, 'Arnapou\PFDB') ) {
-			$filename = __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
-			if ( is_file($filename) ) {
-				include $filename;
+namespace Arnapou\PFDB\Query;
+
+class OrQuery extends AndQuery {
+
+	public function match($key, $value) {
+		foreach ( $this->querys as $query ) {
+			if ( $query->match($key, $value) ) {
+				return true;
 			}
 		}
-	});
+		return false;
+	}
+
+}
