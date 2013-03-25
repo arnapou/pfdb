@@ -81,11 +81,7 @@ Use :
         // do whatever you want
     }
 
-<<<<<<< HEAD
-Use PFDB Iterator out of storage concept
-=======
 Use PFDB Iterator out of storage context
->>>>>>> Update namespace and license
 ========================================
 
     include 'lib/autoload.php';
@@ -97,26 +93,15 @@ Use PFDB Iterator out of storage context
         array('name' => 'Matthew', 'age' => 22),
     );
 
-<<<<<<< HEAD
-    $arrayIterator = new \PFDB\Iterator\ArrayIterator($array);
-    $query = \PFDB\Query\QueryBuilder::createAnd()
-        ->greaterThan('age', 24);
-    $iterator = new \PFDB\Iterator\Iterator($arrayIterator, $query);
-=======
     $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
     $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
         ->greaterThan('age', 24);
     $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $query);
->>>>>>> Update namespace and license
 
     foreach($iterator as $key => $row) {
         // do whatever you want
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> Update namespace and license
 Build your own storage
 ======================
 You want to use CSV file instead of php dumped array ?
