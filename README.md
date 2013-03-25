@@ -12,10 +12,10 @@ What it is _not_ :
 * Relational database
 * ORM
 * DBDAL
-* NoSQL Database (although PFDB can be used for light key/pair database)
+* NoSQL Database (although Arnapou\PFDB can be used for light key/pair database)
 
 Disclaimer :
-__do not use PFDB for huge file, you will naturally use lots of memory and CPU. It is not designed for huge files.__
+__do not use Arnapou\PFDB for huge file, you will naturally use lots of memory and CPU. It is not designed for huge files.__
 
 I have not the time to make documentation, code is enough simple and readable with php docs to be auto-documented.
 Examples are the best documentation you will find.
@@ -25,12 +25,12 @@ Querying
 
     include 'lib/autoload.php';
     
-    $storage = new \PFDB\Storage\PhpStorage($somePath);
-    $database = new \PFDB\Database($storage);
+    $storage = new \Arnapou\PFDB\Storage\PhpStorage($somePath);
+    $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
     
-    $query = \PFDB\Query\QueryBuilder::createAnd()
+    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
         ->greaterThan('price', 10000)
         ->matchRegExp('model', '^C[0-9]+');
         
@@ -46,7 +46,7 @@ Extending Queries
 =================
 Class :
 
-    class IsUppercaseQuery implements \PFDB\Query\QueryInterface {
+    class IsUppercaseQuery implements \Arnapou\PFDB\Query\QueryInterface {
 
         protected $field;
 
@@ -63,29 +63,29 @@ Class :
             return $isUppercase;
         }
 
-        public function toArray() {
-            // only used in some cases I don't want to explain here
-            return array();
-        }
     }
 
 Use :
 
     include 'lib/autoload.php';
     
-    $storage = new \PFDB\Storage\PhpStorage($somePath);
-    $database = new \PFDB\Database($storage);
+    $storage = new \Arnapou\PFDB\Storage\PhpStorage($somePath);
+    $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
     
-    $query = \PFDB\Query\QueryBuilder::createAnd()
+    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
         ->add(new IsUppercaseQuery('model'));
     
     foreach($table->find($query) as $key => $row) {
         // do whatever you want
     }
 
+<<<<<<< HEAD
 Use PFDB Iterator out of storage concept
+=======
+Use PFDB Iterator out of storage context
+>>>>>>> Update namespace and license
 ========================================
 
     include 'lib/autoload.php';
@@ -97,16 +97,26 @@ Use PFDB Iterator out of storage concept
         array('name' => 'Matthew', 'age' => 22),
     );
 
+<<<<<<< HEAD
     $arrayIterator = new \PFDB\Iterator\ArrayIterator($array);
     $query = \PFDB\Query\QueryBuilder::createAnd()
         ->greaterThan('age', 24);
     $iterator = new \PFDB\Iterator\Iterator($arrayIterator, $query);
+=======
+    $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
+    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
+        ->greaterThan('age', 24);
+    $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $query);
+>>>>>>> Update namespace and license
 
     foreach($iterator as $key => $row) {
         // do whatever you want
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Update namespace and license
 Build your own storage
 ======================
 You want to use CSV file instead of php dumped array ?
