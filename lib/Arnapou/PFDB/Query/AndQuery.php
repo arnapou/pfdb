@@ -13,22 +13,22 @@ namespace Arnapou\PFDB\Query;
 
 class AndQuery implements QueryInterface {
 
-	protected $querys = array();
+	protected $queries = array();
 
-	public function __construct($querys = null) {
-		if ( null !== $querys ) {
-			foreach ( $querys as $query ) {
+	public function __construct($queries = null) {
+		if ( null !== $queries ) {
+			foreach ( $queries as $query ) {
 				$this->add($query);
 			}
 		}
 	}
 
 	public function add(QueryInterface $query) {
-		$this->querys[] = $query;
+		$this->queries[] = $query;
 	}
 
 	public function match($key, $value) {
-		foreach ( $this->querys as $query ) {
+		foreach ( $this->queries as $query ) {
 			if ( !$query->match($key, $value) ) {
 				return false;
 			}

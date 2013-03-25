@@ -14,7 +14,7 @@ namespace Arnapou\PFDB\Query;
 class OrQuery extends AndQuery {
 
 	public function match($key, $value) {
-		foreach ( $this->querys as $query ) {
+		foreach ( $this->queries as $query ) {
 			if ( $query->match($key, $value) ) {
 				return true;
 			}
