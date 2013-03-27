@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Operator;
+namespace Arnapou\PFDB\Condition\Operator;
 
-use Arnapou\PFDB\Query\QueryInterface;
+use Arnapou\PFDB\Condition\ConditionInterface;
 
-abstract class AbstractOperator implements QueryInterface {
+abstract class AbstractOperator implements ConditionInterface {
 
 	protected $field;
 	protected $value;

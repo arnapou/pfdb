@@ -1,6 +1,6 @@
 <?php
 
-use Arnapou\PFDB\Query\QueryBuilder;
+use Arnapou\PFDB\Condition\ConditionBuilder;
 
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../lib/autoload.php';
@@ -17,7 +17,7 @@ print_table('Full Table', $table);
 
 print_table('Update (price > 1500 => price / 10)',
 	$table->update(
-		QueryBuilder::createAnd()
+		ConditionBuilder::createAnd()
 			->greaterThan('price', 1500)
 		, function($row) {
 			$row['price'] /= 10;
@@ -28,7 +28,7 @@ print_table('Update (price > 1500 => price / 10)',
 
 print_table('Delete (price < 180 or color = "brown")',
 	$table->delete(
-		QueryBuilder::createOr()
+		ConditionBuilder::createOr()
 			->lowerThan('price', 180)
 			->equalTo('color', 'brown', false)
 	)

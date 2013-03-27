@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Operator;
+namespace Arnapou\PFDB\Condition\Operator;
 
 class EqualOperator extends AbstractOperator {
 

@@ -9,18 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query;
+namespace Arnapou\PFDB\Condition\Operator;
 
-class NotQuery implements QueryInterface {
-
-	protected $query;
-
-	public function __construct(QueryInterface $query) {
-		$this->query = $query;
-	}
+class LowerThanOrEqualOperator extends AbstractOperator {
 
 	public function match($key, $value) {
-		return!$this->query->match($key, $value);
+		$testedValue = $this->getTestedValue($key, $value);
+		if ( $testedValue === null ) {
+			return false;
+		}
+		return $testedValue <= $this->value;
 	}
 
 }

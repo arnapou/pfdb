@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query;
+namespace Arnapou\PFDB\Condition;
 
-class OrQuery extends AndQuery {
+class OrCondition extends AndCondition {
 
 	public function match($key, $value) {
-		foreach ( $this->queries as $query ) {
-			if ( $query->match($key, $value) ) {
+		foreach ( $this->conditions as $condition ) {
+			if ( $condition->match($key, $value) ) {
 				return true;
 			}
 		}

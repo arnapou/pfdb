@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query;
+namespace Arnapou\PFDB\Condition;
 
-interface QueryInterface {
+interface ConditionInterface {
 
 	/**
 	 * 

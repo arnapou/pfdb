@@ -9,16 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Operator;
+namespace Arnapou\PFDB\Condition;
 
-class LowerThanOrEqualOperator extends AbstractOperator {
+class NotCondition implements ConditionInterface {
+
+	protected $condition;
+
+	public function __construct(ConditionInterface $condition) {
+		$this->condition = $condition;
+	}
 
 	public function match($key, $value) {
-		$testedValue = $this->getTestedValue($key, $value);
-		if ( $testedValue === null ) {
-			return false;
-		}
-		return $testedValue <= $this->value;
+		return!$this->condition->match($key, $value);
 	}
 
 }

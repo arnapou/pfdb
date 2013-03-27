@@ -83,8 +83,8 @@ class Exception extends \Exception {
 	 *
 	 * @param string $message 
 	 */
-	static function throwInvalidQuerySyntaxException($message) {
-		throw new InvalidQuerySyntaxException("Query syntax error : " . $message);
+	static function throwInvalidConditionSyntaxException($message) {
+		throw new InvalidConditionSyntaxException("Condition syntax error : " . $message);
 	}
 
 	/**

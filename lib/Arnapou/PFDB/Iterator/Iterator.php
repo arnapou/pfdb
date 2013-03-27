@@ -11,40 +11,40 @@
 
 namespace Arnapou\PFDB\Iterator;
 
-use Arnapou\PFDB\Query\QueryBuilder;
-use Arnapou\PFDB\Query\QueryInterface;
+use Arnapou\PFDB\Condition\ConditionBuilder;
+use Arnapou\PFDB\Condition\ConditionInterface;
 use Arnapou\PFDB\Exception\Exception;
 
 class Iterator extends \FilterIterator implements \Countable {
 
 	/**
 	 *
-	 * @var QueryInterface
+	 * @var ConditionInterface
 	 */
-	protected $query = null;
+	protected $condition = null;
 
 	/**
 	 *
 	 * @param \Iterator $iterator
-	 * @param QueryInterface $query 
+	 * @param ConditionInterface $condition 
 	 */
-	public function __construct($iterator, $query = null) {
+	public function __construct($iterator, $condition = null) {
 		if ( !($iterator instanceof \Iterator) ) {
-			Exception::throwInvalidQuerySyntaxException("iterator is not a valid php iterator");
+			Exception::throwInvalidConditionSyntaxException("iterator is not a valid php iterator");
 		}
-		if ( $query !== null && !($query instanceof QueryInterface) ) {
-			Exception::throwInvalidQuerySyntaxException("query is not a valid Arnapou\PFDB\Query\QueryInterface");
+		if ( $condition !== null && !($condition instanceof ConditionInterface) ) {
+			Exception::throwInvalidConditionSyntaxException("condition is not a valid Arnapou\PFDB\Condition\ConditionInterface");
 		}
-		$this->query = $query;
+		$this->condition = $condition;
 		parent::__construct($iterator);
 	}
 
 	public function accept() {
-		if ( $this->query === null ) {
+		if ( $this->condition === null ) {
 			return true;
 		}
 		else {
-			return $this->query->match($this->key(), $this->current());
+			return $this->condition->match($this->key(), $this->current());
 		}
 	}
 
@@ -53,28 +53,28 @@ class Iterator extends \FilterIterator implements \Countable {
 	}
 
 	/**
-	 * Find rows which match the query.
+	 * Find rows which match the condition.
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed $query 
+	 * @param mixed $condition 
 	 */
-	public function find($query) {
-		if ( $query instanceof QueryInterface ) {
-			return new self($this, $query);
+	public function find($condition) {
+		if ( $condition instanceof ConditionInterface ) {
+			return new self($this, $condition);
 		}
-		elseif ( $query instanceof QueryBuilder ) {
-			return new self($this, $query->getQuery());
+		elseif ( $condition instanceof ConditionBuilder ) {
+			return new self($this, $condition->getCondition());
 		}
-		elseif ( is_array($query) ) {
-			return new self($this, QueryBuilder::fromArray($query)->getQuery());
+		elseif ( is_array($condition) ) {
+			return new self($this, ConditionBuilder::fromArray($condition)->getCondition());
 		}
 		else {
-			return new self($this, QueryBuilder::createAnd()->equalTo(null, $query)->getQuery());
+			return new self($this, ConditionBuilder::createAnd()->equalTo(null, $condition)->getCondition());
 		}
 		return new self(new \EmptyIterator());
 	}
@@ -153,7 +153,7 @@ class Iterator extends \FilterIterator implements \Countable {
 	}
 
 	/**
-	 * Limits data like any 'sql like' query
+	 * Limits data like any 'sql like' condition
 	 *
 	 * @param int $offset
 	 * @param int $count

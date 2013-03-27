@@ -110,48 +110,48 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	}
 
 	/**
-	 * Build an iterator from a query
+	 * Build an iterator from a condition
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed $query
+	 * @param mixed $condition
 	 * @return Iterator\Iterator 
 	 */
-	protected function queryToIterator($query) {
-		if ( $query instanceof Query\QueryInterface ) {
-			return new Iterator\Iterator($this->getIterator(), $query);
+	protected function conditionToIterator($condition) {
+		if ( $condition instanceof Condition\ConditionInterface ) {
+			return new Iterator\Iterator($this->getIterator(), $condition);
 		}
-		elseif ( $query instanceof Query\QueryBuilder ) {
-			return new Iterator\Iterator($this->getIterator(), $query->getQuery());
+		elseif ( $condition instanceof Condition\ConditionBuilder ) {
+			return new Iterator\Iterator($this->getIterator(), $condition->getCondition());
 		}
-		elseif ( is_array($query) ) {
-			return new Iterator\Iterator($this->getIterator(), Query\QueryBuilder::fromArray($query)->getQuery());
+		elseif ( is_array($condition) ) {
+			return new Iterator\Iterator($this->getIterator(), Condition\ConditionBuilder::fromArray($condition)->getCondition());
 		}
-		elseif ( $this->offsetExists($query) ) {
-			$results = array($query => $this->get($query));
+		elseif ( $this->offsetExists($condition) ) {
+			$results = array($condition => $this->get($condition));
 			return new Iterator\Iterator(new Iterator\ArrayIterator($results));
 		}
 		return new Iterator\Iterator(new \EmptyIterator());
 	}
 
 	/**
-	 * Delete rows which match the query
+	 * Delete rows which match the condition
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed $query 
+	 * @param mixed $condition 
 	 * @return Table 
 	 */
-	public function delete($query) {
-		$iterator = $this->queryToIterator($query);
+	public function delete($condition) {
+		$iterator = $this->conditionToIterator($condition);
 		foreach ( $iterator as $key => $row ) {
 			$this->offsetUnset($key);
 		}
@@ -159,24 +159,24 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	}
 
 	/**
-	 * Update rows which match the query with a valid php callable.
+	 * Update rows which match the condition with a valid php callable.
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed $query
+	 * @param mixed $condition
 	 * @param callable $callable Receive one parameter which is the current row. 
 	 * 							 The callable should return the updated row.
 	 * @return Table 
 	 */
-	public function update($query, $callable) {
+	public function update($condition, $callable) {
 		if ( !is_callable($callable) ) {
 			Exception::throwBadArgumentTypeException('callable');
 		}
-		$iterator = $this->queryToIterator($query);
+		$iterator = $this->conditionToIterator($condition);
 		foreach ( $iterator as $key => $row ) {
 			$this->offsetSet($key, call_user_func($callable, $row));
 		}
@@ -184,36 +184,36 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	}
 
 	/**
-	 * Find rows which match the query.
+	 * Find rows which match the condition.
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed $query 
+	 * @param mixed $condition 
 	 */
-	public function find($query) {
-		return $this->queryToIterator($query);
+	public function find($condition) {
+		return $this->conditionToIterator($condition);
 	}
 
 	/**
-	 * Find rows which match the query and return the first row if it exists. 
+	 * Find rows which match the condition and return the first row if it exists. 
 	 * 
 	 * It returns NULL if there is no rows to return.
 	 * 
-	 * The query can be either :
-	 * - QueryInterface object
-	 * - QueryBuilder object
-	 * - Array (uses QueryBuilder::fromArray)
+	 * The condition can be either :
+	 * - ConditionInterface object
+	 * - ConditionBuilder object
+	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
-	 * @param mixed|array $query
+	 * @param mixed|array $condition
 	 * @return mixed
 	 */
-	public function findOne($query) {
-		$results = $this->find($query);
+	public function findOne($condition) {
+		$results = $this->find($condition);
 		if ( null !== $results ) {
 			foreach ( $results as $result ) {
 				return $result;

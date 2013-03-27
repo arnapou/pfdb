@@ -20,7 +20,7 @@ __do not use Arnapou\PFDB for huge file, you will naturally use lots of memory a
 I have not the time to make documentation, code is enough simple and readable with php docs to be auto-documented.
 Examples are the best documentation you will find.
 
-Querying
+Conditioning
 ========
 
     include 'lib/autoload.php';
@@ -30,11 +30,11 @@ Querying
     
     $table = $database->getTable('vehicle');
     
-    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
         ->greaterThan('price', 10000)
         ->matchRegExp('model', '^C[0-9]+');
         
-    $iterator = $table->find($query)
+    $iterator = $table->find($condition)
                       ->sort(array('constructor' => true, 'model' => false))
                       ->limit(0, 50);
                       
@@ -42,11 +42,11 @@ Querying
         // do whatever you want
     }
     
-Extending Queries
+Extending Conditions
 =================
 Class :
 
-    class IsUppercaseQuery implements \Arnapou\PFDB\Query\QueryInterface {
+    class IsUppercaseCondition implements \Arnapou\PFDB\Condition\ConditionInterface {
 
         protected $field;
 
@@ -74,10 +74,10 @@ Use :
     
     $table = $database->getTable('vehicle');
     
-    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
-        ->add(new IsUppercaseQuery('model'));
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
+        ->add(new IsUppercaseCondition('model'));
     
-    foreach($table->find($query) as $key => $row) {
+    foreach($table->find($condition) as $key => $row) {
         // do whatever you want
     }
 
@@ -94,9 +94,9 @@ Use PFDB Iterator out of storage context
     );
 
     $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
-    $query = \Arnapou\PFDB\Query\QueryBuilder::createAnd()
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
         ->greaterThan('age', 24);
-    $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $query);
+    $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $condition);
 
     foreach($iterator as $key => $row) {
         // do whatever you want

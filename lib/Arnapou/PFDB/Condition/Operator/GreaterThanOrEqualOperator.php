@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Operator;
+namespace Arnapou\PFDB\Condition\Operator;
 
-class InOperator extends AbstractOperator {
+class GreaterThanOrEqualOperator extends AbstractOperator {
 
 	public function match($key, $value) {
 		$testedValue = $this->getTestedValue($key, $value);
 		if ( $testedValue === null ) {
 			return false;
 		}
-		return in_array($testedValue, $this->value, true);
+		return $testedValue >= $this->value;
 	}
 
 }

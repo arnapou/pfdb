@@ -11,6 +11,6 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidQuerySyntaxException extends Exception {
+class InvalidConditionSyntaxException extends Exception {
 	
 }
