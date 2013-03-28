@@ -10,7 +10,7 @@ $database = new Arnapou\PFDB\Database($storage);
 
 $table = $database->getTable('vehicle');
 
-print_title('Conditioning');
+print_title('Conditions');
 
 print_table('Full Table', $table);
 

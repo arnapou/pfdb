@@ -41,4 +41,10 @@ interface StorageInterface {
 	 * @param Database $database
 	 */
 	public function destroyDatabase(Database $database);
+
+	/**
+	 * 
+	 * @param Database $database
+	 */
+	public function getTableList(Database $database);
 }

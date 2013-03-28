@@ -51,6 +51,14 @@ class Exception extends \Exception {
 	 *
 	 * @param Table $table 
 	 */
+	static function throwLockedTableException($table) {
+		throw new LockedTableException("Table '" . $table->getName() . "' is locked.");
+	}
+
+	/**
+	 *
+	 * @param Table $table 
+	 */
 	static function throwInvalidTableDataException($table) {
 		throw new InvalidTableDataException("Invalid table data (maybe corrupted) '" . $table->getName() . "'");
 	}

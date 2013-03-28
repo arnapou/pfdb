@@ -82,6 +82,14 @@ class Database {
 	}
 
 	/**
+	 * Get the list of table names
+	 * @return array
+	 */
+	public function getTableNames() {
+		return $this->storage->getTableList($this);
+	}
+
+	/**
 	 * Get the php class used to instanciate tables
 	 *
 	 * @return string

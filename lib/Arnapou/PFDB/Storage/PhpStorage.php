@@ -21,36 +21,34 @@ class PhpStorage extends AbstractFileStorage {
 		return $this->getStoragePath() . 'table.' . $table->getName() . '.php';
 	}
 
-	public function loadTableData(Table $table, &$data) {
-		$filename = $this->getTableFileName($table);
+	protected function doLoadTableData($filename, &$data) {
 		if ( !is_file($filename) ) {
 			file_put_contents($filename, "<?php return array();\n");
 		}
 		$data = include($filename);
-		if ( !is_array($data) ) {
-			Exception::throwInvalidTableDataException($table);
-		}
 	}
 
-	public function storeTableData(Table $table, &$data) {
-		if ( !is_array($data) ) {
-			Exception::throwInvalidTableDataException($table);
-		}
-		$filename = $this->getTableFileName($table);
+	protected function doStoreTableData($filename, &$data) {
 		file_put_contents($filename, "<?php return " . var_export($data, true) . ";\n");
 	}
 
-	public function destroyTableData(Table $table) {
-		$filename = $this->getTableFileName($table);
+	protected function doDestroyTableData($filename) {
 		unlink($filename);
 	}
 
-	public function destroyDatabase(Database $database) {
+	public function getTableList(Database $database) {
 		$files = glob($this->getStoragePath() . 'table.*.php', GLOB_NOSORT);
-		if ( is_array($tables) ) {
+		if ( is_array($files) ) {
+			$tableNames = array();
 			foreach ( $files as $file ) {
-				unlink($file);
+				$tableName = basename($file, '.php');
+				$tableName = str_replace('table.', '', $tableName);
+				$tableNames[] = $tableName;
 			}
+			return $tableNames;
+		}
+		else {
+			return array();
 		}
 	}
 
