@@ -13,29 +13,41 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\PFDB\Exception\Exception;
 use Arnapou\PFDB\Table;
+use Arnapou\PFDB\Database;
 
 class ArrayStorage implements StorageInterface {
 
-	protected $data;
+	protected $data = array();
 
-	public function __construct(&$data) {
-		$this->data = $data;
+	public function __construct(&$data = null) {
+		if ( is_array($data) ) {
+			$this->data = $data;
+		}
 	}
 
 	public function loadTableData(Table $table, &$data) {
-		$data = $this->data;
+		if ( !isset($this->data[$table->getName()]) ) {
+			$this->data[$table->getName()] = array();
+		}
+		$data = $this->data[$table->getName()];
 	}
 
 	public function storeTableData(Table $table, &$data) {
-		// nothing to do
+		$this->data[$table->getName()] = $data;
 	}
 
 	public function destroyTableData(Table $table) {
-		// nothing to do
+		unset($this->data[$table->getName()]);
 	}
 
 	public function destroyDatabase(Database $database) {
-		// nothing to do
+		$this->data = array();
+	}
+
+	public function getTableList(Database $database) {
+		$list = array_keys($this->data);
+		sort($list);
+		return $list;
 	}
 
 }

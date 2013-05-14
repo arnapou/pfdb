@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB\Storage;
 
-class FileLock {
+class FileStorageLock {
 
 	/**
 	 *

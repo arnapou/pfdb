@@ -15,7 +15,7 @@ use Arnapou\PFDB\Exception\Exception;
 use Arnapou\PFDB\Database;
 use Arnapou\PFDB\Table;
 
-class PhpStorage extends AbstractFileStorage {
+class PhpFileStorage extends AbstractFileStorage {
 
 	protected function getTableFileName(Table $table) {
 		return $this->getStoragePath() . 'table.' . $table->getName() . '.php';
@@ -25,6 +25,7 @@ class PhpStorage extends AbstractFileStorage {
 		if ( !is_file($filename) ) {
 			file_put_contents($filename, "<?php return array();\n");
 		}
+sleep(3);
 		$data = include($filename);
 	}
 

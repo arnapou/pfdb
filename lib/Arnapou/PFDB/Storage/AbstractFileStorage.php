@@ -30,6 +30,12 @@ abstract class AbstractFileStorage implements StorageInterface {
 	protected $maxLockDelay = 10;
 
 	/**
+	 *
+	 * @var bool
+	 */
+	protected $useFileStorageLock = true;
+
+	/**
 	 * 
 	 * @param string $storagePath path where the tables are stored
 	 * @param bool $autoCreate auto-create folder
@@ -37,6 +43,35 @@ abstract class AbstractFileStorage implements StorageInterface {
 	public function __construct($storagePath) {
 		$this->storagePath = rtrim(rtrim($storagePath, '\\'), '/') . DIRECTORY_SEPARATOR;
 		$this->checkStorageFolder();
+	}
+
+	/**
+	 * Tells whether the file storage lock is use
+	 * @return bool
+	 */
+	public function isLockUsageEnabled() {
+		return $this->useFileStorageLock;
+	}
+
+	/**
+	 * enable use of file storage lock to prevent db corruption
+	 * @return AbstractFileStorage
+	 */
+	public function enableLockUsage() {
+		$this->useFileStorageLock = true;
+		return $this;
+	}
+
+	/**
+	 * disable use of file storage lock to prevent db corruption
+	 * 
+	 * CAUTION ! This can result in data loss if you don't use it carefully !
+	 * 
+	 * @return AbstractFileStorage
+	 */
+	public function disableLockUsage() {
+		$this->useFileStorageLock = false;
+		return $this;
 	}
 
 	/**
@@ -50,7 +85,7 @@ abstract class AbstractFileStorage implements StorageInterface {
 	/**
 	 *
 	 * @param int $delay maximum lock delay in seconde
-	 * @return PhpStorage 
+	 * @return PhpFileStorage 
 	 */
 	public function setMaxLockDelay($delay) {
 		$this->maxLockDelay = $delay;
@@ -86,16 +121,21 @@ abstract class AbstractFileStorage implements StorageInterface {
 
 	public function loadTableData(Table $table, &$data) {
 		$filename = $this->getTableFileName($table);
-		$lock = new FileLock($filename);
-		if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
-			$this->doLoadTableData($filename, $data);
-			if ( !is_array($data) ) {
-				Exception::throwInvalidTableDataException($table);
+		if ( $this->isLockUsageEnabled() ) {
+			$lock = new FileStorageLock($filename);
+			if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
+				$this->doLoadTableData($filename, $data);
+				if ( !is_array($data) ) {
+					Exception::throwInvalidTableDataException($table);
+				}
+				$lock->unlock();
 			}
-			$lock->unlock();
+			else {
+				Exception::throwLockedTableException($table);
+			}
 		}
 		else {
-			Exception::throwLockedTableException($table);
+			$this->doLoadTableData($filename, $data);
 		}
 	}
 
@@ -104,25 +144,35 @@ abstract class AbstractFileStorage implements StorageInterface {
 			Exception::throwInvalidTableDataException($table);
 		}
 		$filename = $this->getTableFileName($table);
-		$lock = new FileLock($filename);
-		if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
-			$this->doStoreTableData($filename, $data);
-			$lock->unlock();
+		if ( $this->isLockUsageEnabled() ) {
+			$lock = new FileStorageLock($filename);
+			if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
+				$this->doStoreTableData($filename, $data);
+				$lock->unlock();
+			}
+			else {
+				Exception::throwLockedTableException($table);
+			}
 		}
 		else {
-			Exception::throwLockedTableException($table);
+			$this->doStoreTableData($filename, $data);
 		}
 	}
 
 	public function destroyTableData(Table $table) {
 		$filename = $this->getTableFileName($table);
-		$lock = new FileLock($filename);
-		if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
-			$this->doDestroyTableData($filename);
-			$lock->unlock();
+		if ( $this->isLockUsageEnabled() ) {
+			$lock = new FileStorageLock($filename);
+			if ( $lock->waitUntilLocked($this->maxLockDelay * 1000) ) {
+				$this->doDestroyTableData($filename);
+				$lock->unlock();
+			}
+			else {
+				Exception::throwLockedTableException($table);
+			}
 		}
 		else {
-			Exception::throwLockedTableException($table);
+			$this->doDestroyTableData($filename);
 		}
 	}
 

@@ -20,7 +20,7 @@ class NotCondition implements ConditionInterface {
 	}
 
 	public function match($key, $value) {
-		return!$this->condition->match($key, $value);
+		return !$this->condition->match($key, $value);
 	}
 
 }

@@ -5,8 +5,9 @@ use Arnapou\PFDB\Condition\ConditionBuilder;
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../lib/autoload.php';
 
-$storage = new Arnapou\PFDB\Storage\PhpStorage(__DIR__ . '/database');
+$storage = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
 $database = new Arnapou\PFDB\Database($storage);
+$database->setAutoFlush(false); // avoid automatic save at end of script
 
 $table = $database->getTable('vehicle');
 

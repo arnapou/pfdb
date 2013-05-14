@@ -25,7 +25,7 @@ Conditioning
 
     include 'lib/autoload.php';
     
-    $storage = new \Arnapou\PFDB\Storage\PhpStorage($somePath);
+    $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
@@ -69,7 +69,7 @@ Use :
 
     include 'lib/autoload.php';
     
-    $storage = new \Arnapou\PFDB\Storage\PhpStorage($somePath);
+    $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
