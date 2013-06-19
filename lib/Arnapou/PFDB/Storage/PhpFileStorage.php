@@ -25,7 +25,6 @@ class PhpFileStorage extends AbstractFileStorage {
 		if ( !is_file($filename) ) {
 			file_put_contents($filename, "<?php return array();\n");
 		}
-sleep(3);
 		$data = include($filename);
 	}
 
