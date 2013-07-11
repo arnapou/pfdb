@@ -25,6 +25,22 @@ class Exception extends \Exception {
 
 	/**
 	 *
+	 * @param string $type 
+	 */
+	static function throwORMException($message) {
+		throw new ORMException($message);
+	}
+
+	/**
+	 *
+	 * @param string $type 
+	 */
+	static function throwFatalException($message) {
+		throw new FatalException($message);
+	}
+
+	/**
+	 *
 	 * @param string $directory 
 	 */
 	static function throwDirectoryNotFoundException($directory) {

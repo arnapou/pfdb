@@ -20,23 +20,49 @@ function print_table($title, $table) {
 	echo '<table style="background:#aaa">';
 	$first = true;
 	foreach ( $table as $key => $row ) {
-		// TH
-		if ( $first ) {
+		if ( is_object($row) ) {
+			if ( !isset($methods) ) {
+				$methods = array_filter(get_class_methods($row), function($val) {
+						return 0 === strpos($val, 'get');
+					});
+			}
+			// TH
+			if ( $first ) {
+				echo '<tr>';
+				echo '<th style="padding:0 4px;background:#ddd">-key-</th>';
+				foreach ( $methods as $method ) {
+					echo '<th style="padding:0 4px;background:#ddd">' . $method . '()</th>';
+				}
+				echo '</tr>';
+				$first = false;
+			}
+			// TD
 			echo '<tr>';
-			echo '<th style="padding:0 4px;background:#ddd">-key-</th>';
-			foreach ( $row as $field => $value ) {
-				echo '<th style="padding:0 4px;background:#ddd">' . $field . '</th>';
+			echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
+			foreach ( $methods as $method ) {
+				echo '<td style="padding:0 4px;background:#fff">' . $row->$method() . '</td>';
 			}
 			echo '</tr>';
-			$first = false;
 		}
-		// TD
-		echo '<tr>';
-		echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
-		foreach ( $row as $field => $value ) {
-			echo '<td style="padding:0 4px;background:#fff">' . $value . '</td>';
+		else {
+			// TH
+			if ( $first ) {
+				echo '<tr>';
+				echo '<th style="padding:0 4px;background:#ddd">-key-</th>';
+				foreach ( $row as $field => $value ) {
+					echo '<th style="padding:0 4px;background:#ddd">' . $field . '</th>';
+				}
+				echo '</tr>';
+				$first = false;
+			}
+			// TD
+			echo '<tr>';
+			echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
+			foreach ( $row as $field => $value ) {
+				echo '<td style="padding:0 4px;background:#fff">' . $value . '</td>';
+			}
+			echo '</tr>';
 		}
-		echo '</tr>';
 	}
 	echo '</table>';
 	echo '<br />';
