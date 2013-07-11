@@ -13,13 +13,15 @@ namespace Arnapou\PFDB\Iterator;
 
 class ArrayIterator implements \Iterator, \Countable {
 
+	use TraitIterator;
+
 	protected $array;
 	protected $count;
 	protected $key;
 	protected $current;
 
 	public function __construct(&$array) {
-		$this->array = $array;
+		$this->array = &$array;
 		$this->count = count($array);
 	}
 

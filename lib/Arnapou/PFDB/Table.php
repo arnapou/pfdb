@@ -43,6 +43,12 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 
 	/**
 	 *
+	 * @var Iterator\ArrayIterator
+	 */
+	private $dataIterator;
+
+	/**
+	 *
 	 * @var bool
 	 */
 	protected $modified = false;
@@ -71,6 +77,7 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	public function reload() {
 		$this->modified = false;
 		$this->storage->loadTableData($this, $this->data);
+		$this->dataIterator = new Iterator\ArrayIterator($this->data);
 		return $this;
 	}
 
@@ -110,50 +117,24 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	}
 
 	/**
-	 * Build an iterator from a condition
-	 * 
-	 * The condition can be either :
-	 * - ConditionInterface object
-	 * - ConditionBuilder object
-	 * - Array (uses ConditionBuilder::fromArray)
-	 * - single key
-	 *
-	 * @param mixed $condition
-	 * @return Iterator\Iterator 
-	 */
-	protected function conditionToIterator($condition) {
-		if ( $condition instanceof Condition\ConditionInterface ) {
-			return new Iterator\Iterator($this->getIterator(), $condition);
-		}
-		elseif ( $condition instanceof Condition\ConditionBuilder ) {
-			return new Iterator\Iterator($this->getIterator(), $condition->getCondition());
-		}
-		elseif ( is_array($condition) ) {
-			return new Iterator\Iterator($this->getIterator(), Condition\ConditionBuilder::fromArray($condition)->getCondition());
-		}
-		elseif ( $this->offsetExists($condition) ) {
-			$results = array($condition => $this->get($condition));
-			return new Iterator\Iterator(new Iterator\ArrayIterator($results));
-		}
-		return new Iterator\Iterator(new \EmptyIterator());
-	}
-
-	/**
 	 * Delete rows which match the condition
 	 * 
 	 * The condition can be either :
 	 * - ConditionInterface object
 	 * - ConditionBuilder object
-	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
 	 * @param mixed $condition 
 	 * @return Table 
 	 */
 	public function delete($condition) {
-		$iterator = $this->conditionToIterator($condition);
+		$iterator = $this->getIterator()->find($condition);
+		$offsetToDelete = array();
 		foreach ( $iterator as $key => $row ) {
-			$this->offsetUnset($key);
+			$offsetToDelete[] = $key;
+		}
+		foreach ( $offsetToDelete as $offset ) {
+			$this->offsetUnset($offset);
 		}
 		return $this;
 	}
@@ -164,7 +145,6 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	 * The condition can be either :
 	 * - ConditionInterface object
 	 * - ConditionBuilder object
-	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
 	 * @param mixed $condition
@@ -176,7 +156,7 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 		if ( !is_callable($callable) ) {
 			Exception::throwBadArgumentTypeException('callable');
 		}
-		$iterator = $this->conditionToIterator($condition);
+		$iterator = $this->getIterator()->find($condition);
 		foreach ( $iterator as $key => $row ) {
 			$this->offsetSet($key, call_user_func($callable, $row));
 		}
@@ -189,13 +169,20 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	 * The condition can be either :
 	 * - ConditionInterface object
 	 * - ConditionBuilder object
-	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
 	 * @param mixed $condition 
 	 */
 	public function find($condition) {
-		return $this->conditionToIterator($condition);
+		return $this->getIterator()->find($condition);
+	}
+
+	/**
+	 * Find all rows
+	 * 
+	 */
+	public function findAll() {
+		return $this->getIterator();
 	}
 
 	/**
@@ -206,7 +193,6 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	 * The condition can be either :
 	 * - ConditionInterface object
 	 * - ConditionBuilder object
-	 * - Array (uses ConditionBuilder::fromArray)
 	 * - single key
 	 *
 	 * @param mixed|array $condition
@@ -313,8 +299,12 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 		return count($this->data);
 	}
 
+	/**
+	 * 
+	 * @return Iterator\ArrayIterator
+	 */
 	public function getIterator() {
-		return new Iterator\ArrayIterator($this->data);
+		return $this->dataIterator;
 	}
 
 }

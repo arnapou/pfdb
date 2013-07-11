@@ -14,42 +14,32 @@ namespace Arnapou\PFDB\Iterator;
 use Arnapou\PFDB\Condition\ConditionBuilder;
 use Arnapou\PFDB\Condition\ConditionInterface;
 use Arnapou\PFDB\Exception\Exception;
+use Arnapou\PFDB\ORM\EntityIterator;
 
-class Iterator extends \FilterIterator implements \Countable {
+trait TraitIterator {
 
 	/**
-	 *
-	 * @var ConditionInterface
+	 * 
+	 * @param array $array
+	 * @return bool
 	 */
-	protected $condition = null;
+	protected function isAssociativeArray($array) {
+		$values = array_values($array);
+		$diff = array_diff_key($values, $array);
+		return empty($diff) ? false : true;
+	}
 
 	/**
-	 *
+	 * 
 	 * @param \Iterator $iterator
-	 * @param ConditionInterface $condition 
+	 * @param mixed $condition
+	 * @return EntityIterator|ConditionIterator
 	 */
-	public function __construct($iterator, $condition = null) {
-		if ( !($iterator instanceof \Iterator) ) {
-			Exception::throwInvalidConditionSyntaxException("iterator is not a valid php iterator");
+	protected function getIteratorWrapper($iterator, $condition = null) {
+		if ( $this instanceof EntityIterator ) {
+			return new EntityIterator($this->getTable(), $iterator, $condition);
 		}
-		if ( $condition !== null && !($condition instanceof ConditionInterface) ) {
-			Exception::throwInvalidConditionSyntaxException("condition is not a valid Arnapou\PFDB\Condition\ConditionInterface");
-		}
-		$this->condition = $condition;
-		parent::__construct($iterator);
-	}
-
-	public function accept() {
-		if ( $this->condition === null ) {
-			return true;
-		}
-		else {
-			return $this->condition->match($this->key(), $this->current());
-		}
-	}
-
-	public function count() {
-		return iterator_count($this);
+		return new ConditionIterator($iterator, $condition);
 	}
 
 	/**
@@ -65,18 +55,23 @@ class Iterator extends \FilterIterator implements \Countable {
 	 */
 	public function find($condition) {
 		if ( $condition instanceof ConditionInterface ) {
-			return new self($this, $condition);
+			return $this->getIteratorWrapper($this, $condition);
 		}
 		elseif ( $condition instanceof ConditionBuilder ) {
-			return new self($this, $condition->getCondition());
+			return $this->getIteratorWrapper($this, $condition->getCondition());
 		}
-		elseif ( is_array($condition) ) {
-			return new self($this, ConditionBuilder::fromArray($condition)->getCondition());
+		elseif ( is_array($condition) && $this->isAssociativeArray($condition) ) {
+			$builder = ConditionBuilder::createAnd();
+			foreach ( $condition as $key => $value ) {
+				if ( !is_int($key) ) {
+					$builder->equalTo($key, $value);
+				}
+			}
+			return $this->getIteratorWrapper($this, $builder->getCondition());
 		}
 		else {
-			return new self($this, ConditionBuilder::createAnd()->equalTo(null, $condition)->getCondition());
+			return $this->getIteratorWrapper($this, ConditionBuilder::createAnd()->equalTo(null, $condition)->getCondition());
 		}
-		return new self(new \EmptyIterator());
 	}
 
 	/**
@@ -149,7 +144,7 @@ class Iterator extends \FilterIterator implements \Countable {
 		// needed to preserve keys
 		$allData = array_combine($keys, $allData);
 
-		return new self(new \ArrayIterator($allData));
+		return $this->getIteratorWrapper(new ArrayIterator($allData));
 	}
 
 	/**
@@ -161,7 +156,7 @@ class Iterator extends \FilterIterator implements \Countable {
 	 */
 	public function limit($offset = 0, $count = null) {
 		if ( $offset < 0 || $count < 0 ) {
-			$nbItems = $this->count();
+			$nbItems = $iterator->count();
 		}
 		if ( $offset < 0 ) {
 			$offset = $nbItems + $offset;
@@ -172,8 +167,7 @@ class Iterator extends \FilterIterator implements \Countable {
 		elseif ( $count === null ) {
 			$count = -1;
 		}
-		$limitIterator = new \LimitIterator($this, $offset, $count);
-		return new self($limitIterator);
+		return $this->getIteratorWrapper(new \LimitIterator($this, $offset, $count));
 	}
 
 }
