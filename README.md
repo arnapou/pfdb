@@ -23,7 +23,7 @@ Examples are the best documentation you will find.
 Conditioning
 ========
 
-    include 'lib/autoload.php';
+    include 'src/autoload.php';
     
     $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
@@ -67,7 +67,7 @@ Class :
 
 Use :
 
-    include 'lib/autoload.php';
+    include 'src/autoload.php';
     
     $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
@@ -84,7 +84,7 @@ Use :
 Use PFDB Iterator out of storage context
 ========================================
 
-    include 'lib/autoload.php';
+    include 'src/autoload.php';
 
     $array = array(
         array('name' => 'John', 'age' => 20),
