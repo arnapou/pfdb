@@ -1,0 +1,19 @@
+{
+	"name": "arnapou/PFDB",
+	"description": "Php File DB",
+	"authors": [
+		{
+			"name": "Arnaud Buathier",
+			"email": "arnaud@arnapou.net",
+			"homepage": "http://arnapou.net"
+		}
+	],
+	"require": {
+		"php": ">=5.4",
+	},
+	"autoload": {
+		"psr-0": {
+			"Arnapou": "src/",
+		}
+	}
+}
