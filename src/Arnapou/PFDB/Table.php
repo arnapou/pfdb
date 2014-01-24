@@ -92,7 +92,12 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate {
 	 */
 	public function set($key, $value) {
 		if ( $key === null ) {
-			$this->data[] = $value;
+			if ( empty($this->data) ) {
+				$this->data[1] = $value;
+			}
+			else {
+				$this->data[] = $value;
+			}
 			end($this->data);
 			$key = key($this->data);
 		}
