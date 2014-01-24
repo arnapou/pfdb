@@ -181,12 +181,15 @@ class Table extends \Arnapou\PFDB\Table {
 	/**
 	 * 
 	 * @param array $array
+	 * @param BaseEntity $entity
 	 * @return BaseEntity
 	 */
-	public function arrayToEntity(array $array) {
+	public function arrayToEntity(array $array, BaseEntity $entity = null) {
 
 		$objectId = isset($array['id']) ? $array['id'] : null;
-		$entity = $this->newEntity();
+		if ( $entity === null ) {
+			$entity = $this->newEntity();
+		}
 		$reflectionObject = new \ReflectionObject($entity);
 
 		$this->reflectionBaseEntity->getPropertyId()->setValue($entity, $objectId);
@@ -195,9 +198,11 @@ class Table extends \Arnapou\PFDB\Table {
 
 		// attributes
 		foreach ( $this->entity->getAttributes() as $name => $attribute ) {
-			$property = $reflectionObject->getProperty($name);
-			$property->setAccessible(true);
-			$property->setValue($entity, isset($array[$name]) ? $array[$name] : null);
+			if ( array_key_exists($name, $array) ) {
+				$property = $reflectionObject->getProperty($name);
+				$property->setAccessible(true);
+				$property->setValue($entity, $array[$name]);
+			}
 		}
 
 		return $entity;
