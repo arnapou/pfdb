@@ -90,7 +90,7 @@ class BaseEntity implements \ArrayAccess {
 	 * 
 	 * @return Table
 	 */
-	protected function __Table() {
+	protected function __table() {
 		if ( !isset($this->__table) ) {
 			return null;
 		}
