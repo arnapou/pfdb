@@ -13,6 +13,7 @@ namespace Arnapou\PFDB\ORM;
 
 use Arnapou\PFDB\Exception\Exception;
 use Arnapou\PFDB\Condition\ConditionBuilder;
+use Arnapou\PFDB\Condition\ConditionInterface;
 
 class BaseEntity implements \ArrayAccess {
 
@@ -83,6 +84,17 @@ class BaseEntity implements \ArrayAccess {
 		else {
 			Exception::throwORMException('Link type "' . $links['type'] . '" is not supported');
 		}
+	}
+
+	/**
+	 * 
+	 * @return Table
+	 */
+	protected function __Table() {
+		if ( !isset($this->__table) ) {
+			return null;
+		}
+		return $this->__table;
 	}
 
 	public function offsetExists($offset) {
