@@ -92,7 +92,7 @@ class FileStorageLock {
 				usleep($waitStep);
 				$this->hasWaited = true;
 				$wait += $waitStep;
-				if ( $wait > $maxWaitTime ) {
+				if ( $wait > 1000 * $maxWaitTime ) {
 					return false;
 				}
 			}
