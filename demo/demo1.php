@@ -12,7 +12,7 @@
 use Arnapou\PFDB\Condition\ConditionBuilder;
 
 include __DIR__ . '/functions.php';
-include __DIR__ . '/../lib/autoload.php';
+include __DIR__ . '/../src/autoload.php';
 
 $storage = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
 $database = new Arnapou\PFDB\Database($storage);
