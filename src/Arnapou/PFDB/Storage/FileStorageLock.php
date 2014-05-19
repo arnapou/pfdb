@@ -17,13 +17,25 @@ class FileStorageLock {
 	 *
 	 * @var string
 	 */
-	protected $lockfile = '';
+	protected $filename;
 
 	/**
 	 *
-	 * @var bool
+	 * @var int
 	 */
-	protected $ownLock = false;
+	protected $fileHandle;
+
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $locked;
+
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $isWin;
 
 	/**
 	 *
@@ -41,9 +53,19 @@ class FileStorageLock {
 	 *
 	 * @param string $lockfile 
 	 */
-	public function __construct($lockfile) {
-		$this->lockfile = $lockfile . '.lock';
-		register_shutdown_function(array($this, 'unlock'));
+	public function __construct($filename) {
+		if (!is_file($filename)) {
+			throw new Exception('Filename does not exists');
+		}
+		$this->isWin = Php::isWin();
+		$this->filename = $filename;
+	}
+
+	/**
+	 * 
+	 */
+	public function __destruct() {
+		$this->unlock();
 	}
 
 	/**
@@ -51,15 +73,7 @@ class FileStorageLock {
 	 * @return bool
 	 */
 	public function isLocked() {
-		return is_file($this->lockfile);
-	}
-
-	/**
-	 * Tells whether this object own the lock
-	 * @return bool
-	 */
-	public function ownLock() {
-		return $this->ownLock;
+		return $this->locked;
 	}
 
 	/**
@@ -78,9 +92,9 @@ class FileStorageLock {
 	public function waitUntilLocked($maxWaitTime = 0) {
 		$waitStep = 1000 * $this->waitLoopDuration;
 		$this->hasWaited = false;
-		if ( $maxWaitTime <= 0 ) {
+		if ($maxWaitTime <= 0) {
 			// infinite wait
-			while ( !$this->lock() ) {
+			while (!$this->lock()) {
 				usleep($waitStep);
 				$this->hasWaited = true;
 			}
@@ -88,11 +102,11 @@ class FileStorageLock {
 		else {
 			// limited wait
 			$wait = 0;
-			while ( !$this->lock() ) {
+			while (!$this->lock()) {
 				usleep($waitStep);
 				$this->hasWaited = true;
 				$wait += $waitStep;
-				if ( $wait > 1000 * $maxWaitTime ) {
+				if ($wait > 1000 * $maxWaitTime) {
 					return false;
 				}
 			}
@@ -123,22 +137,52 @@ class FileStorageLock {
 	 * @return bool
 	 */
 	public function lock() {
-		if ( false !== $lock = @fopen($this->lockfile, 'x') ) {
-			$this->ownLock = true;
-			fclose($lock);
-			return true;
+		if ($this->locked) {
+			return false;
 		}
-		return false;
+		if ($this->isWin) {
+			if (false !== $lock = @fopen($this->filename . '.lock', 'x')) {
+				fclose($lock);
+				$this->locked = true;
+			}
+		}
+		else {
+			try {
+				$this->fileHandle = fopen($this->filename, 'rb');
+				$this->locked = flock($this->fileHandle, LOCK_EX | LOCK_NB);
+				if (!$this->locked) {
+					@fclose($this->fileHandle);
+				}
+			}
+			catch (\Exception $e) {
+				if ($this->fileHandle) {
+					@fclose($this->fileHandle);
+				}
+				$this->locked = false;
+			}
+		}
+		return $this->locked;
 	}
 
 	/**
 	 * unlock
 	 */
 	public function unlock() {
-		if ( is_file($this->lockfile) ) {
-			@unlink($this->lockfile);
+		if ($this->locked) {
+			if ($this->isWin) {
+				if (is_file($this->filename . '.lock')) {
+					@unlink($this->filename . '.lock');
+				}
+			}
+			elseif (is_resource($this->fileHandle)) {
+				flock($this->fileHandle, LOCK_UN);
+				@fclose($this->fileHandle);
+			}
+			$this->fileHandle = null;
+			$this->locked = false;
+			return true;
 		}
-		$this->ownLock = false;
+		return false;
 	}
 
 }
