@@ -2,12 +2,14 @@ Introduction
 ============
 
 What it is :
+
 * Pure POO (php 5.3 required)
 * Lightweight
 * As fast as it can
 * Extendable (interfaces, ...)
 
 What it is _not_ :
+
 * SQL database
 * Relational database
 * ORM
@@ -15,6 +17,7 @@ What it is _not_ :
 * NoSQL Database (although Arnapou\PFDB can be used for light key/pair database)
 
 Disclaimer :
+
 __do not use Arnapou\PFDB for huge file, you will naturally use lots of memory and CPU. It is not designed for huge files.__
 
 I have not the time to make documentation, code is enough simple and readable with php docs to be auto-documented.
