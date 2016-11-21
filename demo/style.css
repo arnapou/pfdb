@@ -1,0 +1,15 @@
+/*
+ * This file is part of the Arnapou PFDB package.
+ *
+ * (c) Arnaud Buathier <arnaud@arnapou.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+* {
+	outline: 0 !important;
+}
+.container {
+	margin-top: 1em;
+	margin-bottom: 5em;
+}

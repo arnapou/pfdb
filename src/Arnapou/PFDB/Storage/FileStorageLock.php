@@ -57,7 +57,7 @@ class FileStorageLock {
 		if (!is_file($filename)) {
 			throw new Exception('Filename does not exists');
 		}
-		$this->isWin = Php::isWin();
+		$this->isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 		$this->filename = $filename;
 	}
 
