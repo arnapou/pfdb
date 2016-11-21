@@ -22,6 +22,8 @@ __do not use Arnapou\PFDB for huge file, you will naturally use lots of memory a
 I have not the time to make documentation, code is enough simple and readable with php docs to be auto-documented.
 Examples are the best documentation you will find.
 
+A few examples : http://pfdb.arnapou.net/
+
 Conditioning
 ========
 
