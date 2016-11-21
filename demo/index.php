@@ -9,9 +9,10 @@
  */
 
 $pages = array(
-    'demo1' => 'Conditions',
-    'demo2' => 'Updating / Deleting',
-    'demo3' => 'Entities',
+    'introduction' => 'Introduction',
+    'demo1'        => 'Conditions',
+    'demo2'        => 'Updating / Deleting',
+    'demo3'        => 'Entities',
 );
 
 if (isset($_GET['page']) && in_array($_GET['page'], array_keys($pages), true)) {

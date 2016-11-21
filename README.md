@@ -51,13 +51,13 @@ Extending Conditions
 Class :
 
     class IsUppercaseCondition implements \Arnapou\PFDB\Condition\ConditionInterface {
-
+    
         protected $field;
-
+    
         public function __construct($field) {
             $this->field = $field;
         }
-
+    
         public function match($key, $value) {
             if(!isset($value[$this->field]) {
                 return false;
@@ -66,7 +66,7 @@ Class :
             $isUppercase = ($testedValue === strtoupper($testedValue));
             return $isUppercase;
         }
-
+    
     }
 
 Use :
@@ -89,19 +89,19 @@ Use PFDB Iterator out of storage context
 ========================================
 
     include 'src/autoload.php';
-
+    
     $array = array(
         array('name' => 'John', 'age' => 20),
         array('name' => 'Edith', 'age' => 25),
         array('name' => 'Steve', 'age' => 30),
         array('name' => 'Matthew', 'age' => 22),
     );
-
+    
     $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
     $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
         ->greaterThan('age', 24);
     $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $condition);
-
+    
     foreach($iterator as $key => $row) {
         // do whatever you want
     }
