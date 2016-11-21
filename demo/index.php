@@ -26,7 +26,7 @@ if (!isset($current)) {
 ?><!DOCTYPE html>
 <html>
     <head>
-        <title>jsTable</title>
+        <title>PFDB</title>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="style.css">
         <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -45,6 +45,11 @@ if (!isset($current)) {
                         <?php foreach ($pages as $page => $title): ?>
                             <li<?= ($current == $page ? ' class="active"' : '') ?>><a href="?page=<?= $page ?>"><?= $title ?></a></li>
                         <?php endforeach; ?>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="https://github.com/arnapou/pfdb"><i class="github-icon"></i> Github</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
