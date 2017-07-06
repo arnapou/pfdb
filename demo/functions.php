@@ -12,22 +12,24 @@
 /**
  * Prints a HTML title
  *
- * @param string $title 
+ * @param string $title
  */
-function print_title($title) {
+function print_title($title)
+{
 //    echo '<h1>' . $title . '</h1>';
 }
 
 /**
  * Prints a HTML table of the Table object
  *
- * @param string $title
- * @param \Arnapou\PFDB\Table $table 
+ * @param string              $title
+ * @param \Arnapou\PFDB\Table $table
  */
-function print_table($title, $table) {
+function print_table($title, $table)
+{
     $func = null;
     if (is_callable($table)) {
-        $func  = $table;
+        $func = $table;
         $table = $func();
     }
     echo '<h4>' . $title . '</h4>';
@@ -38,7 +40,7 @@ function print_table($title, $table) {
     foreach ($table as $key => $row) {
         if (is_object($row)) {
             if (!isset($methods)) {
-                $methods = array_filter(get_class_methods($row), function($val) {
+                $methods = array_filter(get_class_methods($row), function ($val) {
                     return 0 === strpos($val, 'get');
                 });
             }
@@ -59,8 +61,7 @@ function print_table($title, $table) {
                 echo '<td style="padding:0 4px;background:#fff">' . $row->$method() . '</td>';
             }
             echo '</tr>';
-        }
-        else {
+        } else {
             // TH
             if ($first) {
                 echo '<tr>';
@@ -92,23 +93,24 @@ function print_table($title, $table) {
 }
 
 /**
- * 
+ *
  * @param callable $func
  * @return string
  */
-function getFunctionSourceCode($func) {
+function getFunctionSourceCode($func)
+{
     $reflection = new ReflectionFunction($func);
-    $filename   = $reflection->getFileName();
+    $filename = $reflection->getFileName();
     $start_line = $reflection->getStartLine();
-    $end_line   = $reflection->getEndLine() - 1;
-    $length     = $end_line - $start_line;
+    $end_line = $reflection->getEndLine() - 1;
+    $length = $end_line - $start_line;
 
     $lines = file($filename);
     $lines = array_slice($lines, $start_line, $length);
-    $lines = array_map(function($s) {
+    $lines = array_map(function ($s) {
         return substr($s, 4);
     }, $lines);
-    if(count($lines) && strpos($lines[0], 'return ') === 0){
+    if (count($lines) && strpos($lines[0], 'return ') === 0) {
         $lines[0] = substr($lines[0], 7);
     }
     return implode("", $lines);

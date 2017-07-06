@@ -11,14 +11,16 @@
 
 namespace Arnapou\PFDB\Condition\Operator;
 
-class GreaterThanOperator extends AbstractOperator {
+class GreaterThanOperator extends AbstractOperator
+{
 
-	public function match($key, $value) {
-		$testedValue = $this->getTestedValue($key, $value);
-		if ( $testedValue === null ) {
-			return false;
-		}
-		return $testedValue > $this->value;
-	}
+    public function match($key, $value)
+    {
+        $testedValue = $this->getTestedValue($key, $value);
+        if ($testedValue === null) {
+            return false;
+        }
+        return $testedValue > $this->value;
+    }
 
 }

@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class FatalException extends Exception {
-	
+class FatalException extends Exception
+{
+
 }

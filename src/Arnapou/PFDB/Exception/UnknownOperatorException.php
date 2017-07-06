@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class UnknownOperatorException extends Exception {
-	
+class UnknownOperatorException extends Exception
+{
+
 }

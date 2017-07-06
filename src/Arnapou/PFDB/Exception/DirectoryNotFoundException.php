@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class DirectoryNotFoundException extends Exception {
-	
+class DirectoryNotFoundException extends Exception
+{
+
 }

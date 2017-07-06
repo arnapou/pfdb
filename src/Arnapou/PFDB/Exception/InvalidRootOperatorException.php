@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidRootOperatorException extends Exception {
-	
+class InvalidRootOperatorException extends Exception
+{
+
 }

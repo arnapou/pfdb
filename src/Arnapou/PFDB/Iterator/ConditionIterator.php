@@ -14,43 +14,46 @@ namespace Arnapou\PFDB\Iterator;
 use Arnapou\PFDB\Condition\ConditionInterface;
 use Arnapou\PFDB\Exception\Exception;
 
-class ConditionIterator extends \FilterIterator implements \Countable {
+class ConditionIterator extends \FilterIterator implements \Countable
+{
 
-	use TraitIterator;
+    use TraitIterator;
 
-	/**
-	 *
-	 * @var ConditionInterface
-	 */
-	protected $condition = null;
+    /**
+     *
+     * @var ConditionInterface
+     */
+    protected $condition = null;
 
-	/**
-	 *
-	 * @param \Iterator $iterator
-	 * @param ConditionInterface $condition 
-	 */
-	public function __construct($iterator, $condition = null) {
-		if ( !($iterator instanceof \Iterator) ) {
-			Exception::throwInvalidConditionSyntaxException("iterator is not a valid php iterator");
-		}
-		if ( $condition !== null && !($condition instanceof ConditionInterface) ) {
-			Exception::throwInvalidConditionSyntaxException("condition is not a valid Arnapou\PFDB\Condition\ConditionInterface");
-		}
-		$this->condition = $condition;
-		parent::__construct($iterator);
-	}
+    /**
+     *
+     * @param \Iterator          $iterator
+     * @param ConditionInterface $condition
+     */
+    public function __construct($iterator, $condition = null)
+    {
+        if (!($iterator instanceof \Iterator)) {
+            Exception::throwInvalidConditionSyntaxException("iterator is not a valid php iterator");
+        }
+        if ($condition !== null && !($condition instanceof ConditionInterface)) {
+            Exception::throwInvalidConditionSyntaxException("condition is not a valid Arnapou\PFDB\Condition\ConditionInterface");
+        }
+        $this->condition = $condition;
+        parent::__construct($iterator);
+    }
 
-	public function count() {
-		return iterator_count($this);
-	}
+    public function count()
+    {
+        return iterator_count($this);
+    }
 
-	public function accept() {
-		if ( $this->condition === null ) {
-			return true;
-		}
-		else {
-			return $this->condition->match($this->key(), $this->current());
-		}
-	}
+    public function accept()
+    {
+        if ($this->condition === null) {
+            return true;
+        } else {
+            return $this->condition->match($this->key(), $this->current());
+        }
+    }
 
 }

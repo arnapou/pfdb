@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidTableDataException extends Exception {
-	
+class InvalidTableDataException extends Exception
+{
+
 }

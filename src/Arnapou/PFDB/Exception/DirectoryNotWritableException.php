@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class DirectoryNotWritableException extends Exception {
-	
+class DirectoryNotWritableException extends Exception
+{
+
 }

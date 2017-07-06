@@ -13,14 +13,14 @@ $source = file_get_contents(__DIR__ . '/../README.md');
 
 echo mdToHtml($source);
 
-function mdToHtml($md) {
+function mdToHtml($md)
+{
     $html = $md;
-    
+
     // specific to this project
     $html = preg_replace('!(?:\n|^)[^\n\r]*?https?://pfdb.arnapou.net[^\n\r]*?\n!si', "\n", $html);
-    
-    
-    
+
+
     // generic
     $html = preg_replace('!\*\*([^\n\r]+?)\*\*!si', '<strong>$1</strong>', $html);
     $html = preg_replace('!__(.+?)__!si', '<strong>$1</strong>', $html);

@@ -13,34 +13,37 @@ namespace Arnapou\PFDB\ORM;
 
 use Arnapou\PFDB\Storage\StorageInterface;
 
-class Database extends \Arnapou\PFDB\Database {
+class Database extends \Arnapou\PFDB\Database
+{
 
-	/**
-	 *
-	 * @var array
-	 */
-	protected $defaultConfig = array(
-		'autoflush' => true,
-		'tableclass' => 'Arnapou\PFDB\ORM\Table',
-	);
+    /**
+     *
+     * @var array
+     */
+    protected $defaultConfig = [
+        'autoflush' => true,
+        'tableclass' => 'Arnapou\PFDB\ORM\Table',
+    ];
 
-	/**
-	 *
-	 * @var Schema\Schema
-	 */
-	protected $schema;
+    /**
+     *
+     * @var Schema\Schema
+     */
+    protected $schema;
 
-	public function __construct(StorageInterface $storage, Schema\Schema $schema, $config = array()) {
-		$this->schema = $schema;
-		parent::__construct($storage, $config);
-	}
+    public function __construct(StorageInterface $storage, Schema\Schema $schema, $config = [])
+    {
+        $this->schema = $schema;
+        parent::__construct($storage, $config);
+    }
 
-	/**
-	 * 
-	 * @return Schema\Schema
-	 */
-	public function getSchema() {
-		return $this->schema;
-	}
+    /**
+     *
+     * @return Schema\Schema
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
 
 }

@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class LockedTableException extends Exception {
-	
+class LockedTableException extends Exception
+{
+
 }

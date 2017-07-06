@@ -11,13 +11,14 @@
 
 namespace Arnapou\PFDB\Condition;
 
-interface ConditionInterface {
+interface ConditionInterface
+{
 
-	/**
-	 * 
-	 * @param mixed $key
-	 * @param mixed $value
-	 * @return bool
-	 */
-	public function match($key, $value);
+    /**
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return bool
+     */
+    public function match($key, $value);
 }

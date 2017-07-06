@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class BadArgumentTypeException extends Exception {
-	
+class BadArgumentTypeException extends Exception
+{
+
 }

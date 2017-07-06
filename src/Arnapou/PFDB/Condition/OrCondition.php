@@ -11,15 +11,17 @@
 
 namespace Arnapou\PFDB\Condition;
 
-class OrCondition extends AndCondition {
+class OrCondition extends AndCondition
+{
 
-	public function match($key, $value) {
-		foreach ( $this->conditions as $condition ) {
-			if ( $condition->match($key, $value) ) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public function match($key, $value)
+    {
+        foreach ($this->conditions as $condition) {
+            if ($condition->match($key, $value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

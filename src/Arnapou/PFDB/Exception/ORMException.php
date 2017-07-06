@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class ORMException extends Exception {
-	
+class ORMException extends Exception
+{
+
 }

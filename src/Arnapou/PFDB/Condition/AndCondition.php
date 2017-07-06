@@ -11,29 +11,33 @@
 
 namespace Arnapou\PFDB\Condition;
 
-class AndCondition implements ConditionInterface {
+class AndCondition implements ConditionInterface
+{
 
-	protected $conditions = array();
+    protected $conditions = [];
 
-	public function __construct($conditions = null) {
-		if ( null !== $conditions ) {
-			foreach ( $conditions as $condition ) {
-				$this->add($condition);
-			}
-		}
-	}
+    public function __construct($conditions = null)
+    {
+        if (null !== $conditions) {
+            foreach ($conditions as $condition) {
+                $this->add($condition);
+            }
+        }
+    }
 
-	public function add(ConditionInterface $condition) {
-		$this->conditions[] = $condition;
-	}
+    public function add(ConditionInterface $condition)
+    {
+        $this->conditions[] = $condition;
+    }
 
-	public function match($key, $value) {
-		foreach ( $this->conditions as $condition ) {
-			if ( !$condition->match($key, $value) ) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public function match($key, $value)
+    {
+        foreach ($this->conditions as $condition) {
+            if (!$condition->match($key, $value)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

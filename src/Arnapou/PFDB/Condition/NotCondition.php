@@ -11,16 +11,19 @@
 
 namespace Arnapou\PFDB\Condition;
 
-class NotCondition implements ConditionInterface {
+class NotCondition implements ConditionInterface
+{
 
-	protected $condition;
+    protected $condition;
 
-	public function __construct(ConditionInterface $condition) {
-		$this->condition = $condition;
-	}
+    public function __construct(ConditionInterface $condition)
+    {
+        $this->condition = $condition;
+    }
 
-	public function match($key, $value) {
-		return !$this->condition->match($key, $value);
-	}
+    public function match($key, $value)
+    {
+        return !$this->condition->match($key, $value);
+    }
 
 }

@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class UnknownClassException extends Exception {
-	
+class UnknownClassException extends Exception
+{
+
 }
