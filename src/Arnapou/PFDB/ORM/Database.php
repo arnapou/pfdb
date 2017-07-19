@@ -21,7 +21,7 @@ class Database extends \Arnapou\PFDB\Database
      * @var array
      */
     protected $defaultConfig = [
-        'autoflush' => true,
+        'autoflush'  => true,
         'tableclass' => 'Arnapou\PFDB\ORM\Table',
     ];
 

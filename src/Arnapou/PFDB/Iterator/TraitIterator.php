@@ -27,7 +27,7 @@ trait TraitIterator
     protected function isAssociativeArray($array)
     {
         $values = array_values($array);
-        $diff = array_diff_key($values, $array);
+        $diff   = array_diff_key($values, $array);
         return empty($diff) ? false : true;
     }
 
@@ -113,11 +113,11 @@ trait TraitIterator
 
         // data by column
         $dataByColumn = [];
-        $allData = [];
-        $keys = [];
+        $allData      = [];
+        $keys         = [];
         foreach ($this as $key => $row) {
             $allData[$key] = $row;
-            $keys[] = $key;
+            $keys[]        = $key;
             foreach ($orders as $column => $asc) {
                 $value = null;
                 if (isset($row[$column])) {
@@ -132,7 +132,7 @@ trait TraitIterator
 
         // sort
         $nbSort = count($orders);
-        $args = [];
+        $args   = [];
         for ($i = 0; $i < $nbSort; $i++) {
             $args[] = &$dataByColumn[$i];
             $args[] = $sortOrders[$i];

@@ -38,8 +38,8 @@ abstract class AbstractOperator implements ConditionInterface
         } else {
             $value = (string)$value;
         }
-        $this->field = $field;
-        $this->value = $value;
+        $this->field         = $field;
+        $this->value         = $value;
         $this->caseSensitive = $caseSensitive;
     }
 

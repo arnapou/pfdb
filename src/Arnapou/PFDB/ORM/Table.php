@@ -37,8 +37,8 @@ class Table extends \Arnapou\PFDB\Table
     public function __construct(Database $database, $name)
     {
         parent::__construct($database, $name);
-        $this->entity = $database->getSchema()->getEntity($name);
-        $this->reflectionClass = new \ReflectionClass($this->entity->getClass());
+        $this->entity               = $database->getSchema()->getEntity($name);
+        $this->reflectionClass      = new \ReflectionClass($this->entity->getClass());
         $this->reflectionBaseEntity = new ReflectionBaseEntity();
     }
 
@@ -70,7 +70,7 @@ class Table extends \Arnapou\PFDB\Table
     public function set($key, $object)
     {
         $array = $this->entityToArray($object);
-        $id = $array['id'];
+        $id    = $array['id'];
         unset($array['id']);
         if ($key === null) {
             if ($id !== null) {
@@ -130,7 +130,7 @@ class Table extends \Arnapou\PFDB\Table
             Exception::throwORMException('Invalid entity class ' . get_class($object));
         }
 
-        $array = [];
+        $array            = [];
         $reflectionObject = new \ReflectionObject($object);
 
         // id
@@ -160,7 +160,7 @@ class Table extends \Arnapou\PFDB\Table
                         $value = $targetObject->getId();
                     } else {
                         $targetReflectionObject = new \ReflectionObject($targetObject);
-                        $targetProperty = $targetReflectionObject->getProperty($link['target']);
+                        $targetProperty         = $targetReflectionObject->getProperty($link['target']);
                         $targetProperty->setAccessible(true);
                         $value = $targetProperty->getValue($targetObject);
                     }

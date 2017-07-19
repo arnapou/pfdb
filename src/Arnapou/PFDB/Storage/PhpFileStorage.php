@@ -47,8 +47,8 @@ class PhpFileStorage extends AbstractFileStorage
         if (is_array($files)) {
             $tableNames = [];
             foreach ($files as $file) {
-                $tableName = basename($file, '.php');
-                $tableName = str_replace('table.', '', $tableName);
+                $tableName    = basename($file, '.php');
+                $tableName    = str_replace('table.', '', $tableName);
                 $tableNames[] = $tableName;
             }
             return $tableNames;

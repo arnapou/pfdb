@@ -76,7 +76,7 @@ class BaseEntity implements \ArrayAccess
         $target = $links[$name];
         if (Schema\Entity::TYPE_MANY_TO_ONE === $target['type']) {
             if (isset($this->__raw[$target['field']])) {
-                $condition = ConditionBuilder::createAnd()
+                $condition   = ConditionBuilder::createAnd()
                     ->equalTo($target['target'], $this->__raw[$target['field']]);
                 $this->$name = $this->__table
                     ->getDatabase()
@@ -116,10 +116,10 @@ class BaseEntity implements \ArrayAccess
         }
         if (false !== strpos($offset, '.')) {
             $offsets = explode('.', $offset);
-            $n = count($offsets);
-            $object = $this;
+            $n       = count($offsets);
+            $object  = $this;
             while ($n--) {
-                $link = array_shift($offsets);
+                $link   = array_shift($offsets);
                 $object = $object->offsetGet($link);
                 if (!($object instanceof BaseEntity)) {
                     return $object;

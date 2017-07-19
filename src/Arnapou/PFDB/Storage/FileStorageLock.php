@@ -59,7 +59,7 @@ class FileStorageLock
         if (!is_file($filename)) {
             throw new Exception('Filename does not exists');
         }
-        $this->isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        $this->isWin    = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
         $this->filename = $filename;
     }
 
@@ -96,7 +96,7 @@ class FileStorageLock
      */
     public function waitUntilLocked($maxWaitTime = 0)
     {
-        $waitStep = 1000 * $this->waitLoopDuration;
+        $waitStep        = 1000 * $this->waitLoopDuration;
         $this->hasWaited = false;
         if ($maxWaitTime <= 0) {
             // infinite wait
@@ -110,7 +110,7 @@ class FileStorageLock
             while (!$this->lock()) {
                 usleep($waitStep);
                 $this->hasWaited = true;
-                $wait += $waitStep;
+                $wait            += $waitStep;
                 if ($wait > 1000 * $maxWaitTime) {
                     return false;
                 }
@@ -156,7 +156,7 @@ class FileStorageLock
         } else {
             try {
                 $this->fileHandle = fopen($this->filename, 'rb');
-                $this->locked = flock($this->fileHandle, LOCK_EX | LOCK_NB);
+                $this->locked     = flock($this->fileHandle, LOCK_EX | LOCK_NB);
                 if (!$this->locked) {
                     @fclose($this->fileHandle);
                 }
@@ -185,7 +185,7 @@ class FileStorageLock
                 @fclose($this->fileHandle);
             }
             $this->fileHandle = null;
-            $this->locked = false;
+            $this->locked     = false;
             return true;
         }
         return false;

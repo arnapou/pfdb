@@ -55,7 +55,7 @@ class Entity
      */
     private function __construct($name, $class)
     {
-        $this->name = $name;
+        $this->name  = $name;
         $this->class = $class;
     }
 
@@ -89,9 +89,9 @@ class Entity
             Exception::throwFatalException('Cannot add link "' . $name . '" : it already exists in attributes.');
         }
         $this->links[$name] = [
-            'type' => self::TYPE_MANY_TO_ONE,
+            'type'   => self::TYPE_MANY_TO_ONE,
             'entity' => $entity,
-            'field' => ($field === null ? $name . '_id' : $field),
+            'field'  => ($field === null ? $name . '_id' : $field),
             'target' => $target,
         ];
         return $this;
@@ -109,8 +109,8 @@ class Entity
             Exception::throwFatalException('Cannot add attribute "' . $name . '" : it already exists in links.');
         }
         $this->attributes[$name] = [
-            'type' => $type,
-            'length' => $length,
+            'type'     => $type,
+            'length'   => $length,
             'nullable' => $nullable,
         ];
         return $this;
@@ -159,10 +159,10 @@ class Entity
     public function toArray()
     {
         $array = [
-            'name' => $this->name,
-            'class' => $this->class,
+            'name'       => $this->name,
+            'class'      => $this->class,
             'attributes' => $this->attributes,
-            'links' => $this->links,
+            'links'      => $this->links,
         ];
         return $array;
     }
@@ -183,8 +183,8 @@ class Entity
         $entity = self::getInstance($array['name'], $array['class']);
         if (isset($array['attributes']) && is_array($array['attributes'])) {
             foreach ($array['attributes'] as $name => $value) {
-                $type = isset($value['type']) ? $value['type'] : 'string';
-                $length = isset($value['length']) ? $value['length'] : null;
+                $type     = isset($value['type']) ? $value['type'] : 'string';
+                $length   = isset($value['length']) ? $value['length'] : null;
                 $nullable = isset($value['nullable']) ? $value['nullable'] : true;
                 $entity->addAttribute($name, $type, $length, $nullable);
             }

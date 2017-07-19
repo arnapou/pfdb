@@ -46,7 +46,7 @@ class Database
      * @var array
      */
     protected $defaultConfig = [
-        'autoflush' => true,
+        'autoflush'  => true,
         'tableclass' => 'Arnapou\PFDB\Table',
     ];
 
@@ -144,7 +144,7 @@ class Database
     public function getTable($name)
     {
         if (!isset($this->tables[$name])) {
-            $tableClass = $this->getTableClass();
+            $tableClass          = $this->getTableClass();
             $this->tables[$name] = new $tableClass($this, $name);
         }
         return $this->tables[$name];

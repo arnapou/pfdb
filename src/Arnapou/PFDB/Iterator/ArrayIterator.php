@@ -49,7 +49,7 @@ class ArrayIterator implements \Iterator, \Countable
 
     public function rewind()
     {
-        $this->key = null;
+        $this->key     = null;
         $this->current = null;
         reset($this->array);
     }

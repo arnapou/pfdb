@@ -66,8 +66,8 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate
             Exception::throwInvalidTableNameException($name);
         }
         $this->database = $database;
-        $this->name = $name;
-        $this->storage = $database->getStorage();
+        $this->name     = $name;
+        $this->storage  = $database->getStorage();
         $this->reload();
     }
 
@@ -137,7 +137,7 @@ class Table implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function delete($condition)
     {
-        $iterator = $this->getIterator()->find($condition);
+        $iterator       = $this->getIterator()->find($condition);
         $offsetToDelete = [];
         foreach ($iterator as $key => $row) {
             $offsetToDelete[] = $key;

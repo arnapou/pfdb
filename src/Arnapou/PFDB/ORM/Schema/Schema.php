@@ -38,8 +38,8 @@ class Schema
     {
         if ($name instanceof Entity) {
             $entity = $name;
-            $name = $entity->getName();
-            $class = $entity->getClass();
+            $name   = $entity->getName();
+            $class  = $entity->getClass();
         } else {
             $entity = new Entity($name, $class);
         }
