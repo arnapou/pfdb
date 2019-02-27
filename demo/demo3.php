@@ -12,14 +12,13 @@
 use Arnapou\PFDB\Condition\ConditionBuilder;
 
 include __DIR__ . '/functions.php';
-include __DIR__ . '/../src/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 /**
  * Entity Mark
  */
 class Mark extends Arnapou\PFDB\ORM\BaseEntity
 {
-
     protected $name;
 
     public function __toString()
@@ -31,7 +30,6 @@ class Mark extends Arnapou\PFDB\ORM\BaseEntity
     {
         $this->name = $name;
     }
-
 }
 
 /**
@@ -39,7 +37,6 @@ class Mark extends Arnapou\PFDB\ORM\BaseEntity
  */
 class Color extends Arnapou\PFDB\ORM\BaseEntity
 {
-
     protected $name;
 
     public function __toString()
@@ -51,7 +48,6 @@ class Color extends Arnapou\PFDB\ORM\BaseEntity
     {
         $this->name = $name;
     }
-
 }
 
 /**
@@ -59,7 +55,6 @@ class Color extends Arnapou\PFDB\ORM\BaseEntity
  */
 class Vehicle extends Arnapou\PFDB\ORM\BaseEntity
 {
-
     protected $mark;
     protected $color;
     protected $price;
@@ -95,7 +90,6 @@ class Vehicle extends Arnapou\PFDB\ORM\BaseEntity
     {
         $this->price = $price;
     }
-
 }
 
 /**
@@ -154,9 +148,10 @@ print_table('Full Table', $table);
 
 print_table('Find (price > 1500 and color = "Red")', function () use ($table, $database) {
     return $table->find(
-        ConditionBuilder::createAnd()
+        ConditionBuilder::AND()
             ->greaterThan('price', 1500)
-            ->equalTo('color',
+            ->equalTo(
+                'color',
                 $database->getTable('color')
                     ->findOne(['name' => 'Red'])
             )
@@ -172,7 +167,7 @@ print_table('Find (mark = "Citroen" and color = "Brown")', function () use ($tab
 
 print_table('Find (price > 1500 or color = "Red")', function () use ($table) {
     return $table->find(
-        ConditionBuilder::createOr()
+        ConditionBuilder::OR()
             ->greaterThan('price', 1500)
             ->equalTo('color.name', 'Red')
     );
@@ -180,7 +175,7 @@ print_table('Find (price > 1500 or color = "Red")', function () use ($table) {
 
 print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DESC)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::createOr()
+        ConditionBuilder::OR()
             ->greaterThan('price', 1500)
             ->equalTo('color.name', 'Red')
     )
@@ -192,7 +187,7 @@ print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DE
 
 print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DESC) limit (1, 3)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::createOr()
+        ConditionBuilder::OR()
             ->greaterThan('price', 1500)
             ->equalTo('color.name', 'Red')
     )

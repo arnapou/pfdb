@@ -1,19 +1,19 @@
 <?php
 
-return array(
-	1 => array(
-		'name' => 'Red',
-	),
-	2 => array(
-		'name' => 'Green',
-	),
-	3 => array(
-		'name' => 'Blue',
-	),
-	4 => array(
-		'name' => 'Yellow',
-	),
-	5 => array(
-		'name' => 'Brown',
-	),
-);
+return [
+    1 => [
+        'name' => 'Red',
+    ],
+    2 => [
+        'name' => 'Green',
+    ],
+    3 => [
+        'name' => 'Blue',
+    ],
+    4 => [
+        'name' => 'Yellow',
+    ],
+    5 => [
+        'name' => 'Brown',
+    ],
+];

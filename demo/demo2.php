@@ -12,7 +12,7 @@
 use Arnapou\PFDB\Condition\ConditionBuilder;
 
 include __DIR__ . '/functions.php';
-include __DIR__ . '/../src/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $storage = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
 $database = new Arnapou\PFDB\Database($storage);
@@ -26,18 +26,18 @@ print_table('Full Table', $table);
 
 print_table('Update (price > 1500 => price / 10)', function () use ($table) {
     return $table->update(
-        ConditionBuilder::createAnd()
-            ->greaterThan('price', 1500)
-        , function ($row) {
-        $row['price'] /= 10;
-        return $row;
-    }
+        ConditionBuilder::AND()
+            ->greaterThan('price', 1500),
+        function ($row) {
+            $row['price'] /= 10;
+            return $row;
+        }
     );
 });
 
 print_table('Delete (price < 180 or color = "brown")', function () use ($table) {
     return $table->delete(
-        ConditionBuilder::createOr()
+        ConditionBuilder::OR()
             ->lowerThan('price', 180)
             ->equalTo('color', 'brown', false)
     );

@@ -15,7 +15,7 @@ $pages = [
     'demo3' => 'Entities',
 ];
 
-if (isset($_GET['page']) && in_array($_GET['page'], array_keys($pages), true)) {
+if (isset($_GET['page']) && \in_array($_GET['page'], array_keys($pages), true)) {
     $current = $_GET['page'];
 }
 if (!isset($current)) {

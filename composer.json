@@ -1,6 +1,7 @@
 {
-	"name": "arnapou/PFDB",
-	"description": "Php File DB",
+	"name": "arnapou/pfdb",
+	"description": "Arnapou pfdb",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Arnaud Buathier",
@@ -8,12 +9,17 @@
 			"homepage": "http://arnapou.net"
 		}
 	],
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.x-dev"
+		}
+	},
 	"require": {
-		"php": ">=5.4"
+		"php": ">=7.2"
 	},
 	"autoload": {
-		"psr-0": {
-            "Arnapou\\PFDB": "src/"
+		"psr-4": {
+            "Arnapou\\PFDB\\": "src/"
 		}
 	}
 }

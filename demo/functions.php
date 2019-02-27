@@ -28,7 +28,7 @@ function print_title($title)
 function print_table($title, $table)
 {
     $func = null;
-    if (is_callable($table)) {
+    if (\is_callable($table)) {
         $func = $table;
         $table = $func();
     }
@@ -38,7 +38,7 @@ function print_table($title, $table)
     echo '<table class="table" style="table-layout:fixed;">';
     $first = true;
     foreach ($table as $key => $row) {
-        if (is_object($row)) {
+        if (\is_object($row)) {
             if (!isset($methods)) {
                 $methods = array_filter(get_class_methods($row), function ($val) {
                     return 0 === strpos($val, 'get');
@@ -106,12 +106,12 @@ function getFunctionSourceCode($func)
     $length = $end_line - $start_line;
 
     $lines = file($filename);
-    $lines = array_slice($lines, $start_line, $length);
+    $lines = \array_slice($lines, $start_line, $length);
     $lines = array_map(function ($s) {
         return substr($s, 4);
     }, $lines);
-    if (count($lines) && strpos($lines[0], 'return ') === 0) {
+    if (\count($lines) && strpos($lines[0], 'return ') === 0) {
         $lines[0] = substr($lines[0], 7);
     }
-    return implode("", $lines);
+    return implode('', $lines);
 }
