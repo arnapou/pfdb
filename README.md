@@ -34,7 +34,7 @@ Conditioning
     
     $table = $database->getTable('vehicle');
     
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
         ->greaterThan('price', 10000)
         ->matchRegExp('model', '^C[0-9]+');
         
@@ -78,7 +78,7 @@ Use :
     
     $table = $database->getTable('vehicle');
     
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
         ->add(new IsUppercaseCondition('model'));
     
     foreach($table->find($condition) as $key => $row) {
@@ -98,7 +98,7 @@ Use PFDB Iterator out of storage context
     );
     
     $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::createAnd()
+    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
         ->greaterThan('age', 24);
     $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $condition);
     
