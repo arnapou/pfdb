@@ -9,8 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Exception;
 
-class Database
+/**
+ * generic PFDB exception
+ */
+class PFDBException extends \Exception
 {
 }

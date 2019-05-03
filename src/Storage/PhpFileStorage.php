@@ -11,43 +11,28 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Arnapou\PFDB\Database;
-use Arnapou\PFDB\Table;
-
 class PhpFileStorage extends AbstractFileStorage
 {
-    protected function getTableFileName(Table $table)
+    protected function getExtension(): string
     {
-        return $this->getStoragePath() . 'table.' . $table->getName() . '.php';
+        return 'php';
     }
 
-    protected function doLoadTableData($filename, &$data)
+    public function load(string $name): array
     {
-        if (!is_file($filename)) {
-            file_put_contents($filename, "<?php return array();\n");
+        $filename = $this->getFilename($name);
+        if (is_file($filename)) {
+            return include($filename);
         }
-        $data = include($filename);
+        return [];
     }
 
-    protected function doStoreTableData($filename, &$data)
+    public function save(string $name, array $data): void
     {
-        file_put_contents($filename, '<?php return ' . var_export($data, true) . ";\n");
-    }
-
-    protected function doDestroyTableData($filename)
-    {
-        unlink($filename);
-    }
-
-    public function getTableList(Database $database)
-    {
-        $files      = glob($this->getStoragePath() . 'table.*.php', GLOB_NOSORT) ?: [];
-        $tableNames = [];
-        foreach ($files as $file) {
-            $tableName    = basename($file, '.php');
-            $tableName    = str_replace('table.', '', $tableName);
-            $tableNames[] = $tableName;
-        }
-        return $tableNames;
+        file_put_contents(
+            $this->getFilename($name),
+            '<?php return ' . var_export($data, true) . ";\n",
+            LOCK_EX
+        );
     }
 }

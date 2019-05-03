@@ -11,51 +11,30 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Arnapou\PFDB\Database;
-use Arnapou\PFDB\Table;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends AbstractFileStorage
 {
-    public function __construct($storagePath, $idField = 'id')
+    protected function getExtension(): string
     {
-        parent::__construct($storagePath);
+        return 'yaml';
     }
 
-    protected function getTableFileName(Table $table)
+    public function load(string $name): array
     {
-        return $this->getStoragePath() . 'table.' . $table->getName() . '.yaml';
-    }
-
-    protected function doLoadTableData($filename, &$data)
-    {
-        if (!is_file($filename)) {
-            file_put_contents($filename, Yaml::dump());
+        $filename = $this->getFilename($name);
+        if (is_file($filename)) {
+            return Yaml::parseFile($filename);
         }
-        $data = include($filename);
+        return [];
     }
 
-    protected function doStoreTableData($filename, &$data)
+    public function save(string $name, array $data): void
     {
-        file_put_contents($filename, Yaml::dump($data));
+        file_put_contents(
+            $this->getFilename($name),
+            Yaml::dump($data),
+            LOCK_EX
+        );
     }
-
-    protected function doDestroyTableData($filename)
-    {
-        unlink($filename);
-    }
-
-    public function getTableList(Database $database)
-    {
-        $files = glob($this->getStoragePath() . 'table.*.yaml', GLOB_NOSORT) ?: [];
-        $tableNames = [];
-        foreach ($files as $file) {
-            $tableName    = basename($file, '.yaml');
-            $tableName    = str_replace('table.', '', $tableName);
-            $tableNames[] = $tableName;
-        }
-        return $tableNames;
-    }
-
-//    private function
 }

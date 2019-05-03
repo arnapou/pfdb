@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Exception;
 
-class Database
+class DirectoryNotFoundException extends Exception
 {
 }

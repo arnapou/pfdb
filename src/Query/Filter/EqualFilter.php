@@ -9,8 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Query\Filter;
 
-class Database
+class EqualFilter extends \FilterIterator
 {
+    public function accept(): bool
+    {
+        $row = $this->getInnerIterator()->current();
+        // TODO: Implement accept() method.
+    }
 }

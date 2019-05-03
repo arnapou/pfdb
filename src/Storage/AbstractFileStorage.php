@@ -11,189 +11,84 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Arnapou\PFDB\Database;
-use Arnapou\PFDB\Exception\Exception;
-use Arnapou\PFDB\Table;
+use Arnapou\PFDB\Core\StorageInterface;
+use Arnapou\PFDB\Exception\DirectoryNotFoundException;
+use Arnapou\PFDB\Exception\InvalidTableNameException;
 
 abstract class AbstractFileStorage implements StorageInterface
 {
     /**
-     *
      * @var string
      */
-    private $storagePath;
-
+    private $path;
     /**
-     *
-     * @var int secondes
-     */
-    protected $maxLockDelay = 10;
-
-    /**
-     *
      * @var bool
      */
-    protected $useFileStorageLock = true;
-
+    private $readonly;
     /**
-     *
-     * @param string $storagePath path where the tables are stored
-     * @param bool   $autoCreate  auto-create folder
+     * @var bool
      */
-    public function __construct($storagePath)
+    private $flushed;
+
+    public function __construct($path)
     {
-        $this->storagePath = rtrim(rtrim($storagePath, '\\'), '/') . DIRECTORY_SEPARATOR;
-        $this->checkStorageFolder();
+        $this->path = rtrim(rtrim($path, '/'), '\\');
+        if (!is_dir($this->path)) {
+            throw new DirectoryNotFoundException();
+        }
+        $this->readonly = !is_writable($path);
     }
 
-    /**
-     * Tells whether the file storage lock is use
-     * @return bool
-     */
-    public function isLockUsageEnabled()
+    protected function getFilename(string $name): string
     {
-        return $this->useFileStorageLock;
+        if (!$this->isValidTableName($name)) {
+            throw new InvalidTableNameException();
+        }
+        return $this->path . "/table.$name." . $this->getExtension();
     }
 
-    /**
-     * enable use of file storage lock to prevent db corruption
-     * @return AbstractFileStorage
-     */
-    public function enableLockUsage()
+    public function getPath(): string
     {
-        $this->useFileStorageLock = true;
-        return $this;
+        return $this->path;
     }
 
-    /**
-     * disable use of file storage lock to prevent db corruption
-     *
-     * CAUTION ! This can result in data loss if you don't use it carefully !
-     *
-     * @return AbstractFileStorage
-     */
-    public function disableLockUsage()
+    protected function isValidTableName(string $name): bool
     {
-        $this->useFileStorageLock = false;
-        return $this;
+        return preg_match('!^[a-z0-9_\.-]+$!', $name);
     }
 
-    /**
-     *
-     * @return int secondes
-     */
-    public function getMaxLockDelay()
+    public function tableNames(): array
     {
-        return $this->maxLockDelay;
-    }
-
-    /**
-     *
-     * @param int $delay maximum lock delay in seconde
-     * @return self
-     */
-    public function setMaxLockDelay($delay)
-    {
-        $this->maxLockDelay = $delay;
-        return $this;
-    }
-
-    /**
-     * Control of storage folder
-     */
-    protected function checkStorageFolder()
-    {
-        $path = rtrim($this->storagePath, DIRECTORY_SEPARATOR);
-        if (!is_dir($path)) {
-            $parentPath = \dirname($path);
-            if (!is_writable($parentPath)) {
-                Exception::throwDirectoryNotWritableException($parentPath);
+        $files = glob($this->getPath() . '/table.*.' . $this->getExtension(), GLOB_NOSORT) ?: [];
+        $names = [];
+        foreach ($files as $file) {
+            $name = str_replace('table.', '', basename($file, '.' . $this->getExtension()));
+            if ($this->isValidTableName($name)) {
+                $names[] = $name;
             }
-            mkdir($path, 0775, true);
         }
-        if (!is_writable($path)) {
-            Exception::throwDirectoryNotWritableException($path);
-        }
+        return $names;
     }
 
-    /**
-     * Return the storage path with trailing slash
-     *
-     * @return string
-     */
-    public function getStoragePath()
+    public function delete(string $name): void
     {
-        $this->checkStorageFolder();
-        return $this->storagePath;
+        $filename = $this->getFilename($name);
+        if (is_file($filename)) {
+            unlink($filename);
+        }
     }
 
-    public function loadTableData(Table $table, &$data)
+    public function isReadonly(string $name): bool
     {
-        $filename = $this->getTableFileName($table);
-        if ($this->isLockUsageEnabled()) {
-            $lock = new FileStorageLock($filename);
-            if ($lock->waitUntilLocked($this->maxLockDelay * 1000)) {
-                $this->doLoadTableData($filename, $data);
-                if (!\is_array($data)) {
-                    Exception::throwInvalidTableDataException($table);
-                }
-                $lock->unlock();
-            } else {
-                Exception::throwLockedTableException($table);
-            }
-        } else {
-            $this->doLoadTableData($filename, $data);
+        $filename = $this->getFilename($name);
+        if (is_file($filename) && !is_writable($filename)) {
+            return true;
         }
+        if ($this->readonly) {
+            return true;
+        }
+        return false;
     }
 
-    public function storeTableData(Table $table, &$data)
-    {
-        if (!\is_array($data)) {
-            Exception::throwInvalidTableDataException($table);
-        }
-        $filename = $this->getTableFileName($table);
-        if ($this->isLockUsageEnabled()) {
-            $lock = new FileStorageLock($filename);
-            if ($lock->waitUntilLocked($this->maxLockDelay * 1000)) {
-                $this->doStoreTableData($filename, $data);
-                $lock->unlock();
-            } else {
-                Exception::throwLockedTableException($table);
-            }
-        } else {
-            $this->doStoreTableData($filename, $data);
-        }
-    }
-
-    public function destroyTableData(Table $table)
-    {
-        $filename = $this->getTableFileName($table);
-        if ($this->isLockUsageEnabled()) {
-            $lock = new FileStorageLock($filename);
-            if ($lock->waitUntilLocked($this->maxLockDelay * 1000)) {
-                $this->doDestroyTableData($filename);
-                $lock->unlock();
-            } else {
-                Exception::throwLockedTableException($table);
-            }
-        } else {
-            $this->doDestroyTableData($filename);
-        }
-    }
-
-    public function destroyDatabase(Database $database)
-    {
-        $tableNames = $this->getTableList($database);
-        foreach ($tableNames as $tableName) {
-            $this->destroyTableData($database->getTable($tableName));
-        }
-    }
-
-    abstract protected function getTableFileName(Table $table);
-
-    abstract protected function doDestroyTableData($filename);
-
-    abstract protected function doLoadTableData($filename, &$data);
-
-    abstract protected function doStoreTableData($filename, &$data);
+    abstract protected function getExtension(): string;
 }

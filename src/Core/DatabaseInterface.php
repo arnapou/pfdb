@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Core;
 
-class Database
+interface DatabaseInterface
 {
 }
