@@ -14,7 +14,7 @@ namespace Arnapou\PFDB\Iterator;
 use Arnapou\PFDB\Condition\ConditionBuilder;
 use Arnapou\PFDB\Condition\ConditionInterface;
 use Arnapou\PFDB\Exception\Exception;
-use Arnapou\PFDB\ORM\EntityIterator;
+use Iterator;
 
 trait TraitIterator
 {
@@ -31,20 +31,6 @@ trait TraitIterator
     }
 
     /**
-     *
-     * @param \Iterator $iterator
-     * @param mixed     $condition
-     * @return EntityIterator|ConditionIterator
-     */
-    protected function getIteratorWrapper($iterator, $condition = null)
-    {
-        if ($this instanceof EntityIterator) {
-            return new EntityIterator($this->getTable(), $iterator, $condition);
-        }
-        return new ConditionIterator($iterator, $condition);
-    }
-
-    /**
      * Find rows which match the condition.
      *
      * The condition can be either :
@@ -55,12 +41,12 @@ trait TraitIterator
      *
      * @param mixed $condition
      */
-    public function find($condition)
+    public function find($condition): ConditionIterator
     {
         if ($condition instanceof ConditionInterface) {
-            return $this->getIteratorWrapper($this, $condition);
+            return new ConditionIterator($this, $condition);
         } elseif ($condition instanceof ConditionBuilder) {
-            return $this->getIteratorWrapper($this, $condition->getCondition());
+            return new ConditionIterator($this, $condition->getCondition());
         } elseif (\is_array($condition) && $this->isAssociativeArray($condition)) {
             $builder = ConditionBuilder::AND();
             foreach ($condition as $key => $value) {
@@ -68,9 +54,9 @@ trait TraitIterator
                     $builder->equalTo($key, $value);
                 }
             }
-            return $this->getIteratorWrapper($this, $builder->getCondition());
+            return new ConditionIterator($this, $builder->getCondition());
         } else {
-            return $this->getIteratorWrapper($this, ConditionBuilder::AND()->equalTo(null, $condition)->getCondition());
+            return new ConditionIterator($this, ConditionBuilder::AND()->equalTo(null, $condition)->getCondition());
         }
     }
 
@@ -143,7 +129,7 @@ trait TraitIterator
         // needed to preserve keys
         $allData = array_combine($keys, $allData);
 
-        return $this->getIteratorWrapper(new ArrayIterator($allData));
+        return new ConditionIterator(new ArrayIterator($allData));
     }
 
     /**
@@ -166,6 +152,6 @@ trait TraitIterator
         } elseif ($count === null) {
             $count = -1;
         }
-        return $this->getIteratorWrapper(new \LimitIterator($this, $offset, $count));
+        return new ConditionIterator(new \LimitIterator($this, $offset, $count));
     }
 }

@@ -41,17 +41,13 @@ class PhpFileStorage extends AbstractFileStorage
 
     public function getTableList(Database $database)
     {
-        $files = glob($this->getStoragePath() . 'table.*.php', GLOB_NOSORT);
-        if (\is_array($files)) {
-            $tableNames = [];
-            foreach ($files as $file) {
-                $tableName    = basename($file, '.php');
-                $tableName    = str_replace('table.', '', $tableName);
-                $tableNames[] = $tableName;
-            }
-            return $tableNames;
-        } else {
-            return [];
+        $files      = glob($this->getStoragePath() . 'table.*.php', GLOB_NOSORT) ?: [];
+        $tableNames = [];
+        foreach ($files as $file) {
+            $tableName    = basename($file, '.php');
+            $tableName    = str_replace('table.', '', $tableName);
+            $tableNames[] = $tableName;
         }
+        return $tableNames;
     }
 }

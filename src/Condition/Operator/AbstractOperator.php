@@ -12,7 +12,6 @@
 namespace Arnapou\PFDB\Condition\Operator;
 
 use Arnapou\PFDB\Condition\ConditionInterface;
-use Arnapou\PFDB\ORM\BaseEntity;
 
 abstract class AbstractOperator implements ConditionInterface
 {
@@ -22,9 +21,6 @@ abstract class AbstractOperator implements ConditionInterface
 
     public function __construct($field, $value, $caseSensitive = true)
     {
-        if ($value instanceof BaseEntity) {
-            $value = $value->getId();
-        }
         if (!$caseSensitive) {
             if (\is_array($value)) {
                 $value = array_map('strtolower', (array)$value);
@@ -49,9 +45,6 @@ abstract class AbstractOperator implements ConditionInterface
         } elseif (\is_array($value) || $value instanceof \ArrayAccess) {
             if (isset($value[$this->field])) {
                 $testedValue = $value[$this->field];
-                if ($testedValue instanceof BaseEntity) {
-                    $testedValue = $testedValue->getId();
-                }
             } else {
                 return null;
             }

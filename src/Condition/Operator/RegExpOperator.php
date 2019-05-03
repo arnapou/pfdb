@@ -24,7 +24,7 @@ class RegExpOperator extends AbstractOperator
         }
     }
 
-    public function match($key, $value)
+    public function match($key, $value): bool
     {
         $testedValue = $this->getTestedValue($key, $value);
         if ($testedValue === null) {

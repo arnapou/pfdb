@@ -13,9 +13,12 @@ namespace Arnapou\PFDB\Condition;
 
 class AndCondition implements ConditionInterface
 {
+    /**
+     * @var ConditionInterface[]
+     */
     protected $conditions = [];
 
-    public function __construct($conditions = null)
+    public function __construct(?iterable $conditions = null)
     {
         if (null !== $conditions) {
             foreach ($conditions as $condition) {
@@ -29,7 +32,7 @@ class AndCondition implements ConditionInterface
         $this->conditions[] = $condition;
     }
 
-    public function match($key, $value)
+    public function match($key, $value): bool
     {
         foreach ($this->conditions as $condition) {
             if (!$condition->match($key, $value)) {

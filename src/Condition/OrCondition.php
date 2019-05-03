@@ -13,7 +13,7 @@ namespace Arnapou\PFDB\Condition;
 
 class OrCondition extends AndCondition
 {
-    public function match($key, $value)
+    public function match($key, $value): bool
     {
         foreach ($this->conditions as $condition) {
             if ($condition->match($key, $value)) {

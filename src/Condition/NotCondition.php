@@ -13,6 +13,9 @@ namespace Arnapou\PFDB\Condition;
 
 class NotCondition implements ConditionInterface
 {
+    /**
+     * @var ConditionInterface
+     */
     protected $condition;
 
     public function __construct(ConditionInterface $condition)
@@ -20,7 +23,7 @@ class NotCondition implements ConditionInterface
         $this->condition = $condition;
     }
 
-    public function match($key, $value)
+    public function match($key, $value): bool
     {
         return !$this->condition->match($key, $value);
     }

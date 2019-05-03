@@ -20,13 +20,18 @@ class ConditionBuilder
      * @var AndCondition
      */
     protected $condition;
+    /**
+     *
+     * @var bool
+     */
+    protected $caseSensitive = true;
 
     /**
      * Instanciate a ConditionBuilder
      *
      * @param string $operator either 'AND' or 'OR'
      */
-    public function __construct($operator)
+    public function __construct(string $operator)
     {
         if ('AND' == $operator) {
             $this->condition = new AndCondition();
@@ -37,12 +42,18 @@ class ConditionBuilder
         }
     }
 
+    public function caseSensitive(bool $bool): self
+    {
+        $this->caseSensitive = $bool;
+        return $this;
+    }
+
     /**
      * Create a ConditionBuilder which make AND operations between children
      *
      * @return ConditionBuilder
      */
-    public static function AND()
+    public static function AND(): self
     {
         return new self('AND');
     }
@@ -52,7 +63,7 @@ class ConditionBuilder
      *
      * @return ConditionBuilder
      */
-    public static function OR()
+    public static function OR(): self
     {
         return new self('OR');
     }
@@ -62,7 +73,7 @@ class ConditionBuilder
      *
      * @return ConditionInterface
      */
-    public function getCondition()
+    public function getCondition(): ConditionInterface
     {
         return $this->condition;
     }
@@ -73,7 +84,7 @@ class ConditionBuilder
      * @param ConditionInterface $condition
      * @return ConditionBuilder
      */
-    public function add($condition)
+    public function add($condition): self
     {
         if ($condition instanceof ConditionBuilder) {
             $this->condition->add($condition->getCondition());
@@ -93,8 +104,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function greaterThan($field, $value, $caseSensitive = true)
+    public function greaterThan(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\GreaterThanOperator($field, $value, $caseSensitive));
         return $this;
     }
@@ -107,8 +119,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function greaterThanOrEqual($field, $value, $caseSensitive = true)
+    public function greaterThanOrEqual(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\GreaterThanOrEqualOperator($field, $value, $caseSensitive));
         return $this;
     }
@@ -121,8 +134,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function lowerThan($field, $value, $caseSensitive = true)
+    public function lowerThan(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\LowerThanOperator($field, $value, $caseSensitive));
         return $this;
     }
@@ -135,8 +149,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function lowerThanOrEqual($field, $value, $caseSensitive = true)
+    public function lowerThanOrEqual(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\LowerThanOrEqualOperator($field, $value, $caseSensitive));
         return $this;
     }
@@ -149,8 +164,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function equalTo($field, $value, $caseSensitive = true)
+    public function equalTo(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\EqualOperator($field, $value, $caseSensitive));
         return $this;
     }
@@ -163,8 +179,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function notEqualTo($field, $value, $caseSensitive = true)
+    public function notEqualTo(string $field, $value, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new NotCondition(new Operator\EqualOperator($field, $value, $caseSensitive)));
         return $this;
     }
@@ -177,8 +194,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function in($field, $values, $caseSensitive = true)
+    public function in(string $field, $values, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\InOperator($field, $values, $caseSensitive));
         return $this;
     }
@@ -191,8 +209,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function notIn($field, $values, $caseSensitive = true)
+    public function notIn(string $field, $values, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new NotCondition(new Operator\InOperator($field, $values, $caseSensitive)));
         return $this;
     }
@@ -205,8 +224,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function matchRegExp($field, $pattern, $caseSensitive = true)
+    public function matchRegExp(string $field, $pattern, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new Operator\RegExpOperator($field, $pattern, $caseSensitive));
         return $this;
     }
@@ -219,8 +239,9 @@ class ConditionBuilder
      * @param bool   $caseSensitive (default: true)
      * @return ConditionBuilder
      */
-    public function notMatchRegExp($field, $pattern, $caseSensitive = true)
+    public function notMatchRegExp(string $field, $pattern, ?bool $caseSensitive = null): self
     {
+        $caseSensitive = $caseSensitive === null ? $this->caseSensitive : $caseSensitive;
         $this->condition->add(new NotCondition(new Operator\RegExpOperator($field, $pattern, $caseSensitive)));
         return $this;
     }

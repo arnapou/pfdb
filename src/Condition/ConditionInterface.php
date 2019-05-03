@@ -19,5 +19,5 @@ interface ConditionInterface
      * @param mixed $value
      * @return bool
      */
-    public function match($key, $value);
+    public function match($key, $value): bool;
 }
