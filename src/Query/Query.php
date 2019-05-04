@@ -13,6 +13,7 @@ namespace Arnapou\PFDB\Query;
 
 use Arnapou\PFDB\Query\Expr\AndExpr;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
+use Arnapou\PFDB\Query\Expr\ExprTrait;
 use Arnapou\PFDB\Query\Expr\NestedExprInterface;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
 use Arnapou\PFDB\Query\Iterator\OrderByIterator;
@@ -25,6 +26,8 @@ use Traversable;
 
 class Query implements \IteratorAggregate
 {
+    use ExprTrait;
+
     /**
      * @var array|callable
      */
@@ -56,11 +59,6 @@ class Query implements \IteratorAggregate
         if ($from) {
             $this->from($from);
         }
-    }
-
-    public function expr(): Expr
-    {
-        return new Expr();
     }
 
     public function where(ExprInterface...$exprs): self
@@ -117,9 +115,9 @@ class Query implements \IteratorAggregate
         return $this;
     }
 
-    public function group(array $grouped, array $initial, callable $reduce, ?callable $onfinish): self
+    public function group($fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
-        $this->group = [$grouped, $initial, $reduce, $onfinish];
+        $this->group = [$fields, $initial, $reduce, $onfinish];
         return $this;
     }
 
@@ -147,7 +145,9 @@ class Query implements \IteratorAggregate
 
     public function getIterator(): Traversable
     {
-        $iterator = new CallbackFilterIterator($this->from, $this->where);
+        $iterator = $this->where->isEmpty()
+            ? $this->from
+            : new CallbackFilterIterator($this->from, $this->where);
         if ($this->group) {
             $iterator = new IteratorIterator(new GroupIterator($iterator, ...$this->group));
         }

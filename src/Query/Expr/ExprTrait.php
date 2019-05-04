@@ -11,16 +11,12 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
-interface NestedExprInterface extends ExprInterface
+use Arnapou\PFDB\Query\Expr;
+
+trait ExprTrait
 {
-    /**
-     * @return ExprInterface[]
-     */
-    public function children(): array;
-
-    public function clear(): void;
-
-    public function isEmpty(): bool;
-
-    public function add(ExprInterface $expr): self;
+    public function expr(): Expr
+    {
+        return new Expr();
+    }
 }

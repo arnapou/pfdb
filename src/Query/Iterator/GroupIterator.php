@@ -23,7 +23,7 @@ class GroupIterator implements \IteratorAggregate
     /**
      * @var array
      */
-    private $grouped;
+    private $fields;
     /**
      * @var array
      */
@@ -37,10 +37,10 @@ class GroupIterator implements \IteratorAggregate
      */
     private $onfinish;
 
-    public function __construct(Iterator $iterator, array $grouped, array $initial, callable $reduce, ?callable $onfinish)
+    public function __construct(Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
-        $this->grouped  = $grouped;
+        $this->fields   = $fields;
         $this->initial  = $initial;
         $this->reduce   = $reduce;
         $this->onfinish = $onfinish;
@@ -63,9 +63,9 @@ class GroupIterator implements \IteratorAggregate
     private function getKey($row)
     {
         $keys = [];
-        foreach ($this->grouped as $field) {
+        foreach ($this->fields as $field) {
             if (\is_object($field) && \is_callable($field)) {
-                $keys[] = \call_user_func($field($row));
+                $keys[] = $field($row);
             } else {
                 $keys[] = $row[$field] ?? '';
             }

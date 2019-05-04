@@ -20,87 +20,87 @@ trait ExprBuilderTrait
         return new Field($name);
     }
 
-    public function func(callable $function): ExprInterface
+    public function func(callable $function): FuncExpr
     {
         return new FuncExpr($function);
     }
 
-    public function comparison($field, string $operator, $value, bool $caseSensitive = true): ExprInterface
+    public function comparison($field, string $operator, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, $operator, $value, $caseSensitive);
     }
 
-    public function in($field, $value, bool $caseSensitive = true): ExprInterface
+    public function in($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::IN, $value, $caseSensitive);
     }
 
-    public function notin($field, $value, bool $caseSensitive = true): ExprInterface
+    public function notin($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::NIN, $value, $caseSensitive);
     }
 
-    public function contains($field, $value, bool $caseSensitive = true): ExprInterface
+    public function contains($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::CONTAINS, $value, $caseSensitive);
     }
 
-    public function ends($field, $value, bool $caseSensitive = true): ExprInterface
+    public function ends($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::ENDS, $value, $caseSensitive);
     }
 
-    public function begins($field, $value, bool $caseSensitive = true): ExprInterface
+    public function begins($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::BEGINS, $value, $caseSensitive);
     }
 
-    public function eq($field, $value, bool $strict = true, bool $caseSensitive = true): ExprInterface
+    public function eq($field, $value, bool $strict = true, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::EQ . ($strict ? '=' : ''), $value, $caseSensitive);
     }
 
-    public function neq($field, $value, bool $strict = true, bool $caseSensitive = true): ExprInterface
+    public function neq($field, $value, bool $strict = true, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::NEQ . ($strict ? '=' : ''), $value, $caseSensitive);
     }
 
-    public function gt($field, $value, bool $caseSensitive = true): ExprInterface
+    public function gt($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::GT, $value, $caseSensitive);
     }
 
-    public function gte($field, $value, bool $caseSensitive = true): ExprInterface
+    public function gte($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::GTE, $value, $caseSensitive);
     }
 
-    public function lt($field, $value, bool $caseSensitive = true): ExprInterface
+    public function lt($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::LT, $value, $caseSensitive);
     }
 
-    public function lte($field, $value, bool $caseSensitive = true): ExprInterface
+    public function lte($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::LTE, $value, $caseSensitive);
     }
 
-    public function like($field, $value, bool $caseSensitive = true): ExprInterface
+    public function like($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::LIKE, $value, $caseSensitive);
     }
 
-    public function notlike($field, $value, bool $caseSensitive = true): ExprInterface
+    public function notlike($field, $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::NLIKE, $value, $caseSensitive);
     }
 
-    public function match($field, $regexp): ExprInterface
+    public function match($field, $regexp): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::MATCH, $regexp);
     }
 
-    public function notmatch($field, $regexp): ExprInterface
+    public function notmatch($field, $regexp): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::NMATCH, $regexp);
     }
@@ -110,13 +110,13 @@ trait ExprBuilderTrait
         return new NotExpr($expr);
     }
 
-    public function And(ExprInterface...$exprs): NestedExprInterface
+    public function and(ExprInterface...$exprs): NestedExprInterface
     {
-        return new AndExpr($exprs);
+        return new AndExpr(...$exprs);
     }
 
-    public function Or(ExprInterface...$exprs): NestedExprInterface
+    public function or(ExprInterface...$exprs): NestedExprInterface
     {
-        return new OrExpr($exprs);
+        return new OrExpr(...$exprs);
     }
 }

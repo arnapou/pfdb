@@ -11,6 +11,6 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidFilterOperatorException extends PFDBException
+class InvalidExprOperatorException extends PFDBException
 {
 }

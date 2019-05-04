@@ -41,4 +41,9 @@ abstract class AbstractNestedExpr implements NestedExprInterface
     {
         $this->exprs = [];
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->exprs);
+    }
 }

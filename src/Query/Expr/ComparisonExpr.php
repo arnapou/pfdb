@@ -11,8 +11,8 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
-use Arnapou\PFDB\Exception\InvalidFilterOperatorException;
-use Arnapou\PFDB\Exception\InvalidFilterValueException;
+use Arnapou\PFDB\Exception\InvalidExprOperatorException;
+use Arnapou\PFDB\Exception\InvalidExprValueException;
 
 class ComparisonExpr implements ExprInterface
 {
@@ -28,7 +28,7 @@ class ComparisonExpr implements ExprInterface
         'regexp',
     ];
     /**
-     * @var mixed
+     * @var string|callable
      */
     private $field;
     /**
@@ -36,7 +36,7 @@ class ComparisonExpr implements ExprInterface
      */
     private $operator;
     /**
-     * @var mixed
+     * @var mixed|callable
      */
     private $value;
     /**
@@ -101,20 +101,24 @@ class ComparisonExpr implements ExprInterface
             case 'regexp':
                 return preg_match($value2, $value1) ? true : false;
         }
-        throw new InvalidFilterOperatorException('Operator = ' . $this->operator);
+        throw new InvalidExprOperatorException('Operator = ' . $this->operator);
     }
 
     private function values(array $row): array
     {
         if (\is_string($this->field)) {
             $value1 = $row[$this->field] ?? null;
+        } elseif ($this->field instanceof Field) {
+            $value1 = $row[$this->field->name()] ?? null;
         } elseif (\is_object($this->field) && \is_callable($this->field)) {
             $value1 = \call_user_func($this->field, $row);
         } else {
             $value1 = $this->field;
         }
 
-        if (\is_object($this->value) && \is_callable($this->value)) {
+        if ($this->value instanceof Field) {
+            $value2 = $row[$this->value->name()] ?? null;
+        } elseif (\is_object($this->value) && \is_callable($this->value)) {
             $value2 = \call_user_func($this->value, $row);
         } else {
             $value2 = $this->value;
@@ -122,7 +126,11 @@ class ComparisonExpr implements ExprInterface
 
         if (!$this->caseSensitive && !\in_array($this->operator, self::OPERATOR_REGEXP)) {
             $value1 = strtolower($value1);
-            $value2 = strtolower($value2);
+            if ('in' === $this->operator && \is_array($value2)) {
+                $value2 = array_map('strtolower', $value2);
+            } else {
+                $value2 = strtolower($value2);
+            }
         }
 
         return [$value1, $value2];
@@ -131,7 +139,7 @@ class ComparisonExpr implements ExprInterface
     private function init(): void
     {
         if (!\is_string($this->value) && \in_array($this->operator, self::OPERATOR_REGEXP)) {
-            throw new InvalidFilterValueException('Value for operator "' . $this->operator . '" should be a string');
+            throw new InvalidExprValueException('Value for operator "' . $this->operator . '" should be a string');
         }
 
         switch ($this->operator) {
@@ -141,8 +149,8 @@ class ComparisonExpr implements ExprInterface
                 $this->value = str_replace('%', '.*', $this->value);
                 break;
             case 'regexp':
-                $char = $this->value[0];
-                if (!preg_match('/^' . preg_quote($char) . '.+' . preg_quote($char) . '[imsxeADSUXJu]*$/', $this->value)) {
+                $char = $this->value[0] === '/' ? '\\/' : preg_quote($this->value[0]);
+                if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $this->value)) {
                     $this->value = '/' . $this->value . '/' . ($this->caseSensitive ? '' : 'i');
                 } elseif (!$this->caseSensitive) {
                     $flags = substr($this->value, strrpos($this->value, $this->value[0]) + 1);
@@ -152,8 +160,8 @@ class ComparisonExpr implements ExprInterface
                 }
                 break;
             case 'in':
-                if (\is_string($this->value)) {
-                    $this->operator = '*';
+                if (!(\is_array($this->value) || \is_object($this->value) && \is_callable($this->value))) {
+                    throw new InvalidExprValueException('Value for operator "IN" should be an array');
                 }
                 break;
         }
@@ -173,5 +181,30 @@ class ComparisonExpr implements ExprInterface
         }
 
         return $sanitized;
+    }
+
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    public function getOperator(): string
+    {
+        return $this->operator;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function isCaseSensitive(): bool
+    {
+        return $this->caseSensitive;
+    }
+
+    public function isNot(): bool
+    {
+        return $this->not;
     }
 }
