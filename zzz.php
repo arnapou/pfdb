@@ -9,19 +9,36 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Yaml\Yaml;
-
 include __DIR__ . '/vendor/autoload.php';
 
-//$data = include(__DIR__ . '/demo/database/table.vehicle.php');
-//echo Yaml::dump($data);
+
+$storage = new \Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/demo/database');
+
+$table = new \Arnapou\PFDB\Table('vehicle', $storage);
+
+var_dump($table->count());
 
 
+$query = new \Arnapou\PFDB\Query\Query($table);
+//$query->select(['id']);
 
+$query->group(
+    ['color'],
+    ['marks'=>[]],
+    function ($group, $row) {
+        $group['marks'][] = $row['mark'];
+        return $group;
+    },
+    function ($group) {
+        return $group + ['count'=>\count($group['marks'])];
+    }
+);
+//$query->limit(1, 3);
 
-$yaml = file_get_contents(__DIR__ . '/demo/database/table.vehicle.yaml');
-echo Yaml::dump(Yaml::parse($yaml));
+//$query->addOrderBy('price', 'DESC')->addOrderBy('mark');
 
-
+foreach ($query as $row) {
+    echo json_encode($row) . "\n";
+}
 
 echo "\n";

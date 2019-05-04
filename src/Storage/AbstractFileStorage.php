@@ -11,7 +11,6 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Arnapou\PFDB\Core\StorageInterface;
 use Arnapou\PFDB\Exception\DirectoryNotFoundException;
 use Arnapou\PFDB\Exception\InvalidTableNameException;
 

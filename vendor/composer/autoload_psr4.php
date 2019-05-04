@@ -8,6 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
+    'Symfony\\Component\\Lock\\' => array($vendorDir . '/symfony/lock'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Arnapou\\PFDB\\Tests\\' => array($baseDir . '/tests'),
     'Arnapou\\PFDB\\' => array($baseDir . '/src'),
 );

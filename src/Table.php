@@ -11,12 +11,11 @@
 
 namespace Arnapou\PFDB;
 
-use Arnapou\PFDB\Core\StorageInterface;
-use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;
+use Arnapou\PFDB\Storage\StorageInterface;
 use Traversable;
 
-class Table implements TableInterface
+class Table implements \IteratorAggregate
 {
     /**
      * @var string
@@ -39,7 +38,7 @@ class Table implements TableInterface
      */
     private $primaryKey = null;
 
-    public function __construct(string $name, StorageInterface $storage, ?string $primaryKey = 'id')
+    public function __construct(string $name, StorageInterface $storage, ?string $primaryKey = null)
     {
         $this->storage    = $storage;
         $this->name       = $name;
@@ -49,20 +48,18 @@ class Table implements TableInterface
 
     private function load()
     {
-        $data = [];
-        if (null === $this->primaryKey) {
-            foreach ($this->storage->load($this->name) as $row) {
-                $data[] = $row;
-            }
-        } else {
-            foreach ($this->storage->load($this->name) as $row) {
+        $rows = $this->storage->load($this->name);
+        if ($this->primaryKey) {
+            $this->data = [];
+            foreach ($rows as $row) {
                 if (!\array_key_exists($this->primaryKey, $row)) {
                     throw new PrimaryKeyNotFoundException();
                 }
-                $data[$row[$this->primaryKey]] = $row;
+                $this->data[$row[$this->primaryKey]] = $row;
             }
+        } else {
+            $this->data = $rows;
         }
-        $this->data    = $data;
         $this->changed = false;
     }
 

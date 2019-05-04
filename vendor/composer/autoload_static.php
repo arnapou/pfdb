@@ -15,6 +15,11 @@ class ComposerStaticInit19879bfc8860be44ffc6b4ef48c52482
         array (
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\Lock\\' => 23,
+        ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
         ),
         'A' => 
         array (
@@ -31,6 +36,14 @@ class ComposerStaticInit19879bfc8860be44ffc6b4ef48c52482
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Symfony\\Component\\Lock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/lock',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Arnapou\\PFDB\\Tests\\' => 
         array (

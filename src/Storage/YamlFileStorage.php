@@ -33,7 +33,7 @@ class YamlFileStorage extends AbstractFileStorage
     {
         file_put_contents(
             $this->getFilename($name),
-            Yaml::dump($data),
+            Yaml::dump($data, 2, 2),
             LOCK_EX
         );
     }
