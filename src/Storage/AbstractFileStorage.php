@@ -13,6 +13,7 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\PFDB\Exception\DirectoryNotFoundException;
 use Arnapou\PFDB\Exception\InvalidTableNameException;
+use Arnapou\PFDB\Exception\ReadonlyException;
 
 abstract class AbstractFileStorage implements StorageInterface
 {
@@ -71,6 +72,9 @@ abstract class AbstractFileStorage implements StorageInterface
 
     public function delete(string $name): void
     {
+        if ($this->isReadonly($name)) {
+            throw new ReadonlyException();
+        }
         $filename = $this->getFilename($name);
         if (is_file($filename)) {
             unlink($filename);

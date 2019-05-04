@@ -11,6 +11,8 @@
 
 namespace Arnapou\PFDB\Storage;
 
+use Arnapou\PFDB\Exception\ReadonlyException;
+
 class PhpFileStorage extends AbstractFileStorage
 {
     protected function getExtension(): string
@@ -29,6 +31,9 @@ class PhpFileStorage extends AbstractFileStorage
 
     public function save(string $name, array $data): void
     {
+        if ($this->isReadonly($name)) {
+            throw new ReadonlyException();
+        }
         file_put_contents(
             $this->getFilename($name),
             '<?php return ' . var_export($data, true) . ";\n",

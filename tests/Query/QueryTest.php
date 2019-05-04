@@ -46,6 +46,14 @@ class QueryTest extends TestCase
         $this->assertCount(1, $this->table()->find()->limit(0, 1));
     }
 
+    public function testGet()
+    {
+        $this->assertSame(
+            ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
+            $this->table('id')->get(67)
+        );
+    }
+
     public function testSelect()
     {
         $this->assertSame(

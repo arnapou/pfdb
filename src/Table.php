@@ -12,6 +12,7 @@
 namespace Arnapou\PFDB;
 
 use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;
+use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Exception\ValueNotFoundException;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Expr\ExprTrait;
@@ -43,6 +44,10 @@ class Table implements \IteratorAggregate
      * @var string
      */
     private $primaryKey = null;
+    /**
+     * @var bool
+     */
+    private $readonly = false;
 
     public function __construct(string $name, StorageInterface $storage, ?string $primaryKey = null)
     {
@@ -50,6 +55,37 @@ class Table implements \IteratorAggregate
         $this->name       = $name;
         $this->primaryKey = $primaryKey;
         $this->load();
+    }
+
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(bool $readonly): self
+    {
+        $this->readonly = $readonly;
+        return $this;
+    }
+
+    public function __destruct()
+    {
+        if (!$this->readonly && !$this->storage->isReadonly($this->name)) {
+            $this->flush();
+        }
+    }
+
+    public function flush(): bool
+    {
+        if ($this->changed) {
+            if ($this->readonly) {
+                throw new ReadonlyException();
+            }
+            $this->storage->save($this->name, $this->data);
+            $this->changed = false;
+            return true;
+        }
+        return false;
     }
 
     private function load()
@@ -69,21 +105,7 @@ class Table implements \IteratorAggregate
         $this->changed = false;
     }
 
-    public function get($id): ?array
-    {
-        if (!$this->primaryKey) {
-            throw new PrimaryKeyNotFoundException();
-        }
-        return $this->data[$id] ?? null;
-    }
-
-    public function find(ExprInterface...$exprs): Query
-    {
-        $query = new Query($this);
-        return $query->where(...$exprs);
-    }
-
-    public function remove($id): self
+    public function delete($id): self
     {
         if (!$this->primaryKey) {
             throw new PrimaryKeyNotFoundException();
@@ -134,6 +156,20 @@ class Table implements \IteratorAggregate
         } else {
             return $this->insert($value);
         }
+    }
+
+    public function get($id): ?array
+    {
+        if (!$this->primaryKey) {
+            throw new PrimaryKeyNotFoundException();
+        }
+        return $this->data[$id] ?? null;
+    }
+
+    public function find(ExprInterface...$exprs): Query
+    {
+        $query = new Query($this);
+        return $query->where(...$exprs);
     }
 
     public function getIterator(): Traversable

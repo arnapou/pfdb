@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Storage;
 
+use Arnapou\PFDB\Exception\ReadonlyException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends AbstractFileStorage
@@ -31,6 +32,9 @@ class YamlFileStorage extends AbstractFileStorage
 
     public function save(string $name, array $data): void
     {
+        if ($this->isReadonly($name)) {
+            throw new ReadonlyException();
+        }
         file_put_contents(
             $this->getFilename($name),
             Yaml::dump($data, 2, 2),
