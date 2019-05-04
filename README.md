@@ -3,9 +3,8 @@ Introduction
 
 What it is :
 
-* Pure POO (php 5.3 required)
+* Pure POO (php 7.2 required)
 * Lightweight
-* As fast as it can
 * Extendable (interfaces, ...)
 
 What it is _not_ :
@@ -14,12 +13,23 @@ What it is _not_ :
 * Relational database
 * ORM
 * DBDAL
-* NoSQL Database (although Arnapou\PFDB can be used for light key/pair database)
 
-Disclaimer :
-__do not use Arnapou\PFDB for huge file, you will naturally use lots of memory and CPU. It is not designed for huge files.__
+When to use : 
 
-I have not the time to make documentation, code is enough simple and readable with php docs to be auto-documented.
+* You absolutely want flat files
+* More read than write (even if you can use lock strategy thanks to `symfony/lock`)
+* Lightweight data
+* Simple files like configs or small data (less than a few thousands items)
+
+Implemented files formats :
+
+* YAML
+* PHP
+
+_Note that is is really easy to make your own implementation_
+
+
+There is not a lot of documentation because I did this project for me and I guess a few examples and reading the code should be enough for developers.
 Examples are the best documentation you will find.
 
 A few examples : http://pfdb.arnapou.net/
@@ -27,82 +37,78 @@ A few examples : http://pfdb.arnapou.net/
 Conditioning
 ========
 
-    include 'src/autoload.php';
-    
     $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
     
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
-        ->greaterThan('price', 10000)
-        ->matchRegExp('model', '^C[0-9]+');
+    $expr = $table->expr()->and(
+         $table->expr()->gt('price', 10000),
+         $table->expr()->match('model', '^C[0-9]+')
+    );
         
-    $iterator = $table->find($condition)
-                      ->sort(array('constructor' => true, 'model' => false))
+    $iterator = $table->find($expr)
+                      ->sort('constructor' , ['model' , 'DESC'])
                       ->limit(0, 50);
                       
     foreach($iterator as $key => $row) {
         // do whatever you want
     }
     
-Extending Conditions
+Extending Expressions
 =================
 Class :
 
-    class IsUppercaseCondition implements \Arnapou\PFDB\Condition\ConditionInterface {
+    class IsUppercaseExpr implements \Arnapou\PFDB\Query\Helper\Expr\ExprInterface {
     
-        protected $field;
-    
-        public function __construct($field) {
+        private $field;
+        
+        public function __construct(string $field) 
+        {
             $this->field = $field;
         }
     
-        public function match($key, $value) {
-            if(!isset($value[$this->field]) {
+        public function __invoke(array $row, $key = null): bool
+        {
+            if(!isset($row[$this->field]) {
                 return false;
             }
-            $testedValue = (string)$value[$this->field];
-            $isUppercase = ($testedValue === strtoupper($testedValue));
-            return $isUppercase;
+            $testedValue = (string)$row[$this->field];
+            return $testedValue === strtoupper($testedValue);
         }
     
     }
 
 Use :
 
-    include 'src/autoload.php';
-    
     $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
     $database = new \Arnapou\PFDB\Database($storage);
     
     $table = $database->getTable('vehicle');
     
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
-        ->add(new IsUppercaseCondition('model'));
+    $expr = new IsUppercaseExpr('model');
     
-    foreach($table->find($condition) as $key => $row) {
+    foreach($table->find($expr) as $key => $row) {
         // do whatever you want
     }
 
 Use PFDB Iterator out of storage context
 ========================================
 
-    include 'src/autoload.php';
-    
-    $array = array(
-        array('name' => 'John', 'age' => 20),
-        array('name' => 'Edith', 'age' => 25),
-        array('name' => 'Steve', 'age' => 30),
-        array('name' => 'Matthew', 'age' => 22),
+if you just want to select, filter, sort, limit, group, order any iterator 
+
+    $data = [
+        ['name' => 'John', 'age' => 20],
+        ['name' => 'Edith', 'age' => 25],
+        ['name' => 'Steve', 'age' => 30],
+        ['name' => 'Matthew', 'age' => 22],
     );
     
-    $arrayIterator = new \Arnapou\PFDB\Iterator\ArrayIterator($array);
-    $condition = \Arnapou\PFDB\Condition\ConditionBuilder::AND()
-        ->greaterThan('age', 24);
-    $iterator = new \Arnapou\PFDB\Iterator\Iterator($arrayIterator, $condition);
+    $query = (new \Arnapou\PFDB\Query\Query())
+        ->from(new \ArrayIterator($data))
+        ->where($query->expr()->gt('age', 24));
     
-    foreach($iterator as $key => $row) {
+    foreach($query as $key => $row) {
         // do whatever you want
     }
 

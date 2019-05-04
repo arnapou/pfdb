@@ -12,8 +12,8 @@
 namespace Arnapou\PFDB\Tests\Query;
 
 use Arnapou\PFDB\Exception\InvalidExprValueException;
-use Arnapou\PFDB\Query\Expr\ExprTrait;
-use Arnapou\PFDB\Query\Expr\Field;
+use Arnapou\PFDB\Query\Field\Field;
+use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Tests\TestCase;
 
 class ExprTest extends TestCase
@@ -25,8 +25,8 @@ class ExprTest extends TestCase
         $this->assertTrue(\call_user_func($this->expr()->eq('test', 'abc'), ['test' => 'abc']));
         $this->assertFalse(\call_user_func($this->expr()->eq('test', 'abc'), ['test' => 'aBc']));
         $this->assertFalse(\call_user_func($this->expr()->eq('test', 123), ['test' => '123']));
-        $this->assertTrue(\call_user_func($this->expr()->eq('test', 123, false), ['test' => '123']));
-        $this->assertTrue(\call_user_func($this->expr()->eq('test', 'abc', true, false), ['test' => 'aBc']));
+        $this->assertTrue(\call_user_func($this->expr()->eq('test', 123, true, false), ['test' => '123']));
+        $this->assertTrue(\call_user_func($this->expr()->eq('test', 'abc', false, true), ['test' => 'aBc']));
     }
 
     public function testNEQ()
@@ -34,8 +34,8 @@ class ExprTest extends TestCase
         $this->assertFalse(\call_user_func($this->expr()->neq('test', 'abc'), ['test' => 'abc']));
         $this->assertTrue(\call_user_func($this->expr()->neq('test', 'abc'), ['test' => 'aBc']));
         $this->assertTrue(\call_user_func($this->expr()->neq('test', 123), ['test' => '123']));
-        $this->assertFalse(\call_user_func($this->expr()->neq('test', 123, false), ['test' => '123']));
-        $this->assertFalse(\call_user_func($this->expr()->neq('test', 'abc', true, false), ['test' => 'aBc']));
+        $this->assertFalse(\call_user_func($this->expr()->neq('test', 123, true, false), ['test' => '123']));
+        $this->assertFalse(\call_user_func($this->expr()->neq('test', 'abc', false, true), ['test' => 'aBc']));
     }
 
     public function testGT()
@@ -136,14 +136,15 @@ class ExprTest extends TestCase
     public function testCallable()
     {
         $left  = function (array $row) {
-            return strtolower($row['left']);
+            return 'a' . $row['left'];
         };
         $right = function (array $row) {
             return $row['right'] . 'z';
         };
-        $this->assertFalse(\call_user_func($this->expr()->eq($left, $right), ['left' => 'abcd', 'right' => 'abc']));
-        $this->assertFalse(\call_user_func($this->expr()->eq($left, $right), ['left' => 'abcz', 'right' => 'aBc']));
-        $this->assertTrue(\call_user_func($this->expr()->eq($left, $right), ['left' => 'aBCZ', 'right' => 'abc']));
+        $this->assertFalse(\call_user_func($this->expr()->eq($left, $right), ['left' => 'bcz', 'right' =>'ABC']));
+        $this->assertFalse(\call_user_func($this->expr()->eq($left, $right, false), ['left' => 'bcz', 'right' => 'truc']));
+        $this->assertTrue(\call_user_func($this->expr()->eq($left, $right), ['left' => 'bcz', 'right' => 'abc']));
+        $this->assertTrue(\call_user_func($this->expr()->eq($left, $right, false), ['left' => 'BCZ', 'right' => 'abc']));
     }
 
     public function testField()

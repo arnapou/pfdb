@@ -9,15 +9,51 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
+namespace Arnapou\PFDB\Query\Helper;
 
-use Arnapou\PFDB\Query\Expr;
+use Arnapou\PFDB\Query\Expr\AndExpr;
+use Arnapou\PFDB\Query\Expr\ComparisonExpr;
+use Arnapou\PFDB\Query\Expr\ExprInterface;
+use Arnapou\PFDB\Query\Expr\FuncExpr;
+use Arnapou\PFDB\Query\Expr\NestedExprInterface;
+use Arnapou\PFDB\Query\Expr\NotExpr;
+use Arnapou\PFDB\Query\Expr\OrExpr;
+use Arnapou\PFDB\Query\Field\Field;
+use Arnapou\PFDB\Query\Field\ForeignField;
+use Arnapou\PFDB\Query\Field\KeyField;
+use Arnapou\PFDB\Table;
 
-trait ExprBuilderTrait
+class Expr
 {
+    const EQ = '==';
+    const NEQ = '!=';
+    const GT = '>';
+    const GTE = '>=';
+    const LT = '<';
+    const LTE = '<=';
+    const LIKE = 'like';
+    const NLIKE = 'not like';
+    const MATCH = 'regexp';
+    const NMATCH = 'not regexp';
+    const ENDS = '$';
+    const BEGINS = '^';
+    const CONTAINS = '*';
+    const IN = 'in';
+    const NIN = 'not in';
+
     public function field(string $name): Field
     {
         return new Field($name);
+    }
+
+    public function keyField(?string $name = null): KeyField
+    {
+        return new KeyField($name);
+    }
+
+    public function foreignField(string $name, Table $foreignTable, $foreignName = null, $selectAlias = null): ForeignField
+    {
+        return new ForeignField($name, $foreignTable, $foreignName, $selectAlias);
     }
 
     public function func(callable $function): FuncExpr
@@ -55,12 +91,12 @@ trait ExprBuilderTrait
         return new ComparisonExpr($field, Expr::BEGINS, $value, $caseSensitive);
     }
 
-    public function eq($field, $value, bool $strict = true, bool $caseSensitive = true): ComparisonExpr
+    public function eq($field, $value, bool $caseSensitive = true, bool $strict = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::EQ . ($strict ? '=' : ''), $value, $caseSensitive);
     }
 
-    public function neq($field, $value, bool $strict = true, bool $caseSensitive = true): ComparisonExpr
+    public function neq($field, $value, bool $caseSensitive = true, bool $strict = true): ComparisonExpr
     {
         return new ComparisonExpr($field, Expr::NEQ . ($strict ? '=' : ''), $value, $caseSensitive);
     }

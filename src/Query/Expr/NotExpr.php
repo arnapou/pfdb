@@ -23,8 +23,8 @@ class NotExpr implements ExprInterface
         $this->expr = $expr;
     }
 
-    public function __invoke(array $row): bool
+    public function __invoke(array $row, $key = null): bool
     {
-        return !$this->expr->__invoke($row);
+        return !$this->expr->__invoke($row, $key);
     }
 }

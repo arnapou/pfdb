@@ -9,25 +9,20 @@
  * file that was distributed with this source code.
  */
 
-use Arnapou\PFDB\Condition\ConditionBuilder;
-
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../vendor/autoload.php';
 
-$storage = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
+$storage  = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
 $database = new Arnapou\PFDB\Database($storage);
-$database->setAutoFlush(false); // avoid automatic save at end of script
+$database->setReadonly(true); // avoid automatic save at end of script
 
 $table = $database->getTable('vehicle');
-
-print_title('Updating / Deleting');
 
 print_table('Full Table', $table);
 
 print_table('Update (price > 1500 => price / 10)', function () use ($table) {
-    return $table->update(
-        ConditionBuilder::AND()
-            ->greaterThan('price', 1500),
+    return $table->updateMultiple(
+        $table->expr()->gt('price', 1500),
         function ($row) {
             $row['price'] /= 10;
             return $row;
@@ -36,9 +31,48 @@ print_table('Update (price > 1500 => price / 10)', function () use ($table) {
 });
 
 print_table('Delete (price < 180 or color = "brown")', function () use ($table) {
-    return $table->delete(
-        ConditionBuilder::OR()
-            ->lowerThan('price', 180)
-            ->equalTo('color', 'brown', false)
+    return $table->deleteMultiple(
+        $table->expr()->or(
+            $table->expr()->lt('price', 180),
+            $table->expr()->eq('color', 'brown', false)
+        )
     );
+});
+
+print_table('Update an existing element', function () use ($table) {
+    return $table->update([
+        'id'    => 45,
+        'price' => '2000',
+    ]);
+});
+
+print_table('Update the same element but with its key', function () use ($table) {
+    return $table->update(['price' => '2100'], 45);
+});
+
+print_table('Insert an element', function () use ($table) {
+    return $table->insert([
+        'mark'  => 'BMW',
+        'price' => '3000',
+        'color' => 'Green',
+    ]);
+});
+
+print_table('Upsert an element', function () use ($table) {
+    return $table->upsert([
+        'mark'  => 'BMW',
+        'price' => '3100',
+        'color' => 'Red',
+    ]);
+});
+
+print_table('Upsert the same element', function () use ($table) {
+    return $table->upsert(
+        ['color' => 'Yellow'],
+        $table->getLastInsertedKey()
+    );
+});
+
+print_table('Delete one element', function () use ($table) {
+    return $table->delete(31);
 });

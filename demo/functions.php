@@ -9,27 +9,11 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Prints a HTML title
- *
- * @param string $title
- */
-function print_title($title)
-{
-//    echo '<h1>' . $title . '</h1>';
-}
-
-/**
- * Prints a HTML table of the Table object
- *
- * @param string              $title
- * @param \Arnapou\PFDB\Table $table
- */
 function print_table($title, $table)
 {
     $func = null;
     if (\is_callable($table)) {
-        $func = $table;
+        $func  = $table;
         $table = $func();
     }
     echo '<h4>' . $title . '</h4>';
@@ -38,48 +22,24 @@ function print_table($title, $table)
     echo '<table class="table" style="table-layout:fixed;">';
     $first = true;
     foreach ($table as $key => $row) {
-        if (\is_object($row)) {
-            if (!isset($methods)) {
-                $methods = array_filter(get_class_methods($row), function ($val) {
-                    return 0 === strpos($val, 'get');
-                });
-            }
-            // TH
-            if ($first) {
-                echo '<tr>';
-                echo '<th style="padding:0 4px;background:#ddd">-key-</th>';
-                foreach ($methods as $method) {
-                    echo '<th style="padding:0 4px;background:#ddd">' . $method . '()</th>';
-                }
-                echo '</tr>';
-                $first = false;
-            }
-            // TD
+        uksort($row, 'sortkeys');
+        // TH
+        if ($first) {
             echo '<tr>';
-            echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
-            foreach ($methods as $method) {
-                echo '<td style="padding:0 4px;background:#fff">' . $row->$method() . '</td>';
-            }
-            echo '</tr>';
-        } else {
-            // TH
-            if ($first) {
-                echo '<tr>';
-                echo '<th style="padding:0 4px;background:#ddd">-key-</th>';
-                foreach ($row as $field => $value) {
-                    echo '<th style="padding:0 4px;background:#ddd">' . $field . '</th>';
-                }
-                echo '</tr>';
-                $first = false;
-            }
-            // TD
-            echo '<tr>';
-            echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
+            echo '<th style="padding:0 4px;background:#ddd">:key</th>';
             foreach ($row as $field => $value) {
-                echo '<td style="padding:0 4px;background:#fff">' . $value . '</td>';
+                echo '<th style="padding:0 4px;background:#ddd">' . $field . '</th>';
             }
             echo '</tr>';
+            $first = false;
         }
+        // TD
+        echo '<tr>';
+        echo '<td style="padding:0 4px;background:#fff">' . $key . '</td>';
+        foreach ($row as $field => $value) {
+            echo '<td style="padding:0 4px;background:#fff">' . $value . '</td>';
+        }
+        echo '</tr>';
     }
     echo '</table>';
     echo '</div>';
@@ -92,18 +52,24 @@ function print_table($title, $table)
     echo '<br />';
 }
 
-/**
- *
- * @param callable $func
- * @return string
- */
+function sortkeys($a, $b)
+{
+    if ($a === 'id') {
+        return -1;
+    }
+    if ($b === 'id') {
+        return 1;
+    }
+    return $a <=> $b;
+}
+
 function getFunctionSourceCode($func)
 {
     $reflection = new ReflectionFunction($func);
-    $filename = $reflection->getFileName();
+    $filename   = $reflection->getFileName();
     $start_line = $reflection->getStartLine();
-    $end_line = $reflection->getEndLine() - 1;
-    $length = $end_line - $start_line;
+    $end_line   = $reflection->getEndLine() - 1;
+    $length     = $end_line - $start_line;
 
     $lines = file($filename);
     $lines = \array_slice($lines, $start_line, $length);
@@ -114,4 +80,49 @@ function getFunctionSourceCode($func)
         $lines[0] = substr($lines[0], 7);
     }
     return implode('', $lines);
+}
+
+function mdToHtml($md)
+{
+    $html = $md;
+
+    // specific to this project
+    $html = preg_replace('!(?:\n|^)[^\n\r]*?https?://pfdb.arnapou.net[^\n\r]*?\n!si', "\n", $html);
+
+
+    // generic
+    $html = preg_replace('!\*\*([^\n\r]+?)\*\*!si', '<strong>$1</strong>', $html);
+    $html = preg_replace('!__(.+?)__!si', '<strong>$1</strong>', $html);
+    $html = preg_replace('!\*([^\n\r]+?)\*!si', '<em>$1</em>', $html);
+    $html = preg_replace('!_(.+?)_!si', '<em>$1</em>', $html);
+    $html = preg_replace('!`(.+?)`!si', '<code>$1</code>', $html);
+    $html = preg_replace('!`(.+?)`!si', '<code>$1</code>', $html);
+    // links
+    $html = preg_replace('!\[([^\[]+)\]\(([^\)]+)\)!si', '<a href"$2">$1</a>', $html);
+    $html = preg_replace('!([^>])(https?://[^\s]+)!si', '$1<a href="$2">$2</a>', $html);
+    // ul
+    $html = preg_replace('!\n\*(.*?)\n!si', "\n" . '<ul><li>$1</li></ul>' . "\n", $html);
+    $html = preg_replace('!\n\*(.*?)\n!si', "\n" . '<ul><li>$1</li></ul>' . "\n", $html);
+    // ol
+    $html = preg_replace('!\n[0-9]+(.*?)\n!si', "\n" . '<ol><li>$1</li></ol>' . "\n", $html);
+    $html = preg_replace('!\n[0-9]+(.*?)\n!si', "\n" . '<ol><li>$1</li></ol>' . "\n", $html);
+    // blockquote
+    $html = preg_replace('!\n(&gt;|\>)(.*?)\n!si', "\n" . '<blockquote>$1</blockquote>' . "\n", $html);
+    $html = preg_replace('!\n(&gt;|\>)(.*?)\n!si', "\n" . '<blockquote>$1</blockquote>' . "\n", $html);
+    // pre
+    $html = preg_replace('!\n    (.*?)\n!si', "\n" . '<pre>$1</pre>' . "\n", $html);
+    $html = preg_replace('!\n    (.*?)\n!si', "\n" . '<pre>$1</pre>' . "\n", $html);
+    // hr
+    $html = preg_replace('!\n-{5,}!si', "\n<hr />", $html);
+    // h1
+    $html = preg_replace('!(?:\n|^)([^<\n\r][^\n\r]*)\n={5,}\n!si', '<h1>$1</h1>', $html);
+    // paragraph
+    $html = preg_replace('!(?:\n|^)([^<\n\r][^\n\r]*)\n!si', '<p>$1</p>', $html);
+    // fixes
+    $html = preg_replace('!</ul>\s*<ul>!si', '', $html);
+    $html = preg_replace('!</ol>\s*<ol>!si', '', $html);
+    $html = preg_replace('!</blockquote>\s*<blockquote>!si', '', $html);
+    $html = preg_replace('!</pre>\s*<pre>!si', "\n", $html);
+
+    return $html;
 }

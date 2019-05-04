@@ -13,11 +13,11 @@ namespace Arnapou\PFDB\Query;
 
 use Arnapou\PFDB\Query\Expr\AndExpr;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
-use Arnapou\PFDB\Query\Expr\ExprTrait;
 use Arnapou\PFDB\Query\Expr\NestedExprInterface;
+use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
-use Arnapou\PFDB\Query\Iterator\OrderByIterator;
 use Arnapou\PFDB\Query\Iterator\SelectIterator;
+use Arnapou\PFDB\Query\Iterator\SortIterator;
 use CallbackFilterIterator;
 use Iterator;
 use IteratorIterator;
@@ -51,7 +51,7 @@ class Query implements \IteratorAggregate
     /**
      * @var array
      */
-    private $orderings = [];
+    private $sorts = [];
 
     public function __construct(?Traversable $from)
     {
@@ -81,27 +81,24 @@ class Query implements \IteratorAggregate
     }
 
     /**
-     * @param null|array|string|callable $fields
+     * @param array $fields
      * @return Query
      */
-    public function select($fields): self
+    public function select(...$fields): self
     {
-        if (null === $fields) {
+        if (empty($fields)) {
             $this->select = [];
-        } elseif (\is_array($fields)) {
-            $this->select = $fields;
-        } elseif ($fields instanceof Traversable) {
-            $this->select = iterator_to_array($fields);
         } else {
-            $this->select = [];
-            $this->addSelect($fields);
+            $this->select = $fields;
         }
         return $this;
     }
 
-    public function addSelect($field): self
+    public function addSelect(...$fields): self
     {
-        $this->select[] = $field;
+        foreach ($fields as $field) {
+            $this->select[] = $field;
+        }
         return $this;
     }
 
@@ -127,18 +124,18 @@ class Query implements \IteratorAggregate
         return $this;
     }
 
-    public function orderBy(array $orderings): self
+    public function sort(...$sorts): self
     {
-        $this->orderings[] = $orderings;
+        $this->sorts = $sorts;
         return $this;
     }
 
-    public function addOrderBy($field, string $order = 'ASC'): self
+    public function addSort($field, string $order = 'ASC'): self
     {
         if (\is_object($field) && \is_callable($field)) {
-            $this->orderings[] = [$field, null];
+            $this->sorts[] = $field;
         } else {
-            $this->orderings[] = [$field, strtoupper($order ?: 'ASC')];
+            $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];
         }
         return $this;
     }
@@ -151,8 +148,8 @@ class Query implements \IteratorAggregate
         if ($this->group) {
             $iterator = new IteratorIterator(new GroupIterator($iterator, ...$this->group));
         }
-        if ($this->orderings) {
-            $iterator = new IteratorIterator(new OrderByIterator($iterator, $this->orderings));
+        if ($this->sorts) {
+            $iterator = new IteratorIterator(new SortIterator($iterator, $this->sorts));
         }
         if ($this->limit !== [0, PHP_INT_MAX]) {
             $iterator = new LimitIterator($iterator, $this->limit[0], $this->limit[1]);
@@ -161,5 +158,10 @@ class Query implements \IteratorAggregate
             $iterator = new SelectIterator($iterator, $this->select);
         }
         return $iterator;
+    }
+
+    public function chain(): self
+    {
+        return new self($this);
     }
 }

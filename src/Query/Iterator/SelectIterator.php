@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB\Query\Iterator;
 
-use Arnapou\PFDB\Query\Expr\Field;
+use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 use Iterator;
 
 class SelectIterator implements Iterator
@@ -28,19 +28,24 @@ class SelectIterator implements Iterator
     public function __construct(Iterator $iterator, array $select)
     {
         $this->iterator = $iterator;
-        $this->select   = $this->sanitizeSelect($select);
+        $this->select   = $select;
     }
 
     public function current()
     {
         $row = $this->iterator->current();
+        $key = $this->iterator->key();
         if (!$this->select) {
             return $row;
         }
         $data = [];
         foreach ($this->select as $field) {
-            if (\is_object($field) && \is_callable($field)) {
-                $data = array_merge($data, (array)$field($row));
+            if ($field === '*') {
+                $data = array_merge($data, $row);
+            } elseif ($field instanceof FieldSelectInterface) {
+                $data = array_merge($data, $field->select($row, $key));
+            } elseif (\is_object($field) && \is_callable($field)) {
+                $data = array_merge($data, (array)$field($row, $key));
             } else {
                 $data[$field] = $row[$field] ?? null;
             }
@@ -66,18 +71,5 @@ class SelectIterator implements Iterator
     public function rewind()
     {
         $this->iterator->rewind();
-    }
-
-    private function sanitizeSelect(array $select): array
-    {
-        $sanitized = [];
-        foreach ($select as $field) {
-            if ($field instanceof Field) {
-                $sanitized[] = $field->name();
-            } else {
-                $sanitized[] = $field;
-            }
-        }
-        return $sanitized;
     }
 }

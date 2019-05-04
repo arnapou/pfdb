@@ -9,109 +9,104 @@
  * file that was distributed with this source code.
  */
 
-use Arnapou\PFDB\Condition\ConditionBuilder;
+use Arnapou\PFDB\Database;
+use Arnapou\PFDB\Storage\PhpFileStorage;
 
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../vendor/autoload.php';
 
-$storage = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
-$database = new Arnapou\PFDB\Database($storage);
-$database->setAutoFlush(false); // avoid automatic save at end of script
+$storage  = new PhpFileStorage(__DIR__ . '/database');
+$database = new Database($storage);
+$database->setReadonly(false);
 
 $table = $database->getTable('vehicle');
-
-print_title('Conditions');
 
 print_table('Full Table', $table);
 
 print_table('Find (price > 1500)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::AND()
-            ->greaterThan('price', 1500)
+        $table->expr()->gt('price', 1500)
     );
 });
 
 print_table('Find (price > 1500 and color = "Red")', function () use ($table) {
     return $table->find(
-        ConditionBuilder::AND()
-            ->greaterThan('price', 1500)
-            ->equalTo('color', 'Red')
+        $table->expr()->gt('price', 1500),
+        $table->expr()->eq('color', 'Red')
     );
 });
 
 print_table('Find (price > 1500 or color = "Red")', function () use ($table) {
     return $table->find(
-        ConditionBuilder::OR()
-            ->greaterThan('price', 1500)
-            ->equalTo('color', 'Red')
+        $table->expr()->or(
+            $table->expr()->gt('price', 1500),
+            $table->expr()->eq('color', 'Red')
+        )
     );
 });
 
 print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DESC)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::OR()
-            ->greaterThan('price', 1500)
-            ->equalTo('color', 'Red')
+        $table->expr()->or(
+            $table->expr()->gt('price', 1500),
+            $table->expr()->eq('color', 'Red')
+        )
     )
-        ->sort([
-            'mark' => true,
-            'price' => false,
-        ]);
+        ->sort('mark', ['price', 'DESC']);
 });
 
 print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DESC) limit (1, 3)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::OR()
-            ->greaterThan('price', 1500)
-            ->equalTo('color', 'Red')
+        $table->expr()->or(
+            $table->expr()->gt('price', 1500),
+            $table->expr()->eq('color', 'Red')
+        )
     )
-        ->sort([
-            'mark' => true,
-            'price' => false,
-        ])
+        ->sort('mark', ['price', 'DESC'])
         ->limit(1, 3);
 });
 
 print_table('Find (price > 1500 or color = "Red") sorted (mark ASC then price DESC) limit (1, 3) find (color match regexp /w/) sorted (price ASC)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::OR()
-            ->greaterThan('price', 1500)
-            ->equalTo('color', 'Red')
-    )
-        ->sort([
-            'mark' => true,
-            'price' => false,
-        ])
-        ->limit(1, 3)
-        ->find(
-            ConditionBuilder::AND()
-                ->matchRegExp('color', 'w')
+        $table->expr()->or(
+            $table->expr()->gt('price', 1500),
+            $table->expr()->eq('color', 'Red')
         )
-        ->sort(['price' => true]);
+    )
+        ->sort('mark', ['price', 'DESC'])
+        ->limit(1, 3)
+        ->chain()
+        ->where(
+            $table->expr()->match('color', 'w')
+        )
+        ->sort('price');
 });
 
 print_table('Find ((price > 1600 and color = "Red") or (price < 1600 and color = "Green")) ', function () use ($table) {
     return $table->find(
-        ConditionBuilder::OR()
-            ->add(
-                ConditionBuilder::AND()
-                ->greaterThan('price', 1600)
-                ->equalTo('color', 'Red')
+        $table->expr()->or(
+            $table->expr()->and(
+                $table->expr()->gt('price', 1600),
+                $table->expr()->eq('color', 'Red')
+            ),
+            $table->expr()->and(
+                $table->expr()->lt('price', 1600),
+                $table->expr()->eq('color', 'Green')
             )
-            ->add(
-                ConditionBuilder::AND()
-                ->lowerThan('price', 1600)
-                ->equalTo('color', 'Green')
-            )
+        )
     );
 });
 
-print_table('Find (-key- IN 52,31,89) sorted (price ASC)', function () use ($table) {
+print_table('Find (:key IN 52,31,89) sorted (price ASC)', function () use ($table) {
     return $table->find(
-        ConditionBuilder::AND()
-            ->in(null, [52, 31, 89])
+        $table->expr()->in('id', [52, 31, 89])
     )
-        ->sort([
-            'price' => true,
-        ]);
+        ->sort('price');
+});
+
+print_table('Find (:key IN 52,31,89) sorted (price ASC) but filtered on key', function () use ($table) {
+    return $table->find(
+        $table->expr()->in($table->expr()->keyField(), [52, 31, 89])
+    )
+        ->sort('price');
 });

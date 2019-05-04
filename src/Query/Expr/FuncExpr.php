@@ -23,8 +23,8 @@ class FuncExpr implements ExprInterface
         $this->callable = $callable;
     }
 
-    public function __invoke(array $row): bool
+    public function __invoke(array $row, $key = null): bool
     {
-        return \call_user_func($this->callable, $row) ? true : false;
+        return \call_user_func($this->callable, $row, $key) ? true : false;
     }
 }

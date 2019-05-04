@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
+namespace Arnapou\PFDB\Query\Field;
 
-class Field
+class Field implements FieldInterface
 {
     /**
      * @var string
@@ -23,18 +23,18 @@ class Field
         $this->name = $name;
     }
 
-    public function __invoke(array $row)
-    {
-        return $row[$this->name] ?? null;
-    }
-
     public function name(): string
     {
         return $this->name;
     }
 
-    public function __toString(): string
+    public function value(array $row, $key = null)
     {
-        return $this->name;
+        return $row[$this->name] ?? null;
+    }
+
+    public function select(array $row, $key = null): array
+    {
+        return [$this->name => $row[$this->name] ?? null];
     }
 }

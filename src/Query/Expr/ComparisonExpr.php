@@ -13,6 +13,7 @@ namespace Arnapou\PFDB\Query\Expr;
 
 use Arnapou\PFDB\Exception\InvalidExprOperatorException;
 use Arnapou\PFDB\Exception\InvalidExprValueException;
+use Arnapou\PFDB\Query\Field\FieldValueInterface;
 
 class ComparisonExpr implements ExprInterface
 {
@@ -56,12 +57,19 @@ class ComparisonExpr implements ExprInterface
         $this->not           = false;
         $this->operator      = $this->sanitizeOperator($operator);
 
+        if (\is_object($field) && !\is_callable($field) && !($field instanceof FieldValueInterface)) {
+            throw new InvalidExprValueException();
+        }
+        if (\is_object($value) && !\is_callable($value) && !($value instanceof FieldValueInterface)) {
+            throw new InvalidExprValueException();
+        }
+
         $this->init();
     }
 
-    public function __invoke(array $row): bool
+    public function __invoke(array $row, $key = null): bool
     {
-        [$value1, $value2] = $this->values($row);
+        [$value1, $value2] = $this->values($row, $key);
 
         if ($this->not) {
             return !$this->evaluate($value1, $value2);
@@ -104,22 +112,22 @@ class ComparisonExpr implements ExprInterface
         throw new InvalidExprOperatorException('Operator = ' . $this->operator);
     }
 
-    private function values(array $row): array
+    private function values(array $row, $key): array
     {
         if (\is_string($this->field)) {
             $value1 = $row[$this->field] ?? null;
-        } elseif ($this->field instanceof Field) {
-            $value1 = $row[$this->field->name()] ?? null;
+        } elseif ($this->field instanceof FieldValueInterface) {
+            $value1 = $this->field->value($row, $key);
         } elseif (\is_object($this->field) && \is_callable($this->field)) {
-            $value1 = \call_user_func($this->field, $row);
+            $value1 = \call_user_func($this->field, $row, $key);
         } else {
             $value1 = $this->field;
         }
 
-        if ($this->value instanceof Field) {
-            $value2 = $row[$this->value->name()] ?? null;
+        if ($this->value instanceof FieldValueInterface) {
+            $value2 = $this->value->value($row, $key);
         } elseif (\is_object($this->value) && \is_callable($this->value)) {
-            $value2 = \call_user_func($this->value, $row);
+            $value2 = \call_user_func($this->value, $row, $key);
         } else {
             $value2 = $this->value;
         }

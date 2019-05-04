@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB;
 
-use Arnapou\PFDB\Query\Expr\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Storage\StorageInterface;
 
 class Database
@@ -30,6 +30,10 @@ class Database
      * @var string
      */
     private $defaultPrimaryKey;
+    /**
+     * @var bool
+     */
+    private $readonly = null;
 
     public function __construct(StorageInterface $storage, ?string $defaultPrimaryKey = 'id')
     {
@@ -40,7 +44,11 @@ class Database
     public function getTable(string $name, ?string $primaryKey = null): Table
     {
         if (!\array_key_exists($name, $this->tables)) {
-            $this->tables[$name] = new Table($name, $this->storage, $primaryKey ?: $this->defaultPrimaryKey);
+            $table = new Table($name, $this->storage, $primaryKey ?: $this->defaultPrimaryKey);
+            if (null !== $this->readonly) {
+                $table->setReadonly($this->readonly);
+            }
+            $this->tables[$name] = $table;
             ksort($this->tables);
         }
         return $this->tables[$name];
@@ -78,5 +86,19 @@ class Database
     public function getDefaultPrimaryKey(): ?string
     {
         return $this->defaultPrimaryKey;
+    }
+
+    public function isReadonly(): ?bool
+    {
+        return $this->readonly;
+    }
+
+    public function setReadonly(bool $readonly): self
+    {
+        $this->readonly = $readonly;
+        foreach ($this->tables as $table) {
+            $table->setReadonly($readonly);
+        }
+        return $this;
     }
 }

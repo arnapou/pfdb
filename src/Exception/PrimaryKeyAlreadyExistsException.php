@@ -9,14 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
+namespace Arnapou\PFDB\Exception;
 
-use Arnapou\PFDB\Query\Expr;
-
-trait ExprTrait
+class PrimaryKeyAlreadyExistsException extends PFDBException
 {
-    public function expr(): Expr
-    {
-        return new Expr();
-    }
 }

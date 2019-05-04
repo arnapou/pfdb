@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB\Tests\Query;
 
-use Arnapou\PFDB\Query\Expr\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\PhpFileStorage;
 use Arnapou\PFDB\Table;
@@ -88,19 +88,19 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testOrderBy()
+    public function testSorts()
     {
         $this->assertSame(
             [['id' => 14], ['id' => 22], ['id' => 52], ['id' => 89], ['id' => 5], ['id' => 67], ['id' => 71], ['id' => 45], ['id' => 31]],
-            iterator_to_array($this->table()->find()->select('id')->addOrderBy('price'))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price')))
         );
         $this->assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
-            iterator_to_array($this->table()->find()->select('id')->addOrderBy('price', 'DESC'))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')))
         );
         $this->assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 52], ['id' => 22], ['id' => 14]],
-            iterator_to_array($this->table()->find()->select('id')->addOrderBy('price', 'DESC')->addOrderBy('mark'))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')->addSort('mark')))
         );
     }
 
@@ -153,12 +153,12 @@ class QueryTest extends TestCase
     public function testForcedChaining()
     {
         $filtered = $this->table()->find($this->expr()->lte('price', 1500));
-        $sorted   = (new Query($filtered))->addOrderBy('mark');
+        $sorted   = (new Query($filtered))->addSort('mark');
         $limited  = (new Query($sorted))->limit(0, 2);
         $final    = (new Query($limited))->select('id');
 
         $this->assertSame(
-            [['id' => 52], ['id' => 89]],
+            [5 => ['id' => 52], 8 => ['id' => 89]],
             iterator_to_array($final)
         );
     }

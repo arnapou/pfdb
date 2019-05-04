@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Arnapou PFDB package.
+ *
+ * (c) Arnaud Buathier <arnaud@arnapou.net>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 $header = <<<HEADER
 This file is part of the Arnapou PFDB package.
 
@@ -14,7 +23,6 @@ $finder = PhpCsFixer\Finder::create()
         'database',
     ])
     ->in([
-        __DIR__ . '/demo',
         __DIR__ . '/src',
     ]);
 

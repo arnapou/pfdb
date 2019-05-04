@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB\Tests\Query;
 
-use Arnapou\PFDB\Query\Expr\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Tests\TestCase;
 
 class NestedExprTest extends TestCase

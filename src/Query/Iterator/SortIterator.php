@@ -14,30 +14,30 @@ namespace Arnapou\PFDB\Query\Iterator;
 use Iterator;
 use Traversable;
 
-class OrderByIterator implements \IteratorAggregate
+class SortIterator implements \IteratorAggregate
 {
     /**
      * @var array
      */
-    private $orderings;
+    private $sorts;
     /**
      * @var Iterator
      */
     private $iterator;
 
-    public function __construct(Iterator $iterator, array $orderings)
+    public function __construct(Iterator $iterator, array $sorts)
     {
-        $this->iterator  = $iterator;
-        $this->orderings = $this->sanitizeOrderings($orderings);
+        $this->iterator = $iterator;
+        $this->sorts    = $this->sanitizeOrderings($sorts);
     }
 
     public function getIterator(): Traversable
     {
         $rows = iterator_to_array($this->iterator);
-        usort(
+        uasort(
             $rows,
             function (array $row1, array $row2) {
-                foreach ($this->orderings as $callable) {
+                foreach ($this->sorts as $callable) {
                     if ($result = \intval($callable($row1, $row2))) {
                         return $result;
                     }
@@ -48,15 +48,16 @@ class OrderByIterator implements \IteratorAggregate
         return new \ArrayIterator($rows);
     }
 
-    private function sanitizeOrderings(array $orderings): array
+    private function sanitizeOrderings(array $sorts): array
     {
         $sanitized = [];
-        foreach ($orderings as $ordering) {
-            $field = $ordering[0];
+        foreach ($sorts as $sort) {
+            $sort  = (array)$sort;
+            $field = $sort[0];
             if (\is_object($field) && \is_callable($field)) {
                 $sanitized[] = $field;
             } else {
-                $sanitized[] = $this->createCallable($field, $ordering[1] ?: 'ASC');
+                $sanitized[] = $this->createCallable($field, ($sort[1] ?? 'ASC') ?: 'ASC');
             }
         }
         return $sanitized;

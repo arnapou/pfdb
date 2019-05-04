@@ -9,9 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
-
-interface ExprInterface
-{
-    public function __invoke(array $row, $key = null): bool;
-}
+return [
+    1 => [
+        'id'   => 1,
+        'name' => 'Peugeot',
+    ],
+    2 => [
+        'id'   => 2,
+        'name' => 'Citroen',
+    ],
+    3 => [
+        'id'   => 3,
+        'name' => 'Nissan',
+    ],
+];

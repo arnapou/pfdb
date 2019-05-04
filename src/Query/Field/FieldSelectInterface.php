@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
+namespace Arnapou\PFDB\Query\Field;
 
-interface ExprInterface
+interface FieldSelectInterface
 {
-    public function __invoke(array $row, $key = null): bool;
+    public function select(array $row, $key = null): array;
 }
