@@ -113,7 +113,7 @@ class Table implements \IteratorAggregate
             if ($this->readonly) {
                 throw new ReadonlyException();
             }
-            $this->storage->save($this->name, $this->data);
+            $this->storage->save($this->name, $this->primaryKey ? array_values($this->data) : $this->data);
             $this->changed = false;
             return true;
         }
