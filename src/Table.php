@@ -213,7 +213,7 @@ class Table implements \IteratorAggregate
     {
         foreach ($this->data as $key => $row) {
             if ($expr($row, $key)) {
-                $this->data[$key] = $function($row);
+                $this->data[$key] = $function($row, $key);
             }
         }
         return $this;
