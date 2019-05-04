@@ -1,5 +1,5 @@
 nbproject
 .idea
 composer.lock
-.phpunit.*
+.phpunit.result.cache
 phpunit*.phar
