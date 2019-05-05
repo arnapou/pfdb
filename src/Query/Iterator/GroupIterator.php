@@ -52,7 +52,7 @@ class GroupIterator implements \IteratorAggregate
         foreach ($this->iterator as $key => $row) {
             $groupKey           = $this->getGroupKey($row, $key);
             $value              = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
-            $grouped[$groupKey] = \call_user_func($this->reduce, $value, $row);
+            $grouped[$groupKey] = \call_user_func($this->reduce, $value, $row, $key);
         }
         if ($this->onfinish) {
             $grouped = array_map($this->onfinish, $grouped);
