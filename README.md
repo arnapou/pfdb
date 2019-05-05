@@ -1,6 +1,8 @@
 Introduction
 ============
 
+[![Build Status](https://travis-ci.org/arnapou/pfdb.svg?branch=master)](https://travis-ci.org/arnapou/pfdb)
+
 What it is :
 
 * Pure POO (php 7.2 required)
