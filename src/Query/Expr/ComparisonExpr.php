@@ -57,14 +57,7 @@ class ComparisonExpr implements ExprInterface
         $this->not           = false;
         $this->operator      = $this->sanitizeOperator($operator);
 
-        if (\is_object($field) && !\is_callable($field) && !($field instanceof FieldValueInterface)) {
-            throw new InvalidExprValueException();
-        }
-        if (\is_object($value) && !\is_callable($value) && !($value instanceof FieldValueInterface)) {
-            throw new InvalidExprValueException();
-        }
-
-        $this->init();
+        $this->prepare();
     }
 
     public function __invoke(array $row, $key = null): bool
@@ -144,8 +137,14 @@ class ComparisonExpr implements ExprInterface
         return [$value1, $value2];
     }
 
-    private function init(): void
+    private function prepare(): void
     {
+        if (\is_object($this->field) && !\is_callable($this->field) && !($this->field instanceof FieldValueInterface)) {
+            throw new InvalidExprValueException();
+        }
+        if (\is_object($this->value) && !\is_callable($this->value) && !($this->value instanceof FieldValueInterface)) {
+            throw new InvalidExprValueException();
+        }
         if (!\is_string($this->value) && \in_array($this->operator, self::OPERATOR_REGEXP)) {
             throw new InvalidExprValueException('Value for operator "' . $this->operator . '" should be a string');
         }
