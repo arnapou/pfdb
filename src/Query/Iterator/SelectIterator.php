@@ -23,23 +23,23 @@ class SelectIterator implements Iterator
     /**
      * @var array
      */
-    private $select;
+    private $fields;
 
-    public function __construct(Iterator $iterator, array $select)
+    public function __construct(Iterator $iterator, array $fields)
     {
         $this->iterator = $iterator;
-        $this->select   = $select;
+        $this->fields   = $fields;
     }
 
     public function current()
     {
         $row = $this->iterator->current();
         $key = $this->iterator->key();
-        if (!$this->select) {
+        if (!$this->fields) {
             return $row;
         }
         $data = [];
-        foreach ($this->select as $field) {
+        foreach ($this->fields as $field) {
             if ($field === '*') {
                 $data = array_merge($data, $row);
             } elseif ($field instanceof FieldSelectInterface) {

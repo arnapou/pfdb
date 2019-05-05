@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Query;
+namespace Arnapou\PFDB\Tests\Query\Expr;
 
 use Arnapou\PFDB\Exception\InvalidExprValueException;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Helper\ExprTrait;
-use Arnapou\PFDB\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ExprTest extends TestCase
 {
@@ -84,12 +84,26 @@ class ExprTest extends TestCase
         $this->assertFalse(\call_user_func($this->expr()->like('test', '%loz%'), ['test' => 'hello world']));
     }
 
+    public function testNOTLIKE()
+    {
+        $this->assertFalse(\call_user_func($this->expr()->notlike('test', '%lo_w%'), ['test' => 'hello world']));
+        $this->assertTrue(\call_user_func($this->expr()->notlike('test', '%loz%'), ['test' => 'hello world']));
+    }
+
     public function testMATCH()
     {
         $this->assertTrue(\call_user_func($this->expr()->match('test', 'lo.w'), ['test' => 'hello world']));
         $this->assertFalse(\call_user_func($this->expr()->match('test', '^lo.w'), ['test' => 'hello world']));
         $this->assertFalse(\call_user_func($this->expr()->match('test', 'LO.w'), ['test' => 'hello world']));
         $this->assertTrue(\call_user_func($this->expr()->match('test', '/LO.w/i'), ['test' => 'hello world']));
+    }
+
+    public function testNOTMATCH()
+    {
+        $this->assertFalse(\call_user_func($this->expr()->notmatch('test', 'lo.w'), ['test' => 'hello world']));
+        $this->assertTrue(\call_user_func($this->expr()->notmatch('test', '^lo.w'), ['test' => 'hello world']));
+        $this->assertTrue(\call_user_func($this->expr()->notmatch('test', 'LO.w'), ['test' => 'hello world']));
+        $this->assertFalse(\call_user_func($this->expr()->notmatch('test', '/LO.w/i'), ['test' => 'hello world']));
     }
 
     public function testBEGINS()
@@ -122,6 +136,14 @@ class ExprTest extends TestCase
         $this->assertFalse(\call_user_func($this->expr()->in('test', ['a', 'b', 'c']), ['test' => 'z']));
         $this->assertTrue(\call_user_func($this->expr()->in('test', ['a', 'b', 'c'], false), ['test' => 'B']));
         $this->assertFalse(\call_user_func($this->expr()->in('test', ['a', 'b', 'c'], false), ['test' => 'Z']));
+    }
+
+    public function testNOTIN()
+    {
+        $this->assertFalse(\call_user_func($this->expr()->notin('test', ['a', 'b', 'c']), ['test' => 'b']));
+        $this->assertTrue(\call_user_func($this->expr()->notin('test', ['a', 'b', 'c']), ['test' => 'z']));
+        $this->assertFalse(\call_user_func($this->expr()->notin('test', ['a', 'b', 'c'], false), ['test' => 'B']));
+        $this->assertTrue(\call_user_func($this->expr()->notin('test', ['a', 'b', 'c'], false), ['test' => 'Z']));
     }
 
     public function testFUNC()

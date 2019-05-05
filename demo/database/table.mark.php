@@ -1,25 +1,17 @@
-<?php
-
-/*
- * This file is part of the Arnapou PFDB package.
- *
- * (c) Arnaud Buathier <arnaud@arnapou.net>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-return [
-    1 => [
-        'id'   => 1,
-        'name' => 'Peugeot',
-    ],
-    2 => [
-        'id'   => 2,
-        'name' => 'Citroen',
-    ],
-    3 => [
-        'id'   => 3,
-        'name' => 'Nissan',
-    ],
-];
+<?php return array (
+  0 => 
+  array (
+    'id' => 1,
+    'name' => 'Peugeot',
+  ),
+  1 => 
+  array (
+    'id' => 2,
+    'name' => 'Citroen',
+  ),
+  2 => 
+  array (
+    'id' => 3,
+    'name' => 'Nissan',
+  ),
+);

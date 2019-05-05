@@ -12,7 +12,7 @@
 namespace Arnapou\PFDB\Tests\Query;
 
 use Arnapou\PFDB\Query\Helper\ExprTrait;
-use Arnapou\PFDB\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class NestedExprTest extends TestCase
 {
@@ -56,5 +56,17 @@ class NestedExprTest extends TestCase
         $this->assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
         $this->assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
         $this->assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
+    }
+
+    public function testChildrenCount()
+    {
+        $this->assertCount(
+            3,
+            $this->expr()->and(
+                $this->expr()->eq('field1', 1),
+                $this->expr()->eq('field2', 2),
+                $this->expr()->eq('field3', 3)
+            )->children()
+        );
     }
 }

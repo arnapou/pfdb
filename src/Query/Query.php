@@ -53,7 +53,7 @@ class Query implements \IteratorAggregate
      */
     private $sorts = [];
 
-    public function __construct(?Traversable $from)
+    public function __construct(?Traversable $from = null)
     {
         $this->where = new AndExpr();
         if ($from) {

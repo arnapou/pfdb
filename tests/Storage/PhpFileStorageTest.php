@@ -11,28 +11,65 @@
 
 namespace Arnapou\PFDB\Tests\Storage;
 
+use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Storage\PhpFileStorage;
-use Arnapou\PFDB\Storage\StorageInterface;
-use Arnapou\PFDB\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class PhpFileStorageTest extends TestCase
 {
-    /**
-     * @var \Arnapou\PFDB\Storage\StorageInterface
-     */
-    protected $storage;
+    const TMP_NAME = 'test_table';
 
-    protected function storage(): StorageInterface
+    public static function pfdbStorage(): PhpFileStorage
     {
-        if (!$this->storage) {
-            $this->storage = new PhpFileStorage(__DIR__ . '/../../demo/database');
+        return new PhpFileStorage(__DIR__ . '/../../demo/database');
+    }
+
+    private function fileStorage(bool $readonly): PhpFileStorage
+    {
+        $storage = new PhpFileStorage(sys_get_temp_dir());
+        if (is_file($storage->getFilename(self::TMP_NAME))) {
+            @unlink($storage->getFilename(self::TMP_NAME));
         }
-        return $this->storage;
+        $storage->save(self::TMP_NAME, []);
+        if ($readonly) {
+            chmod($storage->getFilename(self::TMP_NAME), 000);
+        }
+        return $storage;
     }
 
     public function testCount()
     {
-        $rows = $table = $this->storage()->load('vehicle');
-        $this->assertSame(9, \count($rows));
+        $storage = self::pfdbStorage();
+
+        $this->assertSame(9, \count($storage->load('vehicle')));
+        $this->assertSame(0, \count($storage->load('not_exists')));
+    }
+
+    public function testSave()
+    {
+        $storage = $this->fileStorage(false);
+        $storage->save(self::TMP_NAME, []);
+        $this->assertTrue(true);
+    }
+
+    public function testSaveReadonly()
+    {
+        $storage = $this->fileStorage(true);
+        $this->expectException(ReadonlyException::class);
+        $storage->save(self::TMP_NAME, []);
+    }
+
+    public function testDelete()
+    {
+        $storage = $this->fileStorage(false);
+        $storage->delete(self::TMP_NAME);
+        $this->assertTrue(true);
+    }
+
+    public function testDeleteReadonly()
+    {
+        $storage = $this->fileStorage(true);
+        $this->expectException(ReadonlyException::class);
+        $storage->delete(self::TMP_NAME);
     }
 }

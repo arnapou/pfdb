@@ -1,1 +1,0 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":245:{a:2:{s:7:"defects";a:0:{}s:5:"times";a:3:{s:44:"Arnapou\PFDB\Tests\Query\ExprTest::testCount";d:0.001;s:56:"Arnapou\PFDB\Tests\Storage\PhpFileStorageTest::testCount";d:0;s:57:"Arnapou\PFDB\Tests\Storage\YamlFileStorageTest::testCount";d:0.007;}}}

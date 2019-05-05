@@ -9,15 +9,14 @@
  * file that was distributed with this source code.
  */
 
-use Arnapou\PFDB\Database;
+use Arnapou\PFDB\DatabaseReadonly;
 use Arnapou\PFDB\Storage\PhpFileStorage;
 
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../vendor/autoload.php';
 
 $storage  = new PhpFileStorage(__DIR__ . '/database');
-$database = new Database($storage);
-$database->setReadonly(false);
+$database = new DatabaseReadonly($storage);
 
 $table = $database->getTable('vehicle');
 

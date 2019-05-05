@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Factory;
 
-use Arnapou\PFDB\Core\AbstractDatabase;
+use Arnapou\PFDB\Core\TableInterface;
+use Arnapou\PFDB\Storage\StorageInterface;
 
-class Database extends AbstractDatabase
+interface TableFactoryInterface
 {
+    public function create(StorageInterface $storage, string $name): TableInterface;
 }

@@ -26,25 +26,29 @@ abstract class AbstractFileStorage implements StorageInterface
      */
     private $readonly;
     /**
-     * @var bool
+     * @var string
      */
-    private $flushed;
+    private $prefixName;
 
-    public function __construct($path)
+    public function __construct($path, $prefixName = 'table')
     {
         $this->path = rtrim(rtrim($path, '/'), '\\');
         if (!is_dir($this->path)) {
             throw new DirectoryNotFoundException();
         }
-        $this->readonly = !is_writable($path);
+        $this->readonly   = !is_writable($path);
+        $this->prefixName = $prefixName;
+        if (!$this->isValidTableName($prefixName)) {
+            throw new InvalidTableNameException('The prefix name must follow the same rules as table name [a-z0-9_\.-]+');
+        }
     }
 
-    protected function getFilename(string $name): string
+    public function getFilename(string $name): string
     {
         if (!$this->isValidTableName($name)) {
-            throw new InvalidTableNameException();
+            throw new InvalidTableNameException('The name must follow this regexp [a-z0-9_\.-]+');
         }
-        return $this->path . "/table.$name." . $this->getExtension();
+        return $this->path . '/' . $this->prefixName . ".$name." . $this->getExtension();
     }
 
     public function getPath(): string
@@ -52,17 +56,17 @@ abstract class AbstractFileStorage implements StorageInterface
         return $this->path;
     }
 
-    protected function isValidTableName(string $name): bool
+    public function isValidTableName(string $name): bool
     {
         return preg_match('!^[a-z0-9_\.-]+$!', $name);
     }
 
     public function tableNames(): array
     {
-        $files = glob($this->getPath() . '/table.*.' . $this->getExtension(), GLOB_NOSORT) ?: [];
+        $files = glob($this->getPath() . '/' . $this->prefixName . '.*.' . $this->getExtension(), GLOB_NOSORT) ?: [];
         $names = [];
         foreach ($files as $file) {
-            $name = str_replace('table.', '', basename($file, '.' . $this->getExtension()));
+            $name = substr(basename($file, '.' . $this->getExtension()), \strlen($this->prefixName) + 1);
             if ($this->isValidTableName($name)) {
                 $names[] = $name;
             }

@@ -9,10 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Exception;
 
-use Arnapou\PFDB\Core\AbstractDatabase;
-
-class Database extends AbstractDatabase
+class InvalidTableClassException extends PFDBException
 {
 }

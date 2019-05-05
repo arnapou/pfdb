@@ -13,9 +13,10 @@ namespace Arnapou\PFDB\Tests\Query;
 
 use Arnapou\PFDB\Query\Helper\ExprTrait;
 use Arnapou\PFDB\Query\Query;
-use Arnapou\PFDB\Storage\PhpFileStorage;
 use Arnapou\PFDB\Table;
-use Arnapou\PFDB\Tests\TestCase;
+use Arnapou\PFDB\Tests\Storage\DatabaseTest;
+use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
+use PHPUnit\Framework\TestCase;
 
 class QueryTest extends TestCase
 {
@@ -29,8 +30,7 @@ class QueryTest extends TestCase
     protected function table(?string $pk = null): Table
     {
         if (!isset($this->table["_$pk"])) {
-            $storage              = new PhpFileStorage(__DIR__ . '/../../demo/database');
-            $this->tables["_$pk"] = new Table('vehicle', $storage, $pk);
+            $this->tables["_$pk"] = DatabaseTest::pfdbDatabase()->getTable('vehicle', $pk);
         }
         return $this->tables["_$pk"];
     }
@@ -62,13 +62,13 @@ class QueryTest extends TestCase
         );
         $this->assertSame(
             [['id' => 5], ['id' => 14], ['id' => 22], ['id' => 31], ['id' => 45], ['id' => 52], ['id' => 67], ['id' => 71], ['id' => 89]],
-            iterator_to_array($this->table()->find()->select('id'))
+            array_values(iterator_to_array($this->table()->find()->select('id')))
         );
         $this->assertSame(
             [['ID' => '50'], ['ID' => '140'], ['ID' => '220'], ['ID' => '310'], ['ID' => '450'], ['ID' => '520'], ['ID' => '670'], ['ID' => '710'], ['ID' => '890']],
-            iterator_to_array($this->table()->find()->select(function ($row) {
+            array_values(iterator_to_array($this->table()->find()->select(function ($row) {
                 return ['ID' => \strval(10 * $row['id'])];
-            }))
+            })))
         );
         $this->assertSame(
             [
@@ -82,9 +82,9 @@ class QueryTest extends TestCase
                 ['ID' => '710', 'mark' => 'Nissan'],
                 ['ID' => '890', 'mark' => 'Nissan'],
             ],
-            iterator_to_array($this->table()->find()->select(function ($row) {
+            array_values(iterator_to_array($this->table()->find()->select(function ($row) {
                 return ['ID' => \strval(10 * $row['id'])];
-            })->addSelect('mark'))
+            })->addSelect('mark')))
         );
     }
 
@@ -97,6 +97,12 @@ class QueryTest extends TestCase
         $this->assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
             array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')))
+        );
+        $this->assertSame(
+            [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort(function ($row1, $row2) {
+                return -($row1['price'] <=> $row2['price']);
+            })))
         );
         $this->assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 52], ['id' => 22], ['id' => 14]],
@@ -153,13 +159,58 @@ class QueryTest extends TestCase
     public function testForcedChaining()
     {
         $filtered = $this->table()->find($this->expr()->lte('price', 1500));
-        $sorted   = (new Query($filtered))->addSort('mark');
+        $sorted   = (new Query($filtered))->sort('mark');
         $limited  = (new Query($sorted))->limit(0, 2);
         $final    = (new Query($limited))->select('id');
 
         $this->assertSame(
-            [5 => ['id' => 52], 8 => ['id' => 89]],
+            [52 => ['id' => 52], 89 => ['id' => 89]],
             iterator_to_array($final)
+        );
+    }
+
+    public function testImplementedChaining()
+    {
+        $final = $this->table()->find($this->expr()->lte('price', 1500))
+            ->chain()->addSort('mark')
+            ->chain()->limit(0, 2)
+            ->chain()->select('id');
+
+        $this->assertSame(
+            [52 => ['id' => 52], 89 => ['id' => 89]],
+            iterator_to_array($final)
+        );
+    }
+
+    public function testFromMethodIdenticalAsConstructor()
+    {
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
+
+        $query1 = new Query(new \ArrayIterator($data));
+        $query2 = (new Query())->from(new \ArrayIterator($data));
+
+        $this->assertSame(iterator_to_array($query1), iterator_to_array($query2));
+    }
+
+    public function testStandarSelectFrom()
+    {
+        $data  = PhpFileStorageTest::pfdbStorage()->load('vehicle');
+        $query = new Query(new \ArrayIterator($data));
+
+        $this->assertSame(
+            [
+                4 => [
+                    'id'    => 45,
+                    'mark'  => 'Citroen',
+                    'color' => 'Yellow',
+                    'price' => '1800',
+                ],
+            ],
+            iterator_to_array($query->select()->where(
+                $this->expr()->and(
+                    $this->expr()->eq('color', 'Yellow', false)
+                )
+            ))
         );
     }
 }

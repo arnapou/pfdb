@@ -91,4 +91,9 @@ class LockedStorage implements StorageInterface
     {
         return $this->storage->tableNames();
     }
+
+    public function innerStorage(): StorageInterface
+    {
+        return $this->storage;
+    }
 }

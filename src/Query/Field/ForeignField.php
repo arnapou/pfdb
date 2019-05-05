@@ -62,10 +62,20 @@ class ForeignField implements FieldInterface
         return $this;
     }
 
+    public function isSelectAll(): bool
+    {
+        return $this->selectAll;
+    }
+
     public function selectArray(bool $array = true): self
     {
         $this->selectArray = $array;
         return $this;
+    }
+
+    public function isSelectArray(): bool
+    {
+        return $this->selectArray;
     }
 
     public function name(): string
@@ -94,7 +104,7 @@ class ForeignField implements FieldInterface
             $foreignRow = $this->foreignTable->get($row[$this->name]);
             if (\is_object($this->foreignName) && \is_callable($this->foreignName)) {
                 return \call_user_func($this->foreignName, $foreignRow, $row[$this->name]);
-            } else {
+            } elseif ($this->foreignName !== null) {
                 return $foreignRow[$this->foreignName] ?? null;
             }
         }
@@ -108,7 +118,7 @@ class ForeignField implements FieldInterface
 
             if (!$this->selectAll) {
                 if (\is_object($this->foreignName) && \is_callable($this->foreignName)) {
-                    $value = null;
+                    return \call_user_func($this->foreignName, $foreignRow, $row[$this->name]);
                 } else {
                     $value = $foreignRow[$this->foreignName] ?? null;
                 }

@@ -13,13 +13,44 @@ namespace Arnapou\PFDB\Storage;
 
 interface StorageInterface
 {
+    /**
+     * Used by Table object when it is instanciated.
+     *
+     * @param string $name
+     * @return array
+     */
     public function load(string $name): array;
 
+    /**
+     * Used by Table object when the flush is triggered.
+     *
+     * @param string $name
+     * @param array  $data
+     */
     public function save(string $name, array $data): void;
 
-    public function delete(string $name): void;
-
+    /**
+     * Used by Table object.
+     * This is the real source readonly flag, not the Table readonly flag which avoid the table flush.
+     *
+     * If you dont care writing, just return true.
+     *
+     * @param string $name
+     * @return bool
+     */
     public function isReadonly(string $name): bool;
 
+    /**
+     * Use by Database object, no need to implement if you directly use Table objects
+     *
+     * @return array
+     */
+    public function delete(string $name): void;
+
+    /**
+     * Use by Database object, no need to implement if you directly use Table objects
+     *
+     * @return array
+     */
     public function tableNames(): array;
 }

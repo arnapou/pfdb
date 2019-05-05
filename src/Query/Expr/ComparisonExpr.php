@@ -162,7 +162,7 @@ class ComparisonExpr implements ExprInterface
                     $this->value = '/' . $this->value . '/' . ($this->caseSensitive ? '' : 'i');
                 } elseif (!$this->caseSensitive) {
                     $flags = substr($this->value, strrpos($this->value, $this->value[0]) + 1);
-                    if (strpos($flags, 'i') !== false) {
+                    if (strpos($flags, 'i') === false) {
                         $this->value .= 'i';
                     }
                 }

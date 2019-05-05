@@ -9,12 +9,14 @@
  * file that was distributed with this source code.
  */
 
+use Arnapou\PFDB\DatabaseReadonly;
+use Arnapou\PFDB\Storage\PhpFileStorage;
+
 include __DIR__ . '/functions.php';
 include __DIR__ . '/../vendor/autoload.php';
 
-$storage  = new Arnapou\PFDB\Storage\PhpFileStorage(__DIR__ . '/database');
-$database = new Arnapou\PFDB\Database($storage);
-$database->setReadonly(true); // avoid automatic save at end of script
+$storage  = new PhpFileStorage(__DIR__ . '/database');
+$database = new DatabaseReadonly($storage);
 
 $colors   = $database->getTable('color');
 $marks    = $database->getTable('mark');
