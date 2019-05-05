@@ -49,10 +49,10 @@ class GroupIterator implements \IteratorAggregate
     public function getIterator(): Traversable
     {
         $grouped = [];
-        foreach ($this->iterator as $row) {
-            $key           = $this->getKey($row);
-            $value         = \array_key_exists($key, $grouped) ? $grouped[$key] : $this->initial;
-            $grouped[$key] = \call_user_func($this->reduce, $value, $row);
+        foreach ($this->iterator as $key => $row) {
+            $groupKey           = $this->getGroupKey($row, $key);
+            $value              = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
+            $grouped[$groupKey] = \call_user_func($this->reduce, $value, $row);
         }
         if ($this->onfinish) {
             $grouped = array_map($this->onfinish, $grouped);
@@ -60,12 +60,12 @@ class GroupIterator implements \IteratorAggregate
         return new \ArrayIterator(array_values($grouped));
     }
 
-    private function getKey($row)
+    private function getGroupKey($row, $key)
     {
         $keys = [];
         foreach ($this->fields as $field) {
             if (\is_object($field) && \is_callable($field)) {
-                $keys[] = $field($row);
+                $keys[] = $field($row, $key);
             } else {
                 $keys[] = $row[$field] ?? '';
             }
