@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Tests\Query\Expr;
 
+use Arnapou\PFDB\Exception\InvalidExprFieldException;
 use Arnapou\PFDB\Exception\InvalidExprOperatorException;
 use Arnapou\PFDB\Exception\InvalidExprValueException;
 use Arnapou\PFDB\Query\Expr\ComparisonExpr;
@@ -24,7 +25,7 @@ class ComparisonExprTest extends TestCase
 
     public function testConstructorExceptionField()
     {
-        $this->expectException(InvalidExprValueException::class);
+        $this->expectException(InvalidExprFieldException::class);
         new ComparisonExpr(new \stdClass(), '==', 42);
     }
 
@@ -63,13 +64,21 @@ class ComparisonExprTest extends TestCase
     public function testGetField()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        $this->assertSame('field', $expr->getField());
+        $this->assertIsCallable($expr->getField());
+        $this->assertSame(66, \call_user_func($expr->getField(), ['field' => 66], null));
+
+        $expr = new ComparisonExpr(42, '=', new Field('field'), false);
+        $this->assertSame(42, \call_user_func($expr->getField(), ['we dont care the value']));
     }
 
     public function testGetValue()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        $this->assertSame(42, $expr->getValue());
+        $this->assertIsCallable($expr->getValue());
+        $this->assertSame(42, \call_user_func($expr->getValue(), ['we dont care the value']));
+
+        $expr = new ComparisonExpr(42, '=', new Field('field'), false);
+        $this->assertSame(66, \call_user_func($expr->getValue(), ['field' => 66], null));
     }
 
     public function testIsCaseSensitive()
