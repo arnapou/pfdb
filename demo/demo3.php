@@ -30,12 +30,12 @@ print_table('All vehicles with corresponding names', function () use ($colors, $
     return $vehicles->find()
         ->select(
             'id',
-            $vehicles->expr()->foreignField(
+            $vehicles->fields()->parent(
                 'color_id',  // field name
                 $colors,     // foreign table
                 'name'       // foreign name
             ),
-            $vehicles->expr()->foreignField(
+            $vehicles->fields()->parent(
                 'mark_id',
                 $marks
             ),
@@ -46,7 +46,7 @@ print_table('All vehicles with corresponding names', function () use ($colors, $
 print_table('Filter on color name without displaying it', function () use ($colors, $marks, $vehicles) {
     return $vehicles->find(
         $vehicles->expr()->eq(
-            $vehicles->expr()->foreignField(
+            $vehicles->fields()->parent(
                 'color_id',  // field name
                 $colors,     // foreign table
                 'name'       // foreign name
@@ -59,7 +59,7 @@ print_table('Filter on color name without displaying it', function () use ($colo
 print_table('Multiple filters (color + mark)', function () use ($colors, $marks, $vehicles) {
     return $vehicles->find(
         $vehicles->expr()->eq(
-            $vehicles->expr()->foreignField(
+            $vehicles->fields()->parent(
                 'color_id',  // field name
                 $colors,     // foreign table
                 'name'       // foreign name
@@ -67,7 +67,7 @@ print_table('Multiple filters (color + mark)', function () use ($colors, $marks,
             'Red'
         ),
         $vehicles->expr()->contains(
-            $vehicles->expr()->foreignField(
+            $vehicles->fields()->parent(
                 'mark_id',  // field name
                 $marks,     // foreign table
                 'name'       // foreign name
