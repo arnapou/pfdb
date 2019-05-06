@@ -41,6 +41,14 @@ class ComparisonExpr implements ExprInterface
      */
     private $not = false;
 
+    /**
+     * @param string|FieldValueInterface|callable $field
+     * @param string                              $operator
+     * @param mixed|FieldValueInterface|callable  $value
+     * @param bool                                $caseSensitive
+     * @throws InvalidExprFieldException
+     * @throws InvalidExprValueException
+     */
     public function __construct($field, string $operator, $value, bool $caseSensitive = true)
     {
         $this->caseSensitive = $caseSensitive;
