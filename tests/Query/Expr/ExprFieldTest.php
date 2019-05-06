@@ -11,26 +11,28 @@
 
 namespace Arnapou\PFDB\Tests\Query\Expr;
 
-use Arnapou\PFDB\Query\Helper\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
+use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Tests\Query\Field\ForeignFieldTest;
 use PHPUnit\Framework\TestCase;
 
 class ExprFieldTest extends TestCase
 {
-    use ExprTrait;
+    use ExprHelperTrait;
+    use FieldsHelperTrait;
 
-    public function testField()
+    public function test_normal_field()
     {
-        $this->assertSame('test', $this->expr()->field('test')->name());
+        $this->assertSame('test', $this->fields()->normal('test')->name());
     }
 
-    public function testKeyField()
+    public function test_key_field()
     {
-        $this->assertSame('test', $this->expr()->keyField('test')->name());
+        $this->assertSame('test', $this->fields()->key('test')->name());
     }
 
-    public function testForeignField()
+    public function test_parent_field()
     {
-        $this->assertSame('fkid', $this->expr()->foreignField('fkid', ForeignFieldTest::foreignTable(), null)->name());
+        $this->assertSame('fkid', $this->fields()->parent('fkid', ForeignFieldTest::foreignTable(), null)->name());
     }
 }

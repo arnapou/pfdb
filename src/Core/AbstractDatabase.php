@@ -14,12 +14,14 @@ namespace Arnapou\PFDB\Core;
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Factory\TableFactory;
 use Arnapou\PFDB\Factory\TableFactoryInterface;
-use Arnapou\PFDB\Query\Helper\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
+use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Storage\StorageInterface;
 
 abstract class AbstractDatabase implements DatabaseInterface
 {
-    use ExprTrait;
+    use ExprHelperTrait;
+    use FieldsHelperTrait;
 
     /**
      * @var StorageInterface

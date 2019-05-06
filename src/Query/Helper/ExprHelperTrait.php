@@ -11,14 +11,14 @@
 
 namespace Arnapou\PFDB\Query\Helper;
 
-trait ExprTrait
+trait ExprHelperTrait
 {
     private $pfdbExprHelper = null;
 
-    public function expr(): Expr
+    public function expr(): ExprHelper
     {
         if (!$this->pfdbExprHelper) {
-            $this->pfdbExprHelper = new Expr();
+            $this->pfdbExprHelper = new ExprHelper();
         }
         return $this->pfdbExprHelper;
     }

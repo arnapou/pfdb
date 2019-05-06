@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class MultipleStorageTest extends TestCase
 {
-    public function testMisc()
+    public function test_misc()
     {
         $child1  = new ArrayStorage(['table1' => [['data1' => 1]]]);
         $child2  = new ArrayStorage(['table2' => [['data2' => 2]]]);
@@ -45,14 +45,14 @@ class MultipleStorageTest extends TestCase
         $this->assertNull($storage->findChild('table3'));
     }
 
-    public function testSaveException()
+    public function test_exception_on_save()
     {
         $storage = new MultipleStorage();
         $this->expectException(StorageException::class);
         $storage->save('we_dont_care', []);
     }
 
-    public function testDeleteException()
+    public function test_exception_on_delete()
     {
         $storage = new MultipleStorage();
         $this->expectException(StorageException::class);

@@ -13,7 +13,7 @@ namespace Arnapou\PFDB\Query\Field;
 
 use Arnapou\PFDB\Table;
 
-class ForeignField implements FieldInterface
+class ParentField implements FieldInterface
 {
     /**
      * @var string
@@ -26,11 +26,11 @@ class ForeignField implements FieldInterface
     /**
      * @var Table
      */
-    private $foreignTable;
+    private $parentTable;
     /**
      * @var string
      */
-    private $foreignName;
+    private $parentField;
     /**
      * @var bool
      */
@@ -41,19 +41,18 @@ class ForeignField implements FieldInterface
     private $selectArray = false;
 
     /**
-     * ForeignField constructor.
-     * @param string               $name         current table foreign key
-     * @param Table                $foreignTable foreign table object
-     * @param null|string|callable $foreignName  used for Expression / Filtering
-     * @param null|string          $selectAlias  alias used in select (default will be table name)
+     * @param string               $name        current table foreign key
+     * @param Table                $parentTable parent table object
+     * @param null|string|callable $parentField used for Expression / Filtering
+     * @param null|string          $selectAlias alias used in select (default will be table name)
      */
-    public function __construct(string $name, Table $foreignTable, $foreignName, ?string $selectAlias = null)
+    public function __construct(string $name, Table $parentTable, $parentField, ?string $selectAlias = null)
     {
-        $this->name         = $name;
-        $this->foreignName  = $foreignName;
-        $this->foreignTable = $foreignTable;
-        $this->selectAlias  = $selectAlias ?: $foreignTable->getName();
-        $this->selectAll    = \is_object($foreignName) && \is_callable($foreignName) ? true : ($foreignName ? false : true);
+        $this->name        = $name;
+        $this->parentField = $parentField;
+        $this->parentTable = $parentTable;
+        $this->selectAlias = $selectAlias ?: $parentTable->getName();
+        $this->selectAll   = \is_object($parentField) && \is_callable($parentField) ? true : ($parentField ? false : true);
     }
 
     public function selectAll(bool $all = true): self
@@ -88,24 +87,24 @@ class ForeignField implements FieldInterface
         return $this->selectAlias;
     }
 
-    public function getForeignName(): string
+    public function getParentField(): string
     {
-        return $this->foreignName;
+        return $this->parentField;
     }
 
-    public function getForeignTable(): Table
+    public function getParentTable(): Table
     {
-        return $this->foreignTable;
+        return $this->parentTable;
     }
 
     public function value(array $row, $key = null)
     {
         if (isset($row[$this->name])) {
-            $foreignRow = $this->foreignTable->get($row[$this->name]);
-            if (\is_object($this->foreignName) && \is_callable($this->foreignName)) {
-                return \call_user_func($this->foreignName, $foreignRow, $row[$this->name]);
-            } elseif ($this->foreignName !== null) {
-                return $foreignRow[$this->foreignName] ?? null;
+            $foreignRow = $this->parentTable->get($row[$this->name]);
+            if (\is_object($this->parentField) && \is_callable($this->parentField)) {
+                return \call_user_func($this->parentField, $foreignRow, $row[$this->name]);
+            } elseif ($this->parentField !== null) {
+                return $foreignRow[$this->parentField] ?? null;
             }
         }
         return null;
@@ -114,13 +113,13 @@ class ForeignField implements FieldInterface
     public function select(array $row, $key = null): array
     {
         if (isset($row[$this->name])) {
-            $foreignRow = $this->foreignTable->get($row[$this->name]);
+            $foreignRow = $this->parentTable->get($row[$this->name]);
 
             if (!$this->selectAll) {
-                if (\is_object($this->foreignName) && \is_callable($this->foreignName)) {
-                    return \call_user_func($this->foreignName, $foreignRow, $row[$this->name]);
+                if (\is_object($this->parentField) && \is_callable($this->parentField)) {
+                    return \call_user_func($this->parentField, $foreignRow, $row[$this->name]);
                 } else {
-                    $value = $foreignRow[$this->foreignName] ?? null;
+                    $value = $foreignRow[$this->parentField] ?? null;
                 }
                 return [$this->selectAlias => $value];
             } elseif ($this->selectArray) {

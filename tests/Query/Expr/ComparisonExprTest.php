@@ -16,52 +16,52 @@ use Arnapou\PFDB\Exception\InvalidExprOperatorException;
 use Arnapou\PFDB\Exception\InvalidExprValueException;
 use Arnapou\PFDB\Query\Expr\ComparisonExpr;
 use Arnapou\PFDB\Query\Field\Field;
-use Arnapou\PFDB\Query\Helper\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use PHPUnit\Framework\TestCase;
 
 class ComparisonExprTest extends TestCase
 {
-    use ExprTrait;
+    use ExprHelperTrait;
 
-    public function testConstructorExceptionField()
+    public function test_constructor_exception_field()
     {
         $this->expectException(InvalidExprFieldException::class);
         new ComparisonExpr(new \stdClass(), '==', 42);
     }
 
-    public function testConstructorExceptionValue()
+    public function test_constructor_exception_value()
     {
         $this->expectException(InvalidExprValueException::class);
         new ComparisonExpr('field', '==', new \stdClass());
     }
 
-    public function testConstructorExceptionOperator()
+    public function test_constructor_exception_operator()
     {
         $this->expectException(InvalidExprOperatorException::class);
         $expr = new ComparisonExpr('field', '(unknown)', 42);
         $expr(['field' => 42], null);
     }
 
-    public function testContainsEmptyShouldNotRaiseException()
+    public function test_contains_empty_should_not_raise_an_exception()
     {
         $expr = new ComparisonExpr('field', '*', '');
         $expr(['field' => 42], null);
         $this->assertTrue(true);
     }
 
-    public function testInvertFields()
+    public function test_swap_field_and_value()
     {
         $expr = new ComparisonExpr(42, '=', new Field('field'));
         $this->assertTrue($expr(['field' => 42], null));
     }
 
-    public function testRegexpNonCaseSensitive()
+    public function test_regexp_non_case_sensitive()
     {
         $expr = new ComparisonExpr('field', 'regexp', '/^[a-z]+$/', false);
         $this->assertTrue($expr(['field' => 'ABCDEF'], null));
     }
 
-    public function testGetField()
+    public function test_get_field()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         $this->assertIsCallable($expr->getField());
@@ -71,7 +71,7 @@ class ComparisonExprTest extends TestCase
         $this->assertSame(42, \call_user_func($expr->getField(), ['we dont care the value']));
     }
 
-    public function testGetValue()
+    public function test_get_value()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         $this->assertIsCallable($expr->getValue());
@@ -81,7 +81,7 @@ class ComparisonExprTest extends TestCase
         $this->assertSame(66, \call_user_func($expr->getValue(), ['field' => 66], null));
     }
 
-    public function testIsCaseSensitive()
+    public function test_is_case_sensitive()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         $this->assertSame(false, $expr->isCaseSensitive());

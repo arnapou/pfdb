@@ -16,7 +16,8 @@ use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Exception\ValueNotFoundException;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
-use Arnapou\PFDB\Query\Helper\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
+use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\StorageInterface;
 use IteratorAggregate;
@@ -24,7 +25,8 @@ use Traversable;
 
 abstract class AbstractTable implements IteratorAggregate, TableInterface
 {
-    use ExprTrait;
+    use ExprHelperTrait;
+    use FieldsHelperTrait;
 
     /**
      * @var string

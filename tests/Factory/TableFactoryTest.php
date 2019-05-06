@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class TableFactoryTest extends TestCase
 {
-    public function testGetterSetter()
+    public function test_getters_and_setters()
     {
         $factory = new TableFactory('id');
 
@@ -30,7 +30,7 @@ class TableFactoryTest extends TestCase
         $this->assertSame(Table::class, $factory->setTableClass(Table::class)->getTableClass());
     }
 
-    public function testTableClassException()
+    public function test_set_table_exception()
     {
         $factory = new TableFactory();
 

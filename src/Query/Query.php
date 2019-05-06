@@ -14,7 +14,8 @@ namespace Arnapou\PFDB\Query;
 use Arnapou\PFDB\Query\Expr\AndExpr;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Expr\NestedExprInterface;
-use Arnapou\PFDB\Query\Helper\ExprTrait;
+use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
+use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
 use Arnapou\PFDB\Query\Iterator\SelectIterator;
 use Arnapou\PFDB\Query\Iterator\SortIterator;
@@ -26,7 +27,8 @@ use Traversable;
 
 class Query implements \IteratorAggregate
 {
-    use ExprTrait;
+    use ExprHelperTrait;
+    use FieldsHelperTrait;
 
     /**
      * @var array|callable

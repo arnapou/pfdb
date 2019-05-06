@@ -16,13 +16,13 @@ use PHPUnit\Framework\TestCase;
 
 class KeyFieldTest extends TestCase
 {
-    public function testName()
+    public function test_name()
     {
         $field = new KeyField(':key');
         $this->assertSame(':key', $field->name());
     }
 
-    public function testValue()
+    public function test_value()
     {
         $field = new KeyField(':key');
 
