@@ -121,6 +121,12 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return false;
     }
 
+    public function clear(): self
+    {
+        $this->data = [];
+        return $this;
+    }
+
     protected function load(array $rows)
     {
         if ($this->primaryKey) {

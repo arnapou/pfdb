@@ -170,4 +170,17 @@ class TableTest extends TestCase
             2 => ['price' => 200],
         ], $table->getData());
     }
+
+    public function testClear()
+    {
+        $table = new Table(new ArrayStorage(), 'test', null);
+
+        $table->upsert(['price' => 100]);
+        $table->upsert(['price' => 150]);
+        $table->upsert(['price' => 200]);
+        $this->assertCount(3, $table);
+
+        $table->clear();
+        $this->assertCount(0, $table);
+    }
 }

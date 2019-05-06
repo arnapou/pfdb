@@ -47,4 +47,6 @@ interface TableInterface extends Traversable, Countable
     public function deleteMultiple(ExprInterface $expr);
 
     public function flush(): bool;
+
+    public function clear();
 }
