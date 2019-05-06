@@ -91,9 +91,9 @@ class ComparisonExpr implements ExprInterface
             case '<=':
                 return $value1 <= $value2;
             case '*':
-                return strpos($value1, $value2) !== false;
+                return $value2 !== '' ? strpos($value1, $value2) !== false : true;
             case '^':
-                return strpos($value1, $value2) === 0;
+                return $value2 !== '' ? strpos($value1, $value2) === 0 : true;
             case '$':
                 return substr($value1, -\strlen($value2)) === "$value2";
             case 'in':

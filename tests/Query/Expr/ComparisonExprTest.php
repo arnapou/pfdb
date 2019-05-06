@@ -41,6 +41,13 @@ class ComparisonExprTest extends TestCase
         $expr(['field' => 42], null);
     }
 
+    public function testContainsEmptyShouldNotRaiseException()
+    {
+        $expr = new ComparisonExpr('field', '*', '');
+        $expr(['field' => 42], null);
+        $this->assertTrue(true);
+    }
+
     public function testInvertFields()
     {
         $expr = new ComparisonExpr(42, '=', new Field('field'));
