@@ -86,9 +86,20 @@ function mdToHtml($md)
 {
     $html = $md;
 
+    $links    = [];
+    $linkscb1 = function ($matches) use (&$links) {
+        $links[] = '<a href="' . $matches[3] . '"><img src="' . $matches[2] . '"></a>';
+        return 'LNK' . (\count($links) - 1) . 'LNK';
+    };
+    $linkscb2 = function ($matches) use (&$links) {
+        return $links[$matches[1]];
+    };
+
+    // images
+    $html = preg_replace_callback('!\[\!\[(.+?)\]\((.+?)\)\]\((.+?)\)!si', $linkscb1, $html);
+
     // specific to this project
     $html = preg_replace('!(?:\n|^)[^\n\r]*?https?://pfdb.arnapou.net[^\n\r]*?\n!si', "\n", $html);
-
 
     // generic
     $html = preg_replace('!\*\*([^\n\r]+?)\*\*!si', '<strong>$1</strong>', $html);
@@ -123,6 +134,7 @@ function mdToHtml($md)
     $html = preg_replace('!</ol>\s*<ol>!si', '', $html);
     $html = preg_replace('!</blockquote>\s*<blockquote>!si', '', $html);
     $html = preg_replace('!</pre>\s*<pre>!si', "\n", $html);
+    $html = preg_replace_callback('!LNK(\d+)LNK!s', $linkscb2, $html);
 
     return $html;
 }
