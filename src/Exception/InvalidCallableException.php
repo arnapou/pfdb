@@ -11,6 +11,6 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidExprFieldException extends PFDBException
+class InvalidCallableException extends PFDBException
 {
 }

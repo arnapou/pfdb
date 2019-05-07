@@ -24,7 +24,7 @@ class FieldsHelper
         return new Field($name);
     }
 
-    public function value(string $value): Value
+    public function value($value): Value
     {
         return new Value($value);
     }

@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB\Tests\Query\Expr;
 
-use Arnapou\PFDB\Exception\InvalidExprValueException;
+use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use PHPUnit\Framework\TestCase;
@@ -178,13 +178,13 @@ class ExprTest extends TestCase
 
     public function test_IN_wrong_value()
     {
-        $this->expectException(InvalidExprValueException::class);
+        $this->expectException(InvalidValueException::class);
         \call_user_func($this->expr()->in('test', 'not_an_array'), ['test' => 'foo bar']);
     }
 
     public function test_MATCH_wrong_value()
     {
-        $this->expectException(InvalidExprValueException::class);
+        $this->expectException(InvalidValueException::class);
         \call_user_func($this->expr()->match('test', ['not', 'a', 'string']), ['test' => 'foo bar']);
     }
 

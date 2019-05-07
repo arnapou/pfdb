@@ -11,6 +11,6 @@
 
 namespace Arnapou\PFDB\Exception;
 
-class InvalidExprValueException extends PFDBException
+class InvalidOperatorException extends PFDBException
 {
 }

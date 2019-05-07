@@ -11,15 +11,18 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
-use Arnapou\PFDB\Exception\InvalidExprFieldException;
-use Arnapou\PFDB\Exception\InvalidExprOperatorException;
-use Arnapou\PFDB\Exception\InvalidExprValueException;
+use Arnapou\PFDB\Exception\InvalidFieldException;
+use Arnapou\PFDB\Exception\InvalidOperatorException;
+use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
 use Arnapou\PFDB\Query\Field\Value;
+use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 
 class ComparisonExpr implements ExprInterface
 {
+    use SanitizeHelperTrait;
+
     /**
      * @var callable
      */
@@ -46,15 +49,16 @@ class ComparisonExpr implements ExprInterface
      * @param string                              $operator
      * @param mixed|FieldValueInterface|callable  $value
      * @param bool                                $caseSensitive
-     * @throws InvalidExprFieldException
-     * @throws InvalidExprValueException
+     * @throws InvalidFieldException
+     * @throws InvalidOperatorException
+     * @throws InvalidValueException
      */
     public function __construct($field, string $operator, $value, bool $caseSensitive = true)
     {
         $this->caseSensitive = $caseSensitive;
-        $this->operator      = $this->sanitizeOperator($operator);
+        $this->operator      = $this->sanitizeOperator($operator, $this->not);
         $this->field         = $this->sanitizeField($field);
-        $this->value         = $this->sanitizeValue($value);
+        $this->value         = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
     public function __invoke(array $row, $key = null): bool
@@ -116,79 +120,7 @@ class ComparisonExpr implements ExprInterface
             case 'regexp':
                 return preg_match($value, $field) ? true : false;
         }
-        throw new InvalidExprOperatorException('Operator = ' . $this->operator);
-    }
-
-    private function sanitizeOperator(string $operator): string
-    {
-        $sanitized = strtolower($operator);
-        if (strpos($sanitized, 'not') !== false) {
-            $this->not = true;
-            $sanitized = trim(str_replace('not', '', $sanitized));
-        }
-        $aliases = [
-            'match' => 'regexp',
-            'regex' => 'regexp',
-            '~'     => 'regexp',
-            '='     => '==',
-            '<>'    => '!=',
-        ];
-        if (\array_key_exists($sanitized, $aliases)) {
-            $sanitized = $aliases[$sanitized];
-        }
-        return $sanitized;
-    }
-
-    private function sanitizeField($field): callable
-    {
-        if (\is_string($field)) {
-            return [new Field($field), 'value'];
-        } elseif ($field instanceof FieldValueInterface) {
-            return [$field, 'value'];
-        } elseif (\is_object($field) && \is_callable($field)) {
-            return $field;
-        } elseif (is_scalar($field)) {
-            return [new Value($field), 'value'];
-        }
-        throw new InvalidExprFieldException();
-    }
-
-    private function sanitizeValue($value): callable
-    {
-        if (\in_array($this->operator, ['like', 'regexp']) && !\is_string($value)) {
-            throw new InvalidExprValueException('Value for operator "' . $this->operator . '" should be a string');
-        }
-        if (\in_array($this->operator, ['in']) && !\is_array($value)) {
-            throw new InvalidExprValueException('Value for operator "' . $this->operator . '" should be an array');
-        }
-
-        switch ($this->operator) {
-            case 'like':
-                $value = '/^' . preg_quote($value) . '$/' . ($this->caseSensitive ? '' : 'i');
-                $value = str_replace('_', '.', $value);
-                $value = str_replace('%', '.*', $value);
-                break;
-            case 'regexp':
-                $char = $value[0] === '/' ? '\\/' : preg_quote($value[0]);
-                if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $value)) {
-                    $value = '/' . $value . '/' . ($this->caseSensitive ? '' : 'i');
-                } elseif (!$this->caseSensitive) {
-                    $flags = substr($value, strrpos($value, $value[0]) + 1);
-                    if (strpos($flags, 'i') === false) {
-                        $value .= 'i';
-                    }
-                }
-                break;
-        }
-
-        if ($value instanceof FieldValueInterface) {
-            return [$value, 'value'];
-        } elseif (\is_object($value) && \is_callable($value)) {
-            return $value;
-        } elseif (\is_scalar($value) || \is_array($value)) {
-            return [new Value($value), 'value'];
-        }
-        throw new InvalidExprValueException();
+        throw new InvalidOperatorException('Operator = ' . $this->operator);
     }
 
     public function getField(): callable
