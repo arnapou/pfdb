@@ -44,21 +44,29 @@ class ParentField implements FieldInterface
      * @var bool
      */
     private $selectArray = false;
+    /**
+     * @var callable
+     */
+    private $parentRow;
 
     /**
      * @param string|FieldValueInterface|callable      $name        current table foreign key
      * @param Table                                    $parentTable parent table object
      * @param string|FieldValueInterface|callable|null $parentField used for Expression / Filtering
      * @param null|string                              $selectAlias alias used in select (default will be table name)
+     * @param callable|null $parentRow                              default is null because it gets the parent by its "primary key"
+     *                                                              (Table::get method) but you can define your own method to get the
+     *                                                              parent row but in this case you must be carefull about performance !
      * @throws InvalidFieldException
      */
-    public function __construct($name, Table $parentTable, $parentField = null, ?string $selectAlias = null)
+    public function __construct($name, Table $parentTable, $parentField = null, ?string $selectAlias = null, ?callable $parentRow = null)
     {
         $this->name        = $this->sanitizeField($name);
         $this->parentTable = $parentTable;
         $this->parentField = $parentField === null ? null : $this->sanitizeField($parentField);
         $this->selectAlias = $selectAlias ?: $parentTable->getName();
         $this->selectAll   = $parentField === null ? true : false;
+        $this->parentRow   = $parentRow;
     }
 
     public function selectAll(bool $all = true): self
@@ -111,7 +119,9 @@ class ParentField implements FieldInterface
         if ($this->parentField) {
             $value = \call_user_func($this->name, $row, $key);
             if (null !== $value) {
-                $parentRow = $this->parentTable->get($value);
+                $parentRow = $this->parentRow === null
+                    ? $this->parentTable->get($value)
+                    : \call_user_func($this->parentRow, $value);
                 if (null === $parentRow) {
                     return null;
                 }
@@ -125,7 +135,9 @@ class ParentField implements FieldInterface
     {
         $value = \call_user_func($this->name, $row, $key);
         if (null !== $value) {
-            $parentRow = $this->parentTable->get($value);
+            $parentRow = $this->parentRow === null
+                ? $this->parentTable->get($value)
+                : \call_user_func($this->parentRow, $value);
             if (null === $parentRow) {
                 return [$this->selectAlias => null];
             }

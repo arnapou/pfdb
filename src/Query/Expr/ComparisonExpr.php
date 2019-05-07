@@ -120,7 +120,13 @@ class ComparisonExpr implements ExprInterface
             case 'regexp':
                 return preg_match($value, $field) ? true : false;
         }
-        throw new InvalidOperatorException('Operator = ' . $this->operator);
+        // ------------------------
+        // @codeCoverageIgnoreStart
+        // -> this code should NEVER happen because the operator is sanitized in the object construction
+        trigger_error('Operator not implemented', E_USER_ERROR);
+        return false;
+        // ------------------------
+        // @codeCoverageIgnoreEnd
     }
 
     public function getField(): callable

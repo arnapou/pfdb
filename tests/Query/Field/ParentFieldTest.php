@@ -147,4 +147,50 @@ class ParentFieldTest extends TestCase
         $this->expectException(InvalidCallableException::class);
         $this->assertSame(['row' => ['id' => 2, 'name' => 'Green'], 'key' => 2], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
+
+    public function test_parent_row_in_value_method()
+    {
+        $field = new ParentField('fkid', self::foreignTable(), 'name', null, function ($value) {
+            return self::foreignTable()->get($value + 1);
+        });
+        $this->assertSame('Blue', $field->value(['toy' => 'balloon', 'fkid' => 2]));
+
+        $field = new ParentField(
+            function ($row, $key) {
+                return $row['10times_fkid'] / 10;
+            },
+            self::foreignTable(),
+            function ($row, $key) {
+                return 'The color is ' . $row['name'];
+            },
+            null,
+            function ($value) {
+                return self::foreignTable()->get($value + 1);
+            }
+        );
+        $this->assertSame('The color is Blue', $field->value(['toy' => 'balloon', '10times_fkid' => 20]));
+    }
+
+    public function test_parent_row_in_select_method()
+    {
+        $field = new ParentField('fkid', self::foreignTable(), 'name', null, function ($value) {
+            return self::foreignTable()->get($value + 1);
+        });
+        $this->assertSame(['color' => 'Blue'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
+
+        $field = new ParentField(
+            function ($row, $key) {
+                return $row['10times_fkid'] / 10;
+            },
+            self::foreignTable(),
+            function ($row, $key) {
+                return 'The color is ' . $row['name'];
+            },
+            null,
+            function ($value) {
+                return self::foreignTable()->get($value + 1);
+            }
+        );
+        $this->assertSame(['color' => 'The color is Blue'], $field->select(['toy' => 'balloon', '10times_fkid' => 20]));
+    }
 }

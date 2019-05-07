@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Query\Expr;
+namespace Arnapou\PFDB\Tests\Query\Helper;
 
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Tests\Query\Field\ParentFieldTest;
 use PHPUnit\Framework\TestCase;
 
-class ExprFieldTest extends TestCase
+class FieldTest extends TestCase
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
