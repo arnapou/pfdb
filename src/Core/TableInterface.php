@@ -42,6 +42,8 @@ interface TableInterface extends Traversable, Countable
 
     public function upsert(array $value, $key = null);
 
+    public function insertMultiple(array $rows);
+
     public function updateMultiple(ExprInterface $expr, callable $function);
 
     public function deleteMultiple(ExprInterface $expr);

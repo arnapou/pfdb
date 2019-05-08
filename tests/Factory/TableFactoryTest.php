@@ -13,7 +13,7 @@ namespace Arnapou\PFDB\Tests\Factory;
 
 use Arnapou\PFDB\Database;
 use Arnapou\PFDB\Exception\InvalidTableClassException;
-use Arnapou\PFDB\Factory\TableFactory;
+use Arnapou\PFDB\Factory\StaticPKTableFactory;
 use Arnapou\PFDB\Table;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +21,7 @@ class TableFactoryTest extends TestCase
 {
     public function test_getters_and_setters()
     {
-        $factory = new TableFactory('id');
+        $factory = new StaticPKTableFactory('id');
 
         $this->assertSame('id', $factory->getDefaultPrimaryKey());
         $this->assertSame('pk', $factory->setDefaultPrimaryKey('pk')->getDefaultPrimaryKey());
@@ -32,7 +32,7 @@ class TableFactoryTest extends TestCase
 
     public function test_set_table_exception()
     {
-        $factory = new TableFactory();
+        $factory = new StaticPKTableFactory();
 
         $this->expectException(InvalidTableClassException::class);
 

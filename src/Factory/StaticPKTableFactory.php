@@ -11,18 +11,12 @@
 
 namespace Arnapou\PFDB\Factory;
 
-use Arnapou\PFDB\Core\AbstractTable;
 use Arnapou\PFDB\Core\TableInterface;
-use Arnapou\PFDB\Exception\InvalidTableClassException;
 use Arnapou\PFDB\Storage\StorageInterface;
 use Arnapou\PFDB\Table;
 
-class TableFactory implements TableFactoryInterface
+class StaticPKTableFactory extends AbstractTableFactory
 {
-    /**
-     * @var string
-     */
-    private $tableClass;
     /**
      * @var string|null
      */
@@ -31,21 +25,7 @@ class TableFactory implements TableFactoryInterface
     public function __construct(?string $defaultPrimaryKey = 'id')
     {
         $this->defaultPrimaryKey = $defaultPrimaryKey;
-        $this->tableClass        = Table::class;
-    }
-
-    public function getTableClass(): string
-    {
-        return $this->tableClass;
-    }
-
-    public function setTableClass(string $tableClass): self
-    {
-        if (!is_subclass_of($tableClass, AbstractTable::class)) {
-            throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
-        }
-        $this->tableClass = $tableClass;
-        return $this;
+        $this->setTableClass(Table::class);
     }
 
     public function getDefaultPrimaryKey(): ?string
@@ -61,7 +41,7 @@ class TableFactory implements TableFactoryInterface
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
-        $class = $this->tableClass;
+        $class = $this->getTableClass();
         return new $class($storage, $name, $this->defaultPrimaryKey);
     }
 }

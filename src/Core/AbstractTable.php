@@ -217,6 +217,14 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $query->where(...$exprs);
     }
 
+    public function insertMultiple(array $rows): self
+    {
+        foreach ($rows as $row) {
+            $this->insert($row);
+        }
+        return $this;
+    }
+
     public function updateMultiple(ExprInterface $expr, callable $function): self
     {
         foreach ($this->data as $key => $row) {
