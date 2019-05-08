@@ -54,7 +54,7 @@ class SortIterator implements \IteratorAggregate
         foreach ($sorts as $sort) {
             $sort  = (array)$sort;
             $field = $sort[0];
-            if (\is_object($field) && \is_callable($field)) {
+            if (!\is_scalar($field) && \is_callable($field)) {
                 $sanitized[] = $field;
             } else {
                 $sanitized[] = $this->createCallable($field, ($sort[1] ?? 'ASC') ?: 'ASC');

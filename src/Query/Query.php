@@ -134,7 +134,7 @@ class Query implements \IteratorAggregate
 
     public function addSort($field, string $order = 'ASC'): self
     {
-        if (\is_object($field) && \is_callable($field)) {
+        if (!\is_scalar($field) && \is_callable($field)) {
             $this->sorts[] = $field;
         } else {
             $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];

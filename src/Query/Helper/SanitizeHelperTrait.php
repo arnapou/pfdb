@@ -47,7 +47,7 @@ trait SanitizeHelperTrait
             return [new Field($field), 'value'];
         } elseif ($field instanceof FieldValueInterface) {
             return [$field, 'value'];
-        } elseif (\is_object($field) && \is_callable($field)) {
+        } elseif (!\is_scalar($field) && \is_callable($field)) {
             return $field;
         } elseif (is_scalar($field)) {
             return [new Value($field), 'value'];
@@ -85,7 +85,7 @@ trait SanitizeHelperTrait
 
         if ($value instanceof FieldValueInterface) {
             return [$value, 'value'];
-        } elseif (\is_object($value) && \is_callable($value)) {
+        } elseif (!\is_scalar($value) && \is_callable($value)) {
             return $value;
         } elseif (\is_scalar($value) || \is_array($value)) {
             return [new Value($value), 'value'];

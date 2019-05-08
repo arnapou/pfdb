@@ -64,7 +64,7 @@ class GroupIterator implements \IteratorAggregate
     {
         $keys = [];
         foreach ($this->fields as $field) {
-            if (\is_object($field) && \is_callable($field)) {
+            if (!\is_scalar($field) && \is_callable($field)) {
                 $keys[] = $field($row, $key);
             } else {
                 $keys[] = $row[$field] ?? '';
