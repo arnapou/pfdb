@@ -12,6 +12,7 @@
 namespace Arnapou\PFDB\Tests\Storage;
 
 use Arnapou\PFDB\ArrayTable;
+use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Table;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +41,7 @@ class ArrayTableTest extends TestCase
         $table->setReadonly(true);
         $this->assertSame(true, $table->isReadonly());
         $this->assertInstanceOf(Table::class, $table->getIterator());
-        
+
         $this->assertSame(false, $table->flush());
         $table->clear();
         $this->assertCount(0, $table);
@@ -87,6 +88,50 @@ class ArrayTableTest extends TestCase
         $table->insertMultiple([['id' => 60, 'name' => 'Purple'], ['name' => 'White']]);
         $this->assertSame(61, $table->getLastInsertedKey());
         $this->assertSame(['Purple', 'White'], array_column(iterator_to_array($table->find($this->expr()->gt('id', 20))), 'name'));
+    }
+
+    public function test_insert_multiple_with_exception_should_not_change_data()
+    {
+        $table = new ArrayTable(self::DATA, 'id');
+
+        $keys = array_keys($table->getData());
+        try {
+            $this->fail('a MultipleActionException should have been raised for the multiple insert');
+            $table->insertMultiple([['name' => 'White'], ['id' => 6, 'name' => 'Purple']]);
+        } catch (MultipleActionException $exception) {
+            $this->assertSame($keys, array_keys($table->getData()));
+        }
+    }
+
+    public function test_update_multiple_with_exception_should_not_change_data()
+    {
+        $table = new ArrayTable(self::DATA, 'id');
+
+        $keys = array_keys($table->getData());
+        try {
+            $table->updateMultiple($this->expr()->bool(true), function ($row, $key) {
+                $row['name'] .= $row['not_existsing_field_will_cause_error'];
+                return $row;
+            });
+            $this->fail('a MultipleActionException should have been raised for the multiple update');
+        } catch (MultipleActionException $exception) {
+            $this->assertSame($keys, array_keys($table->getData()));
+        }
+    }
+
+    public function test_delete_multiple_with_exception_should_not_change_data()
+    {
+        $table = new ArrayTable(self::DATA, 'id');
+
+        $keys = array_keys($table->getData());
+        try {
+            $table->deleteMultiple($this->expr()->func(function ($row, $key) {
+                return $row['not_existsing_field_will_cause_error'] == 42;
+            }));
+            $this->fail('a MultipleActionException should have been raised for the multiple delete');
+        } catch (MultipleActionException $exception) {
+            $this->assertSame($keys, array_keys($table->getData()));
+        }
     }
 
     public function test_upsert()

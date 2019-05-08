@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Core;
 
+use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Exception\PrimaryKeyAlreadyExistsException;
 use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;
 use Arnapou\PFDB\Exception\ReadonlyException;
@@ -249,32 +250,56 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
 
     public function insertMultiple(array $rows): self
     {
-        foreach ($rows as $row) {
-            $this->insert($row);
+        try {
+            $bkupData    = $this->data;
+            $bkupChanged = $this->changed;
+            foreach ($rows as $row) {
+                $this->insert($row);
+            }
+        } catch (\Throwable $exception) {
+            $this->data    = $bkupData;
+            $this->changed = $bkupChanged;
+            throw new MultipleActionException('Multiple insert failed, data restored', 0, $exception);
         }
         return $this;
     }
 
     public function updateMultiple(ExprInterface $expr, callable $function): self
     {
-        foreach ($this->data as $key => $row) {
-            if ($expr($row, $key)) {
-                $this->data[$key] = $function($row, $key);
+        try {
+            $bkupData    = $this->data;
+            $bkupChanged = $this->changed;
+            foreach ($this->data as $key => $row) {
+                if ($expr($row, $key)) {
+                    $this->data[$key] = $function($row, $key);
+                }
             }
+        } catch (\Throwable $exception) {
+            $this->data    = $bkupData;
+            $this->changed = $bkupChanged;
+            throw new MultipleActionException('Multiple update failed, data restored', 0, $exception);
         }
         return $this;
     }
 
     public function deleteMultiple(ExprInterface $expr): self
     {
-        $keysToDelete = [];
-        foreach ($this->data as $key => $row) {
-            if ($expr($row, $key)) {
-                $keysToDelete[] = $key;
+        try {
+            $bkupData     = $this->data;
+            $bkupChanged  = $this->changed;
+            $keysToDelete = [];
+            foreach ($this->data as $key => $row) {
+                if ($expr($row, $key)) {
+                    $keysToDelete[] = $key;
+                }
             }
-        }
-        foreach ($keysToDelete as $key) {
-            unset($this->data[$key]);
+            foreach ($keysToDelete as $key) {
+                unset($this->data[$key]);
+            }
+        } catch (\Throwable $exception) {
+            $this->data    = $bkupData;
+            $this->changed = $bkupChanged;
+            throw new MultipleActionException('Multiple delete failed, data restored', 0, $exception);
         }
         return $this;
     }
