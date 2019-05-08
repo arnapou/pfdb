@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB;
 
+use Arnapou\PFDB\Core\AbstractTableAdapter;
 use Arnapou\PFDB\Storage\ArrayStorage;
 
 /**
@@ -24,9 +25,11 @@ use Arnapou\PFDB\Storage\ArrayStorage;
  */
 class ArrayTable extends AbstractTableAdapter
 {
+    public const NAME = 'array';
+
     public function __construct(array $data, ?string $primaryKey)
     {
-        $table = new Table(new ArrayStorage(['table' => $data]), 'table', $primaryKey);
+        $table = new Table(new ArrayStorage([self::NAME => $data]), self::NAME, $primaryKey);
         parent::__construct($table);
     }
 }

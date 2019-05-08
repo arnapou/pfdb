@@ -12,6 +12,7 @@
 namespace Arnapou\PFDB\Query\Helper;
 
 use Arnapou\PFDB\Query\Expr\AndExpr;
+use Arnapou\PFDB\Query\Expr\BoolExpr;
 use Arnapou\PFDB\Query\Expr\ComparisonExpr;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Expr\FuncExpr;
@@ -120,6 +121,11 @@ class ExprHelper
     public function notmatch($field, $regexp): ComparisonExpr
     {
         return new ComparisonExpr($field, self::NMATCH, $regexp);
+    }
+
+    public function bool(bool $bool): BoolExpr
+    {
+        return new BoolExpr($bool);
     }
 
     public function not(ExprInterface $expr): NotExpr

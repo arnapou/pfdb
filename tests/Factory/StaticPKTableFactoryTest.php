@@ -17,7 +17,7 @@ use Arnapou\PFDB\Factory\StaticPKTableFactory;
 use Arnapou\PFDB\Table;
 use PHPUnit\Framework\TestCase;
 
-class TableFactoryTest extends TestCase
+class StaticPKTableFactoryTest extends TestCase
 {
     public function test_getters_and_setters()
     {

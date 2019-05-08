@@ -33,7 +33,7 @@ class DynamicPKTableFactory extends AbstractTableFactory
 
     public function __construct(?callable $pkFactory = null)
     {
-        $this->pkFactory = function ($name) {
+        $this->pkFactory = $pkFactory ?: function ($name) {
             return "id$name";
         };
         $this->setTableClass(Table::class);

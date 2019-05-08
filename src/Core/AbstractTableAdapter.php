@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB;
+namespace Arnapou\PFDB\Core;
 
-use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
+use IteratorAggregate;
+use Traversable;
 
-abstract class AbstractTableAdapter implements TableInterface
+abstract class AbstractTableAdapter implements IteratorAggregate, TableInterface
 {
     /**
-     * @var Table
+     * @var TableInterface
      */
     protected $table;
 
@@ -124,5 +125,10 @@ abstract class AbstractTableAdapter implements TableInterface
     {
         $this->table->clear();
         return $this;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return $this->table;
     }
 }
