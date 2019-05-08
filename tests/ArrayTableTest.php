@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Storage;
+namespace Arnapou\PFDB\Tests;
 
 use Arnapou\PFDB\ArrayTable;
 use Arnapou\PFDB\Exception\MultipleActionException;
@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayTableTest extends TestCase
 {
-    private const DATA = [
+    const DATA = [
         ['id' => 1, 'name' => 'Red'],
         ['id' => 2, 'name' => 'Green'],
         ['id' => 3, 'name' => 'Blue'],
@@ -96,8 +96,8 @@ class ArrayTableTest extends TestCase
 
         $keys = array_keys($table->getData());
         try {
-            $this->fail('a MultipleActionException should have been raised for the multiple insert');
             $table->insertMultiple([['name' => 'White'], ['id' => 6, 'name' => 'Purple']]);
+            $this->fail('a MultipleActionException should have been raised for the multiple insert');
         } catch (MultipleActionException $exception) {
             $this->assertSame($keys, array_keys($table->getData()));
         }

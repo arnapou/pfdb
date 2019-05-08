@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Storage;
+namespace Arnapou\PFDB\Tests;
 
 use Arnapou\PFDB\DatabaseReadonly;
 use Arnapou\PFDB\Storage\ArrayStorage;

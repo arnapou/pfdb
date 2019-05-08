@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Storage;
+namespace Arnapou\PFDB\Tests;
 
 use Arnapou\PFDB\Exception\PrimaryKeyAlreadyExistsException;
 use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;

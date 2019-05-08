@@ -30,7 +30,7 @@ abstract class AbstractFileStorage implements StorageInterface
      */
     private $prefixName;
 
-    public function __construct($path, $prefixName = 'table')
+    public function __construct(string $path, $prefixName = 'table')
     {
         $this->path = rtrim(rtrim($path, '/'), '\\');
         if (!is_dir($this->path)) {

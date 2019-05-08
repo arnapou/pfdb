@@ -14,7 +14,7 @@ namespace Arnapou\PFDB\Tests\Query;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Table;
-use Arnapou\PFDB\Tests\Storage\DatabaseTest;
+use Arnapou\PFDB\Tests\DatabaseTest;
 use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
 use PHPUnit\Framework\TestCase;
 

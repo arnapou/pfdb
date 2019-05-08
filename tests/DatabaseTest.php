@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Storage;
+namespace Arnapou\PFDB\Tests;
 
 use Arnapou\PFDB\Database;
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Storage\ReadonlyStorage;
+use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
 use PHPUnit\Framework\TestCase;
 
 class DatabaseTest extends TestCase
