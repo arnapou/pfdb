@@ -145,6 +145,53 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         $this->changed = false;
     }
 
+    public function find(ExprInterface...$exprs): Query
+    {
+        $query = new Query($this);
+        return $query->where(...$exprs);
+    }
+
+    public function get($id): ?array
+    {
+        return $this->data[$id] ?? null;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return new \ArrayIterator($this->data);
+    }
+
+    public function count(): int
+    {
+        return \count($this->data);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getPrimaryKey(): ?string
+    {
+        return $this->primaryKey;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    protected function detectKey(array $value, $key = null)
+    {
+        if ($key === null) {
+            if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
+                throw new PrimaryKeyNotFoundException();
+            }
+            return $value[$this->primaryKey];
+        }
+        return $key;
+    }
+
     public function delete($id): self
     {
         if (!\array_key_exists($id, $this->data)) {
@@ -200,23 +247,6 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         }
     }
 
-    protected function detectKey(array $value, $key = null)
-    {
-        if ($key === null) {
-            if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
-                throw new PrimaryKeyNotFoundException();
-            }
-            return $value[$this->primaryKey];
-        }
-        return $key;
-    }
-
-    public function find(ExprInterface...$exprs): Query
-    {
-        $query = new Query($this);
-        return $query->where(...$exprs);
-    }
-
     public function insertMultiple(array $rows): self
     {
         foreach ($rows as $row) {
@@ -247,35 +277,5 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
             unset($this->data[$key]);
         }
         return $this;
-    }
-
-    public function get($id): ?array
-    {
-        return $this->data[$id] ?? null;
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new \ArrayIterator($this->data);
-    }
-
-    public function count(): int
-    {
-        return \count($this->data);
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getPrimaryKey(): ?string
-    {
-        return $this->primaryKey;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
     }
 }
