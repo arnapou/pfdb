@@ -12,7 +12,7 @@
 namespace Arnapou\PFDB\Core;
 
 use Arnapou\PFDB\Exception\ReadonlyException;
-use Arnapou\PFDB\Factory\TableFactory;
+use Arnapou\PFDB\Factory\StaticPKTableFactory;
 use Arnapou\PFDB\Factory\TableFactoryInterface;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
@@ -39,7 +39,7 @@ abstract class AbstractDatabase implements DatabaseInterface
     public function __construct(StorageInterface $storage, ?TableFactoryInterface $tableFactory = null)
     {
         $this->storage      = $storage;
-        $this->tableFactory = $tableFactory ?: new TableFactory('id');
+        $this->tableFactory = $tableFactory ?: new StaticPKTableFactory('id');
     }
 
     public function getTable(string $name, ?string $primaryKey = null): TableInterface
