@@ -34,8 +34,8 @@ class FieldsHelper
         return new KeyField($name);
     }
 
-    public function parent(string $name, TableInterface $table, $parentField = null, $selectAlias = null): ParentField
+    public function parent(string $name, TableInterface $table, $parentField = null, $selectAlias = null, ?callable $parentRow = null): ParentField
     {
-        return new ParentField($name, $table, $parentField, $selectAlias);
+        return new ParentField($name, $table, $parentField, $selectAlias, $parentRow);
     }
 }
