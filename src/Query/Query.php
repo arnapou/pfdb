@@ -25,7 +25,7 @@ use IteratorIterator;
 use LimitIterator;
 use Traversable;
 
-class Query implements \IteratorAggregate
+class Query implements \IteratorAggregate, \Countable
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
@@ -188,5 +188,10 @@ class Query implements \IteratorAggregate
             $last = $item;
         }
         return $last;
+    }
+
+    public function count(): int
+    {
+        return iterator_count($this);
     }
 }
