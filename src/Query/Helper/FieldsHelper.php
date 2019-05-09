@@ -11,11 +11,11 @@
 
 namespace Arnapou\PFDB\Query\Helper;
 
+use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Field\KeyField;
 use Arnapou\PFDB\Query\Field\ParentField;
 use Arnapou\PFDB\Query\Field\Value;
-use Arnapou\PFDB\Table;
 
 class FieldsHelper
 {
@@ -34,7 +34,7 @@ class FieldsHelper
         return new KeyField($name);
     }
 
-    public function parent(string $name, Table $table, $parentField = null, $selectAlias = null): ParentField
+    public function parent(string $name, TableInterface $table, $parentField = null, $selectAlias = null): ParentField
     {
         return new ParentField($name, $table, $parentField, $selectAlias);
     }

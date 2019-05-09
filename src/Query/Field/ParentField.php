@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Query\Field;
 
+use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\InvalidCallableException;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
@@ -51,15 +52,15 @@ class ParentField implements FieldInterface
 
     /**
      * @param string|FieldValueInterface|callable      $name        current table foreign key
-     * @param Table                                    $parentTable parent table object
+     * @param TableInterface                           $parentTable parent table object
      * @param string|FieldValueInterface|callable|null $parentField used for Expression / Filtering
      * @param null|string                              $selectAlias alias used in select (default will be table name)
-     * @param callable|null $parentRow                              default is null because it gets the parent by its "primary key"
+     * @param callable|null                            $parentRow   default is null because it gets the parent by its "primary key"
      *                                                              (Table::get method) but you can define your own method to get the
      *                                                              parent row but in this case you must be carefull about performance !
      * @throws InvalidFieldException
      */
-    public function __construct($name, Table $parentTable, $parentField = null, ?string $selectAlias = null, ?callable $parentRow = null)
+    public function __construct($name, TableInterface $parentTable, $parentField = null, ?string $selectAlias = null, ?callable $parentRow = null)
     {
         $this->name        = $this->sanitizeField($name);
         $this->parentTable = $parentTable;
