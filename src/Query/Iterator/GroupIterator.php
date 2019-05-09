@@ -40,7 +40,7 @@ class GroupIterator implements \IteratorAggregate
     public function __construct(Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
-        $this->fields   = $fields;
+        $this->fields   = (array)$fields;
         $this->initial  = $initial;
         $this->reduce   = $reduce;
         $this->onfinish = $onfinish;
