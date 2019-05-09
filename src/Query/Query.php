@@ -166,4 +166,23 @@ class Query implements \IteratorAggregate
     {
         return new self($this);
     }
+
+    public function first()
+    {
+        $first = null;
+        foreach ($this as $item) {
+            $first = $item;
+            break;
+        }
+        return $first;
+    }
+
+    public function last()
+    {
+        $last = null;
+        foreach ($this as $item) {
+            $last = $item;
+        }
+        return $last;
+    }
 }
