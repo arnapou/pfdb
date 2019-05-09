@@ -154,7 +154,7 @@ class Query implements \IteratorAggregate, \Countable
             $iterator = new IteratorIterator(new SortIterator($iterator, $this->sorts));
         }
         if ($this->limit !== [0, PHP_INT_MAX]) {
-            $iterator = new LimitIterator($iterator, $this->limit[0], $this->limit[1]);
+            $iterator = new LimitIterator(new IteratorIterator($iterator), $this->limit[0], $this->limit[1]);
         }
         if ($this->select) {
             $iterator = new SelectIterator($iterator, $this->select);
