@@ -162,9 +162,13 @@ class Query implements \IteratorAggregate
         return $iterator;
     }
 
-    public function chain(): self
+    public function chain(bool $cut = true): self
     {
-        return new self($this);
+        if ($cut) {
+            return new self(new \ArrayIterator(iterator_to_array($this)));
+        } else {
+            return new self($this);
+        }
     }
 
     public function first()
