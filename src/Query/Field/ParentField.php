@@ -122,7 +122,7 @@ class ParentField implements FieldInterface
             if (null !== $value) {
                 $parentRow = $this->parentRow === null
                     ? $this->parentTable->get($value)
-                    : \call_user_func($this->parentRow, $value);
+                    : \call_user_func($this->parentRow, $value, $this->parentTable);
                 if (null === $parentRow) {
                     return null;
                 }
@@ -138,7 +138,7 @@ class ParentField implements FieldInterface
         if (null !== $value) {
             $parentRow = $this->parentRow === null
                 ? $this->parentTable->get($value)
-                : \call_user_func($this->parentRow, $value);
+                : \call_user_func($this->parentRow, $value, $this->parentTable);
             if (null === $parentRow) {
                 return [$this->selectAlias => null];
             }
