@@ -34,7 +34,7 @@ abstract class AbstractFileStorage implements StorageInterface
     {
         $this->path = rtrim(rtrim($path, '/'), '\\');
         if (!is_dir($this->path)) {
-            throw new DirectoryNotFoundException();
+            throw new DirectoryNotFoundException("path: $path");
         }
         $this->readonly   = !is_writable($path);
         $this->prefixName = $prefixName;
