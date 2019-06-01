@@ -3,3 +3,4 @@
 phpunit*.phar
 composer.lock
 demo/coverage
+vendor
