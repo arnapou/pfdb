@@ -6,8 +6,8 @@ namespace Arnapou\PhpUnit;
 try {
     flushBuffers();
     dlPhpUnitPhar('phpunit.phar', phpUnitVersion());
-    dlUrl('composer-setup.php', 'https://getcomposer.org/installer');
-    system(PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/composer-setup.php'));
+//    dlUrl('composer-setup.php', 'https://getcomposer.org/installer');
+//    system(PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/composer-setup.php'));
 } catch (\Exception $exception) {
     exit(1);
 } catch (\Error $error) {

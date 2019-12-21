@@ -19,12 +19,12 @@ stages:
 
 test:php-7.2:
   <<: *job-test
-  image: 'php:7.2-stretch'
+  image: 'edbizarro/gitlab-ci-pipeline-php:7.2'
 
 test:php-7.3:
   <<: *job-test
-  image: 'php:7.3-buster'
+  image: 'edbizarro/gitlab-ci-pipeline-php:7.3'
 
 test:php-7.4:
   <<: *job-test
-  image: 'php:7.4-buster'
+  image: 'edbizarro/gitlab-ci-pipeline-php:7.4'
