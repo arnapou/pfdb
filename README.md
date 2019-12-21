@@ -36,81 +36,88 @@ A few examples : http://pfdb.arnapou.net/
 
 Conditioning
 ========
+```php
+$storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
+$database = new \Arnapou\PFDB\Database($storage);
 
-    $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
-    $database = new \Arnapou\PFDB\Database($storage);
+$table = $database->getTable('vehicle');
+
+$expr = $table->expr()->and(
+     $table->expr()->gt('price', 10000),
+     $table->expr()->match('model', '^C[0-9]+')
+);
     
-    $table = $database->getTable('vehicle');
-    
-    $expr = $table->expr()->and(
-         $table->expr()->gt('price', 10000),
-         $table->expr()->match('model', '^C[0-9]+')
-    );
-        
-    $iterator = $table->find($expr)
-                      ->sort('constructor' , ['model' , 'DESC'])
-                      ->limit(0, 50);
-                      
-    foreach($iterator as $key => $row) {
-        // do whatever you want
-    }
+$iterator = $table->find($expr)
+                  ->sort('constructor' , ['model' , 'DESC'])
+                  ->limit(0, 50);
+                  
+foreach($iterator as $key => $row) {
+    // do whatever you want
+}
+```
     
 Extending Expressions
 =================
 Class :
 
-    class IsUppercaseExpr implements \Arnapou\PFDB\Query\Helper\Expr\ExprInterface {
+```php
+class IsUppercaseExpr implements \Arnapou\PFDB\Query\Helper\Expr\ExprInterface {
+
+    private $field;
     
-        private $field;
-        
-        public function __construct(string $field) 
-        {
-            $this->field = $field;
-        }
-    
-        public function __invoke(array $row, $key = null): bool
-        {
-            if(!isset($row[$this->field]) {
-                return false;
-            }
-            $testedValue = (string)$row[$this->field];
-            return $testedValue === strtoupper($testedValue);
-        }
-    
+    public function __construct(string $field) 
+    {
+        $this->field = $field;
     }
+
+    public function __invoke(array $row, $key = null): bool
+    {
+        if(!isset($row[$this->field]) {
+            return false;
+        }
+        $testedValue = (string)$row[$this->field];
+        return $testedValue === strtoupper($testedValue);
+    }
+
+}
+```
 
 Use :
 
-    $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
-    $database = new \Arnapou\PFDB\Database($storage);
-    
-    $table = $database->getTable('vehicle');
-    
-    $expr = new IsUppercaseExpr('model');
-    
-    foreach($table->find($expr) as $key => $row) {
-        // do whatever you want
-    }
+```php
+$storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
+$database = new \Arnapou\PFDB\Database($storage);
+
+$table = $database->getTable('vehicle');
+
+$expr = new IsUppercaseExpr('model');
+
+foreach($table->find($expr) as $key => $row) {
+    // do whatever you want
+}
+```
 
 Use PFDB Iterator out of storage context
 ========================================
 
 if you just want to select, filter, sort, limit, group, order any iterator 
 
-    $data = [
-        ['name' => 'John', 'age' => 20],
-        ['name' => 'Edith', 'age' => 25],
-        ['name' => 'Steve', 'age' => 30],
-        ['name' => 'Matthew', 'age' => 22],
-    );
-    
-    $query = (new \Arnapou\PFDB\Query\Query())
-        ->from(new \ArrayIterator($data))
-        ->where($query->expr()->gt('age', 24));
-    
-    foreach($query as $key => $row) {
-        // do whatever you want
-    }
+```php
+$data = [
+    ['name' => 'John', 'age' => 20],
+    ['name' => 'Edith', 'age' => 25],
+    ['name' => 'Steve', 'age' => 30],
+    ['name' => 'Matthew', 'age' => 22],
+);
+
+$query = (new \Arnapou\PFDB\Query\Query())
+    ->from(new \ArrayIterator($data))
+    ->where($query->expr()->gt('age', 24));
+
+foreach($query as $key => $row) {
+    // do whatever you want
+}
+```
 
 Build your own storage
 ======================
