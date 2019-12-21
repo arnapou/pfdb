@@ -9,7 +9,7 @@ stages:
     - master
   script:
     - php .gitlab-ci.php
-    - php composer.phar install --no-interaction --prefer-source
+    - php composer.phar install --no-interaction --optimize-autoloader
     - php phpunit.phar
   cache:
     key: "$CI_COMMIT_REF_SLUG:$CI_JOB_NAME"
