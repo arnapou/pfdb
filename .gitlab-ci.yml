@@ -3,6 +3,10 @@ stages:
   - test
 
 
+include:
+  template: Dependency-Scanning.gitlab-ci.yml
+
+
 .job-test: &job-test
   stage: test
   only:
