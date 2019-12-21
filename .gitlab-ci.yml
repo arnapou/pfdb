@@ -1,0 +1,30 @@
+
+stages:
+  - test
+
+
+.job-test: &job-test
+  stage: test
+  only:
+    - master
+  script:
+    - php .gitlab-ci.php
+    - php composer.phar install --no-interaction --prefer-source
+    - php phpunit.phar
+  cache:
+    key: "$CI_COMMIT_REF_SLUG:$CI_JOB_NAME"
+    paths:
+      - vendor
+
+
+test:php-7.2:
+  <<: *job-test
+  image: 'php:7.2-stretch'
+
+test:php-7.3:
+  <<: *job-test
+  image: 'php:7.3-buster'
+
+test:php-7.4:
+  <<: *job-test
+  image: 'php:7.4-buster'
