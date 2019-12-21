@@ -7,8 +7,9 @@ stages:
   stage: test
   only:
     - master
-  script:
+  before_script:
     - php .gitlab-ci.php
+  script:
     - php composer.phar install --no-interaction --optimize-autoloader
     - php phpunit.phar
   cache:
