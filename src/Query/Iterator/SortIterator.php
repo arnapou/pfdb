@@ -11,9 +11,6 @@
 
 namespace Arnapou\PFDB\Query\Iterator;
 
-use Iterator;
-use Traversable;
-
 class SortIterator implements \IteratorAggregate
 {
     /**
@@ -21,17 +18,17 @@ class SortIterator implements \IteratorAggregate
      */
     private $sorts;
     /**
-     * @var Iterator
+     * @var \Iterator
      */
     private $iterator;
 
-    public function __construct(Iterator $iterator, array $sorts)
+    public function __construct(\Iterator $iterator, array $sorts)
     {
         $this->iterator = $iterator;
         $this->sorts    = $this->sanitizeOrderings($sorts);
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         $rows = iterator_to_array($this->iterator);
         uasort(

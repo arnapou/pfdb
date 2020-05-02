@@ -12,12 +12,11 @@
 namespace Arnapou\PFDB\Query\Iterator;
 
 use Arnapou\PFDB\Query\Field\FieldSelectInterface;
-use Iterator;
 
-class SelectIterator implements Iterator
+class SelectIterator implements \Iterator
 {
     /**
-     * @var Iterator
+     * @var \Iterator
      */
     private $iterator;
     /**
@@ -25,7 +24,7 @@ class SelectIterator implements Iterator
      */
     private $fields;
 
-    public function __construct(Iterator $iterator, array $fields)
+    public function __construct(\Iterator $iterator, array $fields)
     {
         $this->iterator = $iterator;
         $this->fields   = $fields;

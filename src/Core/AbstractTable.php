@@ -21,10 +21,8 @@ use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\StorageInterface;
-use IteratorAggregate;
-use Traversable;
 
-abstract class AbstractTable implements IteratorAggregate, TableInterface
+abstract class AbstractTable implements \IteratorAggregate, TableInterface
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
@@ -157,7 +155,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this->data[$id] ?? null;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->data);
     }

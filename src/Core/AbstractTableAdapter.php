@@ -13,10 +13,8 @@ namespace Arnapou\PFDB\Core;
 
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
-use IteratorAggregate;
-use Traversable;
 
-abstract class AbstractTableAdapter implements IteratorAggregate, TableInterface
+abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterface
 {
     /**
      * @var TableInterface
@@ -127,7 +125,7 @@ abstract class AbstractTableAdapter implements IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         return $this->table;
     }

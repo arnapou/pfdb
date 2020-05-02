@@ -11,13 +11,10 @@
 
 namespace Arnapou\PFDB\Query\Iterator;
 
-use Iterator;
-use Traversable;
-
 class GroupIterator implements \IteratorAggregate
 {
     /**
-     * @var Iterator
+     * @var \Iterator
      */
     private $iterator;
     /**
@@ -37,7 +34,7 @@ class GroupIterator implements \IteratorAggregate
      */
     private $onfinish;
 
-    public function __construct(Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
+    public function __construct(\Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
         $this->fields   = (array)$fields;
@@ -46,7 +43,7 @@ class GroupIterator implements \IteratorAggregate
         $this->onfinish = $onfinish;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         $grouped = [];
         foreach ($this->iterator as $key => $row) {

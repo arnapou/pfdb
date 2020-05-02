@@ -14,9 +14,7 @@ namespace Arnapou\PFDB\Query\Expr;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidOperatorException;
 use Arnapou\PFDB\Exception\InvalidValueException;
-use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
-use Arnapou\PFDB\Query\Field\Value;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 
 class ComparisonExpr implements ExprInterface

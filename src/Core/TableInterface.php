@@ -14,9 +14,8 @@ namespace Arnapou\PFDB\Core;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
 use Countable;
-use Traversable;
 
-interface TableInterface extends Traversable, Countable
+interface TableInterface extends \Traversable, Countable
 {
     public function isReadonly(): bool;
 

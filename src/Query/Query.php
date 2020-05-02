@@ -19,11 +19,6 @@ use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
 use Arnapou\PFDB\Query\Iterator\SelectIterator;
 use Arnapou\PFDB\Query\Iterator\SortIterator;
-use CallbackFilterIterator;
-use Iterator;
-use IteratorIterator;
-use LimitIterator;
-use Traversable;
 
 class Query implements \IteratorAggregate, \Countable
 {
@@ -35,7 +30,7 @@ class Query implements \IteratorAggregate, \Countable
      */
     private $select = [];
     /**
-     * @var Iterator
+     * @var \Iterator
      */
     private $from;
     /**
@@ -55,7 +50,7 @@ class Query implements \IteratorAggregate, \Countable
      */
     private $sorts = [];
 
-    public function __construct(?Traversable $from = null)
+    public function __construct(?\Traversable $from = null)
     {
         $this->where = new AndExpr();
         if ($from) {
@@ -106,10 +101,10 @@ class Query implements \IteratorAggregate, \Countable
 
     public function from(\Traversable $iterator): self
     {
-        if ($iterator instanceof Iterator) {
+        if ($iterator instanceof \Iterator) {
             $this->from = $iterator;
         } else {
-            $this->from = new IteratorIterator($iterator);
+            $this->from = new \IteratorIterator($iterator);
         }
         return $this;
     }
@@ -142,20 +137,20 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
-    public function getIterator(): Traversable
+    public function getIterator(): \Traversable
     {
         $iterator = $this->where->isEmpty()
             ? $this->from
-            : new CallbackFilterIterator($this->from, $this->where);
+            : new \CallbackFilterIterator($this->from, $this->where);
         if ($this->group) {
-            $iterator = new IteratorIterator(new GroupIterator($iterator, ...$this->group));
+            $iterator = new \IteratorIterator(new GroupIterator($iterator, ...$this->group));
         }
         if ($this->sorts) {
-            $iterator = new IteratorIterator(new SortIterator($iterator, $this->sorts));
+            $iterator = new \IteratorIterator(new SortIterator($iterator, $this->sorts));
         }
         if ($this->limit !== [0, PHP_INT_MAX]) {
-            $iterator = new LimitIterator(
-                $iterator instanceof \SeekableIterator ? new IteratorIterator($iterator) : $iterator,
+            $iterator = new \LimitIterator(
+                $iterator instanceof \SeekableIterator ? new \IteratorIterator($iterator) : $iterator,
                 $this->limit[0],
                 $this->limit[1]
             );
