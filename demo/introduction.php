@@ -12,5 +12,6 @@
 include __DIR__ . '/functions.php';
 
 $source = file_get_contents(__DIR__ . '/../README.md');
+$Parsedown = new Parsedown();
 
-echo mdToHtml($source);
+echo $Parsedown->text($source);
