@@ -22,21 +22,21 @@ use Arnapou\PFDB\Query\Expr\OrExpr;
 
 class ExprHelper
 {
-    const EQ = '==';
-    const NEQ = '!=';
-    const GT = '>';
-    const GTE = '>=';
-    const LT = '<';
-    const LTE = '<=';
-    const LIKE = 'like';
-    const NLIKE = 'not like';
-    const MATCH = 'regexp';
-    const NMATCH = 'not regexp';
-    const ENDS = '$';
-    const BEGINS = '^';
-    const CONTAINS = '*';
-    const IN = 'in';
-    const NIN = 'not in';
+    public const EQ = '==';
+    public const NEQ = '!=';
+    public const GT = '>';
+    public const GTE = '>=';
+    public const LT = '<';
+    public const LTE = '<=';
+    public const LIKE = 'like';
+    public const NLIKE = 'not like';
+    public const MATCH = 'regexp';
+    public const NMATCH = 'not regexp';
+    public const ENDS = '$';
+    public const BEGINS = '^';
+    public const CONTAINS = '*';
+    public const IN = 'in';
+    public const NIN = 'not in';
 
     public function func(callable $function): FuncExpr
     {
@@ -133,12 +133,12 @@ class ExprHelper
         return new NotExpr($expr);
     }
 
-    public function and(ExprInterface...$exprs): NestedExprInterface
+    public function and(ExprInterface ...$exprs): NestedExprInterface
     {
         return new AndExpr(...$exprs);
     }
 
-    public function or(ExprInterface...$exprs): NestedExprInterface
+    public function or(ExprInterface ...$exprs): NestedExprInterface
     {
         return new OrExpr(...$exprs);
     }

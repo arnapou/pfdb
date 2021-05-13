@@ -23,21 +23,22 @@ trait SanitizeHelperTrait
     private function sanitizeOperator(string $operator, &$not = false): string
     {
         $sanitized = strtolower($operator);
-        if (strpos($sanitized, 'not') !== false) {
-            $not       = true;
+        if (false !== strpos($sanitized, 'not')) {
+            $not = true;
             $sanitized = trim(str_replace('not', '', $sanitized));
         }
-        $aliases       = [
+        $aliases = [
             'match' => 'regexp',
             'regex' => 'regexp',
-            '~'     => 'regexp',
-            '='     => '==',
-            '<>'    => '!=',
+            '~' => 'regexp',
+            '=' => '==',
+            '<>' => '!=',
         ];
         $sanitized = $aliases[$sanitized] ?? $sanitized;
         if (!\in_array($sanitized, ['==', '===', '!=', '!==', '>', '>=', '<', '<=', '*', '^', '$', 'in', 'like', 'regexp'])) {
             throw new InvalidOperatorException("Unknown operator '$sanitized'");
         }
+
         return $sanitized;
     }
 
@@ -45,11 +46,14 @@ trait SanitizeHelperTrait
     {
         if (\is_string($field)) {
             return [new Field($field), 'value'];
-        } elseif ($field instanceof FieldValueInterface) {
+        }
+        if ($field instanceof FieldValueInterface) {
             return [$field, 'value'];
-        } elseif (!\is_scalar($field) && \is_callable($field)) {
+        }
+        if (!\is_scalar($field) && \is_callable($field)) {
             return $field;
-        } elseif (is_scalar($field)) {
+        }
+        if (is_scalar($field)) {
             return [new Value($field), 'value'];
         }
         throw new InvalidFieldException();
@@ -57,21 +61,21 @@ trait SanitizeHelperTrait
 
     private function sanitizeValue($value, string $operator, bool $caseSensitive): callable
     {
-        if (\in_array($operator, ['like', 'regexp']) && !\is_string($value)) {
+        if (!\is_string($value) && \in_array($operator, ['like', 'regexp'])) {
             throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
         }
-        if (\in_array($operator, ['in']) && !\is_array($value)) {
+        if (!\is_array($value) && \in_array($operator, ['in'])) {
             throw new InvalidValueException('Value for operator "' . $operator . '" should be an array');
         }
 
         switch ($operator) {
             case 'like':
-                $value = '/^' . preg_quote($value) . '$/' . ($caseSensitive ? '' : 'i');
+                $value = '/^' . preg_quote($value, '/') . '$/' . ($caseSensitive ? '' : 'i');
                 $value = str_replace('_', '.', $value);
                 $value = str_replace('%', '.*', $value);
                 break;
             case 'regexp':
-                $char = $value[0] === '/' ? '\\/' : preg_quote($value[0]);
+                $char = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
                 if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $value)) {
                     $value = '/' . $value . '/' . ($caseSensitive ? '' : 'i');
                 } elseif (!$caseSensitive) {
@@ -85,9 +89,11 @@ trait SanitizeHelperTrait
 
         if ($value instanceof FieldValueInterface) {
             return [$value, 'value'];
-        } elseif (!\is_scalar($value) && \is_callable($value)) {
+        }
+        if (!\is_scalar($value) && \is_callable($value)) {
             return $value;
-        } elseif (\is_scalar($value) || \is_array($value)) {
+        }
+        if (\is_scalar($value) || \is_array($value)) {
             return [new Value($value), 'value'];
         }
         throw new InvalidValueException();

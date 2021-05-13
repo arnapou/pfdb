@@ -20,6 +20,7 @@ trait ExprHelperTrait
         if (!$this->pfdbExprHelper) {
             $this->pfdbExprHelper = new ExprHelper();
         }
+
         return $this->pfdbExprHelper;
     }
 }

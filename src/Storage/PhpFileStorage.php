@@ -24,8 +24,9 @@ class PhpFileStorage extends AbstractFileStorage
     {
         $filename = $this->getFilename($name);
         if (is_file($filename)) {
-            return include($filename);
+            return include $filename;
         }
+
         return [];
     }
 

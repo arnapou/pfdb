@@ -15,13 +15,11 @@ use Arnapou\PFDB\Core\AbstractTableAdapter;
 use Arnapou\PFDB\Storage\ArrayStorage;
 
 /**
- * This table is only here as a simple "helper" to use a simple array in a Table object
+ * This table is only here as a simple "helper" to use a simple array in a Table object.
  *
  * If you just want to iterate/find/sort/... things on an array without any modification,
  * it is probably better to just use the Query object with the array passed as an ArrayIterator
  * ie: $query = new \Arnapou\PFDB\Query\Query(new \ArrayIterator($yourArray))
- *
- * @package Arnapou\PFDB
  */
 class ArrayTable extends AbstractTableAdapter
 {

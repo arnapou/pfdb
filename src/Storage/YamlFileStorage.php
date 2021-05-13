@@ -44,6 +44,7 @@ class YamlFileStorage extends AbstractFileStorage
         if (is_file($filename)) {
             return Yaml::parseFile($filename, $this->parseFlags);
         }
+
         return [];
     }
 
@@ -67,6 +68,7 @@ class YamlFileStorage extends AbstractFileStorage
     public function setDumpInline(int $inline): self
     {
         $this->dumpInline = $inline;
+
         return $this;
     }
 
@@ -78,6 +80,7 @@ class YamlFileStorage extends AbstractFileStorage
     public function setDumpIndent(int $indent): self
     {
         $this->dumpIndent = $indent;
+
         return $this;
     }
 
@@ -89,6 +92,7 @@ class YamlFileStorage extends AbstractFileStorage
     public function setDumpFlags(int $flags): self
     {
         $this->dumpFlags = $flags;
+
         return $this;
     }
 
@@ -100,6 +104,7 @@ class YamlFileStorage extends AbstractFileStorage
     public function setParseFlags(int $flags): self
     {
         $this->parseFlags = $flags;
+
         return $this;
     }
 }

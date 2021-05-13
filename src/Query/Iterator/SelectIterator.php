@@ -27,7 +27,7 @@ class SelectIterator implements \Iterator
     public function __construct(\Iterator $iterator, array $fields)
     {
         $this->iterator = $iterator;
-        $this->fields   = $fields;
+        $this->fields = $fields;
     }
 
     public function current()
@@ -39,16 +39,17 @@ class SelectIterator implements \Iterator
         }
         $data = [];
         foreach ($this->fields as $field) {
-            if ($field === '*') {
+            if ('*' === $field) {
                 $data = array_merge($data, $row);
             } elseif ($field instanceof FieldSelectInterface) {
                 $data = array_merge($data, $field->select($row, $key));
             } elseif (!\is_scalar($field) && \is_callable($field)) {
-                $data = array_merge($data, (array)$field($row, $key));
+                $data = array_merge($data, (array) $field($row, $key));
             } else {
                 $data[$field] = $row[$field] ?? null;
             }
         }
+
         return $data;
     }
 

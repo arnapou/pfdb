@@ -20,6 +20,7 @@ class OrExpr extends AbstractNestedExpr
                 return true;
             }
         }
+
         return false;
     }
 }

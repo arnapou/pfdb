@@ -37,9 +37,9 @@ class GroupIterator implements \IteratorAggregate
     public function __construct(\Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
-        $this->fields   = (array)$fields;
-        $this->initial  = $initial;
-        $this->reduce   = $reduce;
+        $this->fields = (array) $fields;
+        $this->initial = $initial;
+        $this->reduce = $reduce;
         $this->onfinish = $onfinish;
     }
 
@@ -47,13 +47,14 @@ class GroupIterator implements \IteratorAggregate
     {
         $grouped = [];
         foreach ($this->iterator as $key => $row) {
-            $groupKey           = $this->getGroupKey($row, $key);
-            $value              = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
+            $groupKey = $this->getGroupKey($row, $key);
+            $value = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
             $grouped[$groupKey] = \call_user_func($this->reduce, $value, $row, $key);
         }
         if ($this->onfinish) {
             $grouped = array_map($this->onfinish, $grouped);
         }
+
         return new \ArrayIterator(array_values($grouped));
     }
 
@@ -67,6 +68,7 @@ class GroupIterator implements \IteratorAggregate
                 $keys[] = $row[$field] ?? '';
             }
         }
+
         return md5(serialize($keys));
     }
 }

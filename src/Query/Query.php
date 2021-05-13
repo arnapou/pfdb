@@ -58,27 +58,30 @@ class Query implements \IteratorAggregate, \Countable
         }
     }
 
-    public function where(ExprInterface...$exprs): self
+    public function where(ExprInterface ...$exprs): self
     {
-        if (\count($exprs) === 1 && $exprs[0] instanceof NestedExprInterface) {
+        if (1 === \count($exprs) && $exprs[0] instanceof NestedExprInterface) {
             $this->where = $exprs[0];
         } else {
             $this->where->clear();
             $this->addWhere(...$exprs);
         }
+
         return $this;
     }
 
-    public function addWhere(ExprInterface...$exprs): self
+    public function addWhere(ExprInterface ...$exprs): self
     {
         foreach ($exprs as $expr) {
             $this->where->add($expr);
         }
+
         return $this;
     }
 
     /**
      * @param array $fields
+     *
      * @return Query
      */
     public function select(...$fields): self
@@ -88,6 +91,7 @@ class Query implements \IteratorAggregate, \Countable
         } else {
             $this->select = $fields;
         }
+
         return $this;
     }
 
@@ -96,6 +100,7 @@ class Query implements \IteratorAggregate, \Countable
         foreach ($fields as $field) {
             $this->select[] = $field;
         }
+
         return $this;
     }
 
@@ -106,24 +111,28 @@ class Query implements \IteratorAggregate, \Countable
         } else {
             $this->from = new \IteratorIterator($iterator);
         }
+
         return $this;
     }
 
     public function group($fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
         $this->group = [$fields, $initial, $reduce, $onfinish];
+
         return $this;
     }
 
     public function limit(int $offset = 0, int $count = PHP_INT_MAX): self
     {
         $this->limit = [$offset, $count];
+
         return $this;
     }
 
     public function sort(...$sorts): self
     {
         $this->sorts = $sorts;
+
         return $this;
     }
 
@@ -134,6 +143,7 @@ class Query implements \IteratorAggregate, \Countable
         } else {
             $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];
         }
+
         return $this;
     }
 
@@ -158,6 +168,7 @@ class Query implements \IteratorAggregate, \Countable
         if ($this->select) {
             $iterator = new SelectIterator($iterator, $this->select);
         }
+
         return $iterator;
     }
 
@@ -165,9 +176,9 @@ class Query implements \IteratorAggregate, \Countable
     {
         if ($cut) {
             return new self(new \ArrayIterator(iterator_to_array($this)));
-        } else {
-            return new self($this);
         }
+
+        return new self($this);
     }
 
     public function first()
@@ -177,6 +188,7 @@ class Query implements \IteratorAggregate, \Countable
             $first = $item;
             break;
         }
+
         return $first;
     }
 
@@ -186,6 +198,7 @@ class Query implements \IteratorAggregate, \Countable
         foreach ($this as $item) {
             $last = $item;
         }
+
         return $last;
     }
 

@@ -25,7 +25,7 @@ class CachedFileStorage implements StorageInterface
     public function __construct(AbstractFileStorage $fileStorage, string $cachePath, $cachedPrefixName = 'cached')
     {
         $this->storage = $fileStorage;
-        $this->cache   = new PhpFileStorage($cachePath, $cachedPrefixName);
+        $this->cache = new PhpFileStorage($cachePath, $cachedPrefixName);
     }
 
     public function load(string $name): array
@@ -33,6 +33,7 @@ class CachedFileStorage implements StorageInterface
         $filename = $this->storage->getFilename($name);
         if (!is_file($filename)) {
             $this->cache->delete($name);
+
             return [];
         }
 
@@ -40,8 +41,10 @@ class CachedFileStorage implements StorageInterface
         if (!is_file($cachename) || filemtime($filename) >= filemtime($cachename)) {
             $data = $this->storage->load($name);
             $this->cache->save($name, $data);
+
             return $data;
         }
+
         return $this->cache->load($name);
     }
 

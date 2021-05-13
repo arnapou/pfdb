@@ -62,19 +62,20 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     final public function __construct(StorageInterface $storage, string $name, ?string $primaryKey)
     {
-        $this->storage             = $storage;
-        $this->name                = $name;
-        $this->primaryKey          = $primaryKey;
+        $this->storage = $storage;
+        $this->name = $name;
+        $this->primaryKey = $primaryKey;
         $this->primaryKeyGenerator = function () {
             $maxKey = -1;
             foreach ($this->data as $key => $value) {
-                if (ctype_digit((string)$key) && $key > $maxKey) {
+                if (ctype_digit((string) $key) && $key > $maxKey) {
                     $maxKey = $key;
                 }
             }
             do {
-                $maxKey++;
+                ++$maxKey;
             } while (\array_key_exists($maxKey, $this->data));
+
             return $maxKey;
         };
         $this->load($this->storage->load($this->name));
@@ -83,6 +84,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     public function setPrimaryKeyGenerator(callable $callable): self
     {
         $this->primaryKeyGenerator = $callable;
+
         return $this;
     }
 
@@ -99,6 +101,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     public function setReadonly(bool $readonly): self
     {
         $this->readonly = $readonly;
+
         return $this;
     }
 
@@ -117,14 +120,17 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             }
             $this->storage->save($this->name, $this->primaryKey ? array_values($this->data) : $this->data);
             $this->changed = false;
+
             return true;
         }
+
         return false;
     }
 
     public function clear(): self
     {
         $this->data = [];
+
         return $this;
     }
 
@@ -144,9 +150,10 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         $this->changed = false;
     }
 
-    public function find(ExprInterface...$exprs): Query
+    public function find(ExprInterface ...$exprs): Query
     {
         $query = new Query($this);
+
         return $query->where(...$exprs);
     }
 
@@ -182,12 +189,14 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     protected function detectKey(array $value, $key = null)
     {
-        if ($key === null) {
+        if (null === $key) {
             if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
                 throw new PrimaryKeyNotFoundException();
             }
+
             return $value[$this->primaryKey];
         }
+
         return $key;
     }
 
@@ -198,6 +207,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         }
         unset($this->data[$id]);
         $this->changed = true;
+
         return $this;
     }
 
@@ -208,7 +218,8 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             throw new ValueNotFoundException();
         }
         $this->data[$key] = array_merge($this->data[$key], $value);
-        $this->changed    = true;
+        $this->changed = true;
+
         return $this;
     }
 
@@ -226,9 +237,10 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             $value[$this->primaryKey] = $key;
         }
 
-        $this->data[$key]      = $value;
-        $this->changed         = true;
+        $this->data[$key] = $value;
+        $this->changed = true;
         $this->lastInsertedKey = $key;
+
         return $this;
     }
 
@@ -249,23 +261,24 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     public function insertMultiple(array $rows): self
     {
         try {
-            $bkupData    = $this->data;
+            $bkupData = $this->data;
             $bkupChanged = $this->changed;
             foreach ($rows as $row) {
                 $this->insert($row);
             }
         } catch (\Throwable $exception) {
-            $this->data    = $bkupData;
+            $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple insert failed, data restored', 0, $exception);
         }
+
         return $this;
     }
 
     public function updateMultiple(ExprInterface $expr, callable $function): self
     {
         try {
-            $bkupData    = $this->data;
+            $bkupData = $this->data;
             $bkupChanged = $this->changed;
             foreach ($this->data as $key => $row) {
                 if ($expr($row, $key)) {
@@ -273,18 +286,19 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
                 }
             }
         } catch (\Throwable $exception) {
-            $this->data    = $bkupData;
+            $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple update failed, data restored', 0, $exception);
         }
+
         return $this;
     }
 
     public function deleteMultiple(ExprInterface $expr): self
     {
         try {
-            $bkupData     = $this->data;
-            $bkupChanged  = $this->changed;
+            $bkupData = $this->data;
+            $bkupChanged = $this->changed;
             $keysToDelete = [];
             foreach ($this->data as $key => $row) {
                 if ($expr($row, $key)) {
@@ -295,10 +309,11 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
                 unset($this->data[$key]);
             }
         } catch (\Throwable $exception) {
-            $this->data    = $bkupData;
+            $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple delete failed, data restored', 0, $exception);
         }
+
         return $this;
     }
 }

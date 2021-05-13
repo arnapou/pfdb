@@ -20,6 +20,7 @@ class AndExpr extends AbstractNestedExpr
                 return false;
             }
         }
+
         return true;
     }
 }

@@ -18,7 +18,7 @@ abstract class AbstractNestedExpr implements NestedExprInterface
      */
     protected $exprs = [];
 
-    public function __construct(ExprInterface...$exprs)
+    public function __construct(ExprInterface ...$exprs)
     {
         $this->exprs = $exprs;
     }
@@ -26,6 +26,7 @@ abstract class AbstractNestedExpr implements NestedExprInterface
     public function add(ExprInterface $expr): NestedExprInterface
     {
         $this->exprs[] = $expr;
+
         return $this;
     }
 

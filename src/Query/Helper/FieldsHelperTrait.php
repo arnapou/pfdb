@@ -20,6 +20,7 @@ trait FieldsHelperTrait
         if (!$this->pfdbFieldsHelper) {
             $this->pfdbFieldsHelper = new FieldsHelper();
         }
+
         return $this->pfdbFieldsHelper;
     }
 }

@@ -25,6 +25,7 @@ class NoPKTableFactory extends AbstractTableFactory
     public function create(StorageInterface $storage, string $name): TableInterface
     {
         $class = $this->getTableClass();
+
         return new $class($storage, $name, null);
     }
 }

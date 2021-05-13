@@ -21,7 +21,7 @@ interface TableInterface extends \Traversable, Countable
 
     public function setReadonly(bool $readonly);
 
-    public function find(ExprInterface...$exprs): Query;
+    public function find(ExprInterface ...$exprs): Query;
 
     public function get($id): ?array;
 

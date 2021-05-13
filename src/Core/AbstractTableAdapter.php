@@ -39,6 +39,7 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
     public function setReadonly(bool $readonly)
     {
         $this->table->setReadonly($readonly);
+
         return $this;
     }
 
@@ -70,6 +71,7 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
     public function delete($id)
     {
         $this->table->delete($id);
+
         return $this;
     }
 
@@ -81,36 +83,42 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
     public function update(array $value, $key = null)
     {
         $this->table->update($value, $key);
+
         return $this;
     }
 
     public function insert(array $value, $key = null)
     {
         $this->table->insert($value, $key);
+
         return $this;
     }
 
     public function upsert(array $value, $key = null)
     {
         $this->table->upsert($value, $key);
+
         return $this;
     }
 
     public function insertMultiple(array $rows)
     {
         $this->table->insertMultiple($rows);
+
         return $this;
     }
 
     public function updateMultiple(ExprInterface $expr, callable $function)
     {
         $this->table->updateMultiple($expr, $function);
+
         return $this;
     }
 
     public function deleteMultiple(ExprInterface $expr)
     {
         $this->table->deleteMultiple($expr);
+
         return $this;
     }
 
@@ -122,6 +130,7 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
     public function clear()
     {
         $this->table->clear();
+
         return $this;
     }
 

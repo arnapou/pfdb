@@ -11,8 +11,8 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Symfony\Component\Lock\Factory;
 use Symfony\Component\Lock\Lock;
+use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 
 class LockedStorage implements StorageInterface
@@ -34,10 +34,10 @@ class LockedStorage implements StorageInterface
      */
     private $lockNamePrefix;
 
-    public function __construct(StorageInterface $storage, ?Factory $lockFactory = null, string $lockNamePrefix = 'pfdb.')
+    public function __construct(StorageInterface $storage, ?LockFactory $lockFactory = null, string $lockNamePrefix = 'pfdb.')
     {
-        $this->storage        = $storage;
-        $this->lockFactory    = $lockFactory ?: new Factory(new FlockStore());
+        $this->storage = $storage;
+        $this->lockFactory = $lockFactory ?: new LockFactory(new FlockStore());
         $this->lockNamePrefix = $lockNamePrefix;
     }
 
@@ -66,6 +66,7 @@ class LockedStorage implements StorageInterface
     public function load(string $name): array
     {
         $this->lock($name);
+
         return $this->storage->load($name);
     }
 
@@ -84,6 +85,7 @@ class LockedStorage implements StorageInterface
     public function isReadonly(string $name): bool
     {
         $this->lock($name);
+
         return $this->storage->isReadonly($name);
     }
 

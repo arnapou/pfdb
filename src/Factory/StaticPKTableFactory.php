@@ -36,12 +36,14 @@ class StaticPKTableFactory extends AbstractTableFactory
     public function setDefaultPrimaryKey(?string $defaultPrimaryKey): self
     {
         $this->defaultPrimaryKey = $defaultPrimaryKey;
+
         return $this;
     }
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
         $class = $this->getTableClass();
+
         return new $class($storage, $name, $this->defaultPrimaryKey);
     }
 }

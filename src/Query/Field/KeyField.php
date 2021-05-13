@@ -20,7 +20,7 @@ class KeyField implements FieldInterface
 
     public function __construct(?string $name = null)
     {
-        $this->name = null === $name ? ':key' : $name;
+        $this->name = $name ?? ':key';
     }
 
     public function name(): string

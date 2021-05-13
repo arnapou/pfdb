@@ -12,7 +12,7 @@
 namespace Arnapou\PFDB\Query\Field;
 
 /**
- * The purpose is only to expose a simple value behind a valid interface
+ * The purpose is only to expose a simple value behind a valid interface.
  */
 class Value implements FieldValueInterface
 {

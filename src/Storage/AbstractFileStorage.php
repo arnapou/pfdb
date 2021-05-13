@@ -36,7 +36,7 @@ abstract class AbstractFileStorage implements StorageInterface
         if (!is_dir($this->path)) {
             throw new DirectoryNotFoundException("path: $path");
         }
-        $this->readonly   = !is_writable($path);
+        $this->readonly = !is_writable($path);
         $this->prefixName = $prefixName;
         if (!$this->isValidTableName($prefixName)) {
             throw new InvalidTableNameException('The prefix name must follow the same rules as table name [a-z0-9_\.-]+');
@@ -48,6 +48,7 @@ abstract class AbstractFileStorage implements StorageInterface
         if (!$this->isValidTableName($name)) {
             throw new InvalidTableNameException('The name must follow this regexp [a-z0-9_\.-]+');
         }
+
         return $this->path . '/' . $this->prefixName . ".$name." . $this->getExtension();
     }
 
@@ -71,6 +72,7 @@ abstract class AbstractFileStorage implements StorageInterface
                 $names[] = $name;
             }
         }
+
         return $names;
     }
 
@@ -94,6 +96,7 @@ abstract class AbstractFileStorage implements StorageInterface
         if ($this->readonly) {
             return true;
         }
+
         return false;
     }
 

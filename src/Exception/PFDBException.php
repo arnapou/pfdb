@@ -12,7 +12,7 @@
 namespace Arnapou\PFDB\Exception;
 
 /**
- * generic PFDB exception
+ * generic PFDB exception.
  */
 class PFDBException extends \Exception
 {

@@ -20,7 +20,7 @@ class MultipleStorage implements StorageInterface
      */
     private $storages = [];
 
-    public function __construct(StorageInterface...$storages)
+    public function __construct(StorageInterface ...$storages)
     {
         $this->storages = $storages;
     }
@@ -28,6 +28,7 @@ class MultipleStorage implements StorageInterface
     public function add(StorageInterface $storage): self
     {
         $this->storages[] = $storage;
+
         return $this;
     }
 
@@ -38,12 +39,14 @@ class MultipleStorage implements StorageInterface
                 return $storage;
             }
         }
+
         return null;
     }
 
     public function load(string $name): array
     {
         $storage = $this->findChild($name);
+
         return $storage ? $storage->load($name) : [];
     }
 
@@ -61,6 +64,7 @@ class MultipleStorage implements StorageInterface
     public function isReadonly(string $name): bool
     {
         $storage = $this->findChild($name);
+
         return $storage ? $storage->isReadonly($name) : false;
     }
 
@@ -78,9 +82,10 @@ class MultipleStorage implements StorageInterface
     {
         $names = [];
         foreach ($this->storages as $storage) {
-            $names = array_merge($names, $storage->tableNames());
+            $names[] = $storage->tableNames();
         }
-        return $names;
+
+        return array_merge([], ...$names);
     }
 
     /**

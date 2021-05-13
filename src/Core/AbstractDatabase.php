@@ -38,7 +38,7 @@ abstract class AbstractDatabase implements DatabaseInterface
 
     public function __construct(StorageInterface $storage, ?TableFactoryInterface $tableFactory = null)
     {
-        $this->storage      = $storage;
+        $this->storage = $storage;
         $this->tableFactory = $tableFactory ?: new StaticPKTableFactory('id');
     }
 
@@ -48,6 +48,7 @@ abstract class AbstractDatabase implements DatabaseInterface
             $this->tables[$name] = $this->tableFactory->create($this->storage, $name);
             ksort($this->tables);
         }
+
         return $this->tables[$name];
     }
 
@@ -56,6 +57,7 @@ abstract class AbstractDatabase implements DatabaseInterface
         foreach ($this->getTableNames() as $name) {
             $this->getTable($name);
         }
+
         return $this->tables;
     }
 
@@ -63,6 +65,7 @@ abstract class AbstractDatabase implements DatabaseInterface
     {
         $names = $this->storage->tableNames();
         sort($names);
+
         return $names;
     }
 
@@ -75,6 +78,7 @@ abstract class AbstractDatabase implements DatabaseInterface
         if (\array_key_exists($table->getName(), $this->tables)) {
             unset($this->tables[$table->getName()]);
         }
+
         return $this;
     }
 

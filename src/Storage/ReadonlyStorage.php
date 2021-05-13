@@ -26,13 +26,13 @@ class ReadonlyStorage implements StorageInterface
 
     /**
      * ReadonlyStorage constructor.
-     * @param StorageInterface $storage
-     * @param bool             $quiet No Readonly exception will be thrown if set to true
+     *
+     * @param bool $quiet No Readonly exception will be thrown if set to true
      */
     public function __construct(StorageInterface $storage, bool $quiet = true)
     {
         $this->storage = $storage;
-        $this->quiet   = $quiet;
+        $this->quiet = $quiet;
     }
 
     public function load(string $name): array
@@ -61,6 +61,7 @@ class ReadonlyStorage implements StorageInterface
         if (!$this->quiet) {
             return $this->storage->isReadonly($name);
         }
+
         return false;
     }
 

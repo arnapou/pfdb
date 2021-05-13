@@ -32,6 +32,7 @@ abstract class AbstractTableFactory implements TableFactoryInterface
             throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
         }
         $this->tableClass = $tableClass;
+
         return $this;
     }
 }

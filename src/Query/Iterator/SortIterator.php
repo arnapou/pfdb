@@ -25,7 +25,7 @@ class SortIterator implements \IteratorAggregate
     public function __construct(\Iterator $iterator, array $sorts)
     {
         $this->iterator = $iterator;
-        $this->sorts    = $this->sanitizeOrderings($sorts);
+        $this->sorts = $this->sanitizeOrderings($sorts);
     }
 
     public function getIterator(): \Traversable
@@ -35,13 +35,15 @@ class SortIterator implements \IteratorAggregate
             $rows,
             function (array $row1, array $row2) {
                 foreach ($this->sorts as $callable) {
-                    if ($result = \intval($callable($row1, $row2))) {
+                    if ($result = (int) $callable($row1, $row2)) {
                         return $result;
                     }
                 }
+
                 return 0;
             }
         );
+
         return new \ArrayIterator($rows);
     }
 
@@ -49,7 +51,7 @@ class SortIterator implements \IteratorAggregate
     {
         $sanitized = [];
         foreach ($sorts as $sort) {
-            $sort  = (array)$sort;
+            $sort = (array) $sort;
             $field = $sort[0];
             if (!\is_scalar($field) && \is_callable($field)) {
                 $sanitized[] = $field;
@@ -57,12 +59,14 @@ class SortIterator implements \IteratorAggregate
                 $sanitized[] = $this->createCallable($field, ($sort[1] ?? 'ASC') ?: 'ASC');
             }
         }
+
         return $sanitized;
     }
 
     private function createCallable($field, $order)
     {
-        $way = strtoupper($order) === 'ASC' ? 1 : -1;
+        $way = 'ASC' === strtoupper($order) ? 1 : -1;
+
         return function (array $row1, array $row2) use ($field, $way) {
             return $way * (($row1[$field] ?? '') <=> ($row2[$field] ?? ''));
         };

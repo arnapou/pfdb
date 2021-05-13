@@ -44,9 +44,8 @@ class ComparisonExpr implements ExprInterface
 
     /**
      * @param string|FieldValueInterface|callable $field
-     * @param string                              $operator
      * @param mixed|FieldValueInterface|callable  $value
-     * @param bool                                $caseSensitive
+     *
      * @throws InvalidFieldException
      * @throws InvalidOperatorException
      * @throws InvalidValueException
@@ -54,9 +53,9 @@ class ComparisonExpr implements ExprInterface
     public function __construct($field, string $operator, $value, bool $caseSensitive = true)
     {
         $this->caseSensitive = $caseSensitive;
-        $this->operator      = $this->sanitizeOperator($operator, $this->not);
-        $this->field         = $this->sanitizeField($field);
-        $this->value         = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
+        $this->operator = $this->sanitizeOperator($operator, $this->not);
+        $this->field = $this->sanitizeField($field);
+        $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
     public function __invoke(array $row, $key = null): bool
@@ -72,7 +71,7 @@ class ComparisonExpr implements ExprInterface
                     break;
                 case 'in':
                     $field = strtolower($field);
-                    $value = array_map('strtolower', (array)$value);
+                    $value = array_map('strtolower', (array) $value);
                     break;
                 default:
                     $field = strtolower($field);
@@ -82,9 +81,9 @@ class ComparisonExpr implements ExprInterface
 
         if ($this->not) {
             return !$this->evaluate($field, $value);
-        } else {
-            return $this->evaluate($field, $value);
         }
+
+        return $this->evaluate($field, $value);
     }
 
     private function evaluate($field, $value): bool
@@ -107,13 +106,13 @@ class ComparisonExpr implements ExprInterface
             case '<=':
                 return $field <= $value;
             case '*':
-                return $value !== '' ? strpos($field, $value) !== false : true;
+                return '' !== $value ? false !== strpos($field, $value) : true;
             case '^':
-                return $value !== '' ? strpos($field, $value) === 0 : true;
+                return '' !== $value ? 0 === strpos($field, $value) : true;
             case '$':
                 return substr($field, -\strlen($value)) === "$value";
             case 'in':
-                return \in_array($field, (array)$value);
+                return \in_array($field, (array) $value);
             case 'like':
             case 'regexp':
                 return preg_match($value, $field) ? true : false;
@@ -122,6 +121,7 @@ class ComparisonExpr implements ExprInterface
         // @codeCoverageIgnoreStart
         // -> this code should NEVER happen because the operator is sanitized in the object construction
         trigger_error('Operator not implemented', E_USER_ERROR);
+
         return false;
         // ------------------------
         // @codeCoverageIgnoreEnd

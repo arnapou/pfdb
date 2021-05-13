@@ -21,8 +21,6 @@ use Arnapou\PFDB\Table;
  * You can customize with your own callable.
  *
  * The callable first argument is the tablename
- *
- * @package Arnapou\PFDB\Factory
  */
 class DynamicPKTableFactory extends AbstractTableFactory
 {
@@ -47,12 +45,14 @@ class DynamicPKTableFactory extends AbstractTableFactory
     public function setPkFactory(callable $pkFactory): self
     {
         $this->pkFactory = $pkFactory;
+
         return $this;
     }
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
         $class = $this->getTableClass();
+
         return new $class($storage, $name, \call_user_func($this->pkFactory, $name));
     }
 }
