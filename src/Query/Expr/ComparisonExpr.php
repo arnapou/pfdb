@@ -86,6 +86,10 @@ class ComparisonExpr implements ExprInterface
         return $this->evaluate($field, $value);
     }
 
+    /**
+     * @param mixed $field
+     * @param mixed $value
+     */
     private function evaluate($field, $value): bool
     {
         switch ($this->operator) {

@@ -13,6 +13,9 @@ namespace Arnapou\PFDB\Query\Helper;
 
 trait ExprHelperTrait
 {
+    /**
+     * @var ExprHelper|null
+     */
     private $pfdbExprHelper = null;
 
     public function expr(): ExprHelper

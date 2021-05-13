@@ -30,7 +30,7 @@ abstract class AbstractFileStorage implements StorageInterface
      */
     private $prefixName;
 
-    public function __construct(string $path, $prefixName = 'table')
+    public function __construct(string $path, string $prefixName = 'table')
     {
         $this->path = rtrim(rtrim($path, '/'), '\\');
         if (!is_dir($this->path)) {
@@ -59,7 +59,7 @@ abstract class AbstractFileStorage implements StorageInterface
 
     public function isValidTableName(string $name): bool
     {
-        return preg_match('!^[a-z0-9_\.-]+$!', $name);
+        return (bool) preg_match('!^[a-z0-9_\.-]+$!', $name);
     }
 
     public function tableNames(): array

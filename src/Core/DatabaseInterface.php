@@ -26,5 +26,8 @@ interface DatabaseInterface
 
     public function getTableNames(): array;
 
+    /**
+     * @return self
+     */
     public function dropTable(TableInterface $table);
 }

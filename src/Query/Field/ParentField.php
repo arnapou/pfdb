@@ -26,15 +26,15 @@ class ParentField implements FieldInterface
      */
     private $name;
     /**
-     * @var string|null
+     * @var string
      */
     private $selectAlias;
     /**
-     * @var Table
+     * @var TableInterface
      */
     private $parentTable;
     /**
-     * @var callable|null
+     * @var ?callable
      */
     private $parentField;
     /**
@@ -46,7 +46,7 @@ class ParentField implements FieldInterface
      */
     private $selectArray = false;
     /**
-     * @var callable
+     * @var ?callable
      */
     private $parentRow;
 
@@ -113,7 +113,7 @@ class ParentField implements FieldInterface
         return $this->parentField;
     }
 
-    public function getParentTable(): Table
+    public function getParentTable(): TableInterface
     {
         return $this->parentTable;
     }
@@ -140,35 +140,45 @@ class ParentField implements FieldInterface
     public function select(array $row, $key = null): array
     {
         $value = \call_user_func($this->name, $row, $key);
-        if (null !== $value) {
-            $parentRow = null === $this->parentRow
-                ? $this->parentTable->get($value)
-                : \call_user_func($this->parentRow, $value, $this->parentTable);
-            if (null === $parentRow) {
-                return [$this->selectAlias => null];
-            }
-            switch (true) {
-                case $this->selectAll && $this->selectArray:
-                    return [$this->selectAlias => $parentRow];
-                case $this->selectAll && !$this->selectArray:
-                    $values = [];
-                    foreach ($parentRow as $k => $value) {
-                        $values[$this->selectAlias . '_' . $k] = $value;
-                    }
 
-                    return $values;
-                case !$this->selectAll && $this->selectArray:
-                    $value = \call_user_func($this->parentField, $parentRow, $value);
-                    if (!\is_array($value)) {
-                        throw new InvalidCallableException('The specified callable for the parent field should return an array :(');
-                    }
-
-                    return $value;
-                case !$this->selectAll && !$this->selectArray:
-                    return [$this->selectAlias => \call_user_func($this->parentField, $parentRow, $value)];
-            }
+        if (null === $value) {
+            return [$this->selectAlias => null];
         }
 
-        return [$this->selectAlias => null];
+        $parentRow = null === $this->parentRow
+            ? $this->parentTable->get($value)
+            : \call_user_func($this->parentRow, $value, $this->parentTable);
+
+        if (null === $parentRow) {
+            return [$this->selectAlias => null];
+        }
+
+        if ($this->selectAll) {
+            if ($this->selectArray) {
+                return [$this->selectAlias => $parentRow];
+            }
+
+            $values = [];
+            foreach ($parentRow as $k => $value) {
+                $values[$this->selectAlias . '_' . $k] = $value;
+            }
+
+            return $values;
+        }
+
+        if (null === $this->parentField) {
+            return [$this->selectAlias => null];
+        }
+
+        if ($this->selectArray) {
+            $value = \call_user_func($this->parentField, $parentRow, $value);
+            if (!\is_array($value)) {
+                throw new InvalidCallableException('The specified callable for the parent field should return an array :(');
+            }
+
+            return $value;
+        }
+
+        return [$this->selectAlias => \call_user_func($this->parentField, $parentRow, $value)];
     }
 }

@@ -13,12 +13,13 @@ namespace Arnapou\PFDB\Storage;
 
 use Symfony\Component\Lock\Lock;
 use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Lock\Store\FlockStore;
 
 class LockedStorage implements StorageInterface
 {
     /**
-     * @var Lock
+     * @var LockFactory
      */
     private $lockFactory;
     /**
@@ -26,7 +27,7 @@ class LockedStorage implements StorageInterface
      */
     private $storage;
     /**
-     * @var Lock[]
+     * @var array<string, LockInterface>
      */
     private $locks = [];
     /**

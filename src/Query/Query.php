@@ -11,9 +11,11 @@
 
 namespace Arnapou\PFDB\Query;
 
+use Arnapou\PFDB\Exception\NotDefinedFromIteratorException;
 use Arnapou\PFDB\Query\Expr\AndExpr;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Expr\NestedExprInterface;
+use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
@@ -26,11 +28,11 @@ class Query implements \IteratorAggregate, \Countable
     use FieldsHelperTrait;
 
     /**
-     * @var array|callable
+     * @var array<FieldSelectInterface|scalar|callable>
      */
     private $select = [];
     /**
-     * @var \Iterator
+     * @var ?\Iterator
      */
     private $from;
     /**
@@ -80,7 +82,7 @@ class Query implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param array $fields
+     * @param array<FieldSelectInterface|scalar|callable> $fields
      *
      * @return Query
      */
@@ -95,6 +97,11 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param array|string ...$fields
+     *
+     * @return $this
+     */
     public function addSelect(...$fields): self
     {
         foreach ($fields as $field) {
@@ -115,6 +122,11 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param array|string $fields
+     *
+     * @return $this
+     */
     public function group($fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
         $this->group = [$fields, $initial, $reduce, $onfinish];
@@ -122,6 +134,9 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function limit(int $offset = 0, int $count = PHP_INT_MAX): self
     {
         $this->limit = [$offset, $count];
@@ -129,6 +144,11 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param array ...$sorts
+     *
+     * @return $this
+     */
     public function sort(...$sorts): self
     {
         $this->sorts = $sorts;
@@ -136,9 +156,14 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @param mixed $field
+     *
+     * @return $this
+     */
     public function addSort($field, string $order = 'ASC'): self
     {
-        if (!\is_scalar($field) && \is_callable($field)) {
+        if (\is_callable($field)) {
             $this->sorts[] = $field;
         } else {
             $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];
@@ -149,6 +174,10 @@ class Query implements \IteratorAggregate, \Countable
 
     public function getIterator(): \Traversable
     {
+        if (null === $this->from) {
+            throw new NotDefinedFromIteratorException('You must set a from iterator.');
+        }
+
         $iterator = $this->where->isEmpty()
             ? $this->from
             : new \CallbackFilterIterator($this->from, $this->where);
@@ -181,6 +210,9 @@ class Query implements \IteratorAggregate, \Countable
         return new self($this);
     }
 
+    /**
+     * @return mixed
+     */
     public function first()
     {
         $first = null;
@@ -192,6 +224,9 @@ class Query implements \IteratorAggregate, \Countable
         return $first;
     }
 
+    /**
+     * @return mixed
+     */
     public function last()
     {
         $last = null;

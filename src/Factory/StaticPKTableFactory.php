@@ -44,6 +44,11 @@ class StaticPKTableFactory extends AbstractTableFactory
     {
         $class = $this->getTableClass();
 
-        return new $class($storage, $name, $this->defaultPrimaryKey);
+        $table = new $class($storage, $name, $this->defaultPrimaryKey);
+        if (!$table instanceof TableInterface) {
+            throw new \TypeError('The table is not a valid TableInterface object');
+        }
+
+        return $table;
     }
 }

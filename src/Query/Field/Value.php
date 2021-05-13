@@ -16,8 +16,16 @@ namespace Arnapou\PFDB\Query\Field;
  */
 class Value implements FieldValueInterface
 {
+    /**
+     * @var mixed
+     */
     private $value;
 
+    /**
+     * Value constructor.
+     *
+     * @param mixed $value
+     */
     public function __construct($value)
     {
         $this->value = $value;

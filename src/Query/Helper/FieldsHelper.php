@@ -24,6 +24,9 @@ class FieldsHelper
         return new Field($name);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function value($value): Value
     {
         return new Value($value);
@@ -34,6 +37,12 @@ class FieldsHelper
         return new KeyField($name);
     }
 
+    /**
+     * @param null        $parentField
+     * @param string|null $selectAlias
+     *
+     * @throws \Arnapou\PFDB\Exception\InvalidFieldException
+     */
     public function parent(string $name, TableInterface $table, $parentField = null, $selectAlias = null, ?callable $parentRow = null): ParentField
     {
         return new ParentField($name, $table, $parentField, $selectAlias, $parentRow);

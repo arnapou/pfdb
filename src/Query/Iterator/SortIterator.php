@@ -33,7 +33,7 @@ class SortIterator implements \IteratorAggregate
         $rows = iterator_to_array($this->iterator);
         uasort(
             $rows,
-            function (array $row1, array $row2) {
+            function (array $row1, array $row2): int {
                 foreach ($this->sorts as $callable) {
                     if ($result = (int) $callable($row1, $row2)) {
                         return $result;
@@ -53,7 +53,7 @@ class SortIterator implements \IteratorAggregate
         foreach ($sorts as $sort) {
             $sort = (array) $sort;
             $field = $sort[0];
-            if (!\is_scalar($field) && \is_callable($field)) {
+            if (\is_callable($field)) {
                 $sanitized[] = $field;
             } else {
                 $sanitized[] = $this->createCallable($field, ($sort[1] ?? 'ASC') ?: 'ASC');
@@ -63,12 +63,16 @@ class SortIterator implements \IteratorAggregate
         return $sanitized;
     }
 
-    private function createCallable($field, $order)
+    private function createCallable(string $field, string $order): callable
     {
-        $way = 'ASC' === strtoupper($order) ? 1 : -1;
+        if ('ASC' === strtoupper($order)) {
+            return static function (array $row1, array $row2) use ($field) {
+                return ($row1[$field] ?? '') <=> ($row2[$field] ?? '');
+            };
+        }
 
-        return function (array $row1, array $row2) use ($field, $way) {
-            return $way * (($row1[$field] ?? '') <=> ($row2[$field] ?? ''));
+        return static function (array $row1, array $row2) use ($field) {
+            return -(($row1[$field] ?? '') <=> ($row2[$field] ?? ''));
         };
     }
 }

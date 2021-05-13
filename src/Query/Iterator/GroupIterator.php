@@ -34,6 +34,11 @@ class GroupIterator implements \IteratorAggregate
      */
     private $onfinish;
 
+    /**
+     * GroupIterator constructor.
+     *
+     * @param array|string $fields
+     */
     public function __construct(\Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
@@ -58,11 +63,11 @@ class GroupIterator implements \IteratorAggregate
         return new \ArrayIterator(array_values($grouped));
     }
 
-    private function getGroupKey($row, $key)
+    private function getGroupKey(array $row, string $key): string
     {
         $keys = [];
         foreach ($this->fields as $field) {
-            if (!\is_scalar($field) && \is_callable($field)) {
+            if (\is_callable($field)) {
                 $keys[] = $field($row, $key);
             } else {
                 $keys[] = $row[$field] ?? '';

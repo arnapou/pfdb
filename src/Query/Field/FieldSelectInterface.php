@@ -13,5 +13,10 @@ namespace Arnapou\PFDB\Query\Field;
 
 interface FieldSelectInterface
 {
+    /**
+     * @param scalar|null $key
+     *
+     * @return array<string, ?mixed>
+     */
     public function select(array $row, $key = null): array;
 }

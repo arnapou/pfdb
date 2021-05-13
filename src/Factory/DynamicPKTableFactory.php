@@ -25,15 +25,16 @@ use Arnapou\PFDB\Table;
 class DynamicPKTableFactory extends AbstractTableFactory
 {
     /**
-     * @var callable|null
+     * @var callable
      */
     private $pkFactory;
 
     public function __construct(?callable $pkFactory = null)
     {
-        $this->pkFactory = $pkFactory ?: function ($name) {
-            return "id$name";
-        };
+        $this->pkFactory = $pkFactory
+            ?: static function (string $name): string {
+                return "id$name";
+            };
         $this->setTableClass(Table::class);
     }
 
@@ -53,6 +54,11 @@ class DynamicPKTableFactory extends AbstractTableFactory
     {
         $class = $this->getTableClass();
 
-        return new $class($storage, $name, \call_user_func($this->pkFactory, $name));
+        $table = new $class($storage, $name, \call_user_func($this->pkFactory, $name));
+        if (!$table instanceof TableInterface) {
+            throw new \TypeError('The table is not a valid TableInterface object');
+        }
+
+        return $table;
     }
 }

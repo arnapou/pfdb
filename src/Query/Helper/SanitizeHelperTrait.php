@@ -20,7 +20,7 @@ use Arnapou\PFDB\Query\Field\Value;
 
 trait SanitizeHelperTrait
 {
-    private function sanitizeOperator(string $operator, &$not = false): string
+    private function sanitizeOperator(string $operator, bool &$not = false): string
     {
         $sanitized = strtolower($operator);
         if (false !== strpos($sanitized, 'not')) {
@@ -42,6 +42,11 @@ trait SanitizeHelperTrait
         return $sanitized;
     }
 
+    /**
+     * @param mixed $field
+     *
+     * @throws InvalidFieldException
+     */
     private function sanitizeField($field): callable
     {
         if (\is_string($field)) {
@@ -50,7 +55,7 @@ trait SanitizeHelperTrait
         if ($field instanceof FieldValueInterface) {
             return [$field, 'value'];
         }
-        if (!\is_scalar($field) && \is_callable($field)) {
+        if (\is_callable($field)) {
             return $field;
         }
         if (is_scalar($field)) {
@@ -59,43 +64,59 @@ trait SanitizeHelperTrait
         throw new InvalidFieldException();
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @throws InvalidValueException
+     */
     private function sanitizeValue($value, string $operator, bool $caseSensitive): callable
     {
-        if (!\is_string($value) && \in_array($operator, ['like', 'regexp'])) {
-            throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
-        }
-        if (!\is_array($value) && \in_array($operator, ['in'])) {
+        if ('in' === $operator && !\is_array($value)) {
             throw new InvalidValueException('Value for operator "' . $operator . '" should be an array');
         }
 
-        switch ($operator) {
-            case 'like':
-                $value = '/^' . preg_quote($value, '/') . '$/' . ($caseSensitive ? '' : 'i');
-                $value = str_replace('_', '.', $value);
-                $value = str_replace('%', '.*', $value);
-                break;
-            case 'regexp':
-                $char = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
-                if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $value)) {
-                    $value = '/' . $value . '/' . ($caseSensitive ? '' : 'i');
-                } elseif (!$caseSensitive) {
-                    $flags = substr($value, strrpos($value, $value[0]) + 1);
-                    if (strpos($flags, 'i') === false) {
-                        $value .= 'i';
-                    }
+        if ('like' === $operator) {
+            if (!\is_string($value)) {
+                throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
+            }
+
+            $value = '/^' . preg_quote($value, '/') . '$/' . ($caseSensitive ? '' : 'i');
+            $value = str_replace('_', '.', $value);
+            $value = str_replace('%', '.*', $value);
+
+            return [new Value($value), 'value'];
+        }
+
+        if ('regexp' === $operator) {
+            if (!\is_string($value)) {
+                throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
+            }
+
+            $char = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
+            if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $value)) {
+                $value = '/' . $value . '/' . ($caseSensitive ? '' : 'i');
+            } elseif (!$caseSensitive) {
+                $flags = substr($value, (int) strrpos($value, $value[0]) + 1);
+                if (false === strpos($flags, 'i')) {
+                    $value .= 'i';
                 }
-                break;
+            }
+
+            return [new Value($value), 'value'];
         }
 
         if ($value instanceof FieldValueInterface) {
             return [$value, 'value'];
         }
-        if (!\is_scalar($value) && \is_callable($value)) {
+
+        if (\is_callable($value)) {
             return $value;
         }
+
         if (\is_scalar($value) || \is_array($value)) {
             return [new Value($value), 'value'];
         }
+
         throw new InvalidValueException();
     }
 }

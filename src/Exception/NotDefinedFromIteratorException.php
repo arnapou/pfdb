@@ -9,14 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Field;
+namespace Arnapou\PFDB\Exception;
 
-interface FieldValueInterface
+class NotDefinedFromIteratorException extends PFDBException
 {
-    /**
-     * @param scalar|null $key
-     *
-     * @return mixed
-     */
-    public function value(array $row, $key = null);
 }

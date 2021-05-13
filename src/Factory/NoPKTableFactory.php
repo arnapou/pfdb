@@ -26,6 +26,11 @@ class NoPKTableFactory extends AbstractTableFactory
     {
         $class = $this->getTableClass();
 
-        return new $class($storage, $name, null);
+        $table = new $class($storage, $name, null);
+        if (!$table instanceof TableInterface) {
+            throw new \TypeError('The table is not a valid TableInterface object');
+        }
+
+        return $table;
     }
 }

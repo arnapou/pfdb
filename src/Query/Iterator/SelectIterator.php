@@ -20,7 +20,7 @@ class SelectIterator implements \Iterator
      */
     private $iterator;
     /**
-     * @var array
+     * @var array<FieldSelectInterface|scalar|callable>
      */
     private $fields;
 
@@ -43,10 +43,10 @@ class SelectIterator implements \Iterator
                 $data = array_merge($data, $row);
             } elseif ($field instanceof FieldSelectInterface) {
                 $data = array_merge($data, $field->select($row, $key));
-            } elseif (!\is_scalar($field) && \is_callable($field)) {
+            } elseif (\is_callable($field)) {
                 $data = array_merge($data, (array) $field($row, $key));
             } else {
-                $data[$field] = $row[$field] ?? null;
+                $data[(string) $field] = $row[(string) $field] ?? null;
             }
         }
 

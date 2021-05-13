@@ -38,13 +38,13 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     /**
      * @var array
      */
-    private $data = null;
+    private $data = [];
     /**
      * @var bool
      */
     private $changed = false;
     /**
-     * @var string
+     * @var ?string
      */
     private $primaryKey = null;
     /**
@@ -65,11 +65,11 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         $this->storage = $storage;
         $this->name = $name;
         $this->primaryKey = $primaryKey;
-        $this->primaryKeyGenerator = function () {
+        $this->primaryKeyGenerator = function (): int {
             $maxKey = -1;
             foreach ($this->data as $key => $value) {
-                if (ctype_digit((string) $key) && $key > $maxKey) {
-                    $maxKey = $key;
+                if (ctype_digit((string) $key) && (int) $key > $maxKey) {
+                    $maxKey = (int) $key;
                 }
             }
             do {
@@ -134,7 +134,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this;
     }
 
-    protected function load(array $rows)
+    protected function load(array $rows): void
     {
         if ($this->primaryKey) {
             $this->data = [];
@@ -187,6 +187,11 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this->data;
     }
 
+    /**
+     * @param int|string|null $key
+     *
+     * @return int|string
+     */
     protected function detectKey(array $value, $key = null)
     {
         if (null === $key) {
@@ -202,7 +207,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     public function delete($id): self
     {
-        if (!\array_key_exists($id, $this->data)) {
+        if (null === $id || !\array_key_exists($id, $this->data)) {
             throw new ValueNotFoundException();
         }
         unset($this->data[$id]);
@@ -251,18 +256,19 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         } catch (PrimaryKeyNotFoundException $e) {
             $key = null;
         }
-        if (\array_key_exists($key, $this->data)) {
+
+        if (null !== $key && \array_key_exists($key, $this->data)) {
             return $this->update($value, $key);
-        } else {
-            return $this->insert($value, $key);
         }
+
+        return $this->insert($value, $key);
     }
 
     public function insertMultiple(array $rows): self
     {
+        $bkupData = $this->data;
+        $bkupChanged = $this->changed;
         try {
-            $bkupData = $this->data;
-            $bkupChanged = $this->changed;
             foreach ($rows as $row) {
                 $this->insert($row);
             }
@@ -277,9 +283,9 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     public function updateMultiple(ExprInterface $expr, callable $function): self
     {
+        $bkupData = $this->data;
+        $bkupChanged = $this->changed;
         try {
-            $bkupData = $this->data;
-            $bkupChanged = $this->changed;
             foreach ($this->data as $key => $row) {
                 if ($expr($row, $key)) {
                     $this->data[$key] = $function($row, $key);
@@ -296,10 +302,10 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     public function deleteMultiple(ExprInterface $expr): self
     {
+        $bkupData = $this->data;
+        $bkupChanged = $this->changed;
+        $keysToDelete = [];
         try {
-            $bkupData = $this->data;
-            $bkupChanged = $this->changed;
-            $keysToDelete = [];
             foreach ($this->data as $key => $row) {
                 if ($expr($row, $key)) {
                     $keysToDelete[] = $key;

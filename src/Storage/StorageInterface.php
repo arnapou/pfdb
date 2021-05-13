@@ -33,8 +33,6 @@ interface StorageInterface
 
     /**
      * Use by Database object, no need to implement if you directly use Table objects.
-     *
-     * @return array
      */
     public function delete(string $name): void;
 
