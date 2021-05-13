@@ -33,7 +33,7 @@ class DatabaseTest extends TestCase
     {
         $db = self::pfdbDatabase();
 
-        $this->assertCount(4, $db->getTables());
+        self::assertCount(4, $db->getTables());
     }
 
     public function test_drop_exception()

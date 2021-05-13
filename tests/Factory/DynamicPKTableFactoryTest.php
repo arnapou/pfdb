@@ -22,8 +22,8 @@ class DynamicPKTableFactoryTest extends TestCase
         $factory = new DynamicPKTableFactory();
 
         $table = $factory->create(new ArrayStorage(), 'table');
-        $this->assertSame('idtable', $table->getPrimaryKey());
-        $this->assertSame('table', $table->getName());
+        self::assertSame('idtable', $table->getPrimaryKey());
+        self::assertSame('table', $table->getName());
     }
 
     public function test_with_callable()
@@ -34,13 +34,13 @@ class DynamicPKTableFactoryTest extends TestCase
         $factory   = new DynamicPKTableFactory($pkFactory);
 
         $table = $factory->create(new ArrayStorage(), 'table');
-        $this->assertSame('table_pk', $table->getPrimaryKey());
-        $this->assertSame('table', $table->getName());
+        self::assertSame('table_pk', $table->getPrimaryKey());
+        self::assertSame('table', $table->getName());
 
         $pkFactory = function ($name) {
             return $name . '_id';
         };
         $factory->setPkFactory($pkFactory);
-        $this->assertSame($pkFactory, $factory->getPkFactory());
+        self::assertSame($pkFactory, $factory->getPkFactory());
     }
 }

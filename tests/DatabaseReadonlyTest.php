@@ -21,6 +21,6 @@ class DatabaseReadonlyTest extends TestCase
     public function test_misc()
     {
         $database = new DatabaseReadonly(new ArrayStorage());
-        $this->assertInstanceOf(ReadonlyStorage::class, $database->getStorage());
+        self::assertInstanceOf(ReadonlyStorage::class, $database->getStorage());
     }
 }

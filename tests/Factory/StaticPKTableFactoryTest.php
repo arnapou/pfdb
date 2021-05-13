@@ -23,11 +23,11 @@ class StaticPKTableFactoryTest extends TestCase
     {
         $factory = new StaticPKTableFactory('id');
 
-        $this->assertSame('id', $factory->getDefaultPrimaryKey());
-        $this->assertSame('pk', $factory->setDefaultPrimaryKey('pk')->getDefaultPrimaryKey());
+        self::assertSame('id', $factory->getDefaultPrimaryKey());
+        self::assertSame('pk', $factory->setDefaultPrimaryKey('pk')->getDefaultPrimaryKey());
 
-        $this->assertSame(Table::class, $factory->getTableClass());
-        $this->assertSame(Table::class, $factory->setTableClass(Table::class)->getTableClass());
+        self::assertSame(Table::class, $factory->getTableClass());
+        self::assertSame(Table::class, $factory->setTableClass(Table::class)->getTableClass());
     }
 
     public function test_set_table_exception()

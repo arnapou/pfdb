@@ -67,12 +67,12 @@ class ReadonlyStorageTest extends TestCase
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
 
-        $this->assertSame(['any'], $storage->tableNames());
-        $this->assertTrue($storage->isReadonly('we_dont_care'));
-        $this->assertInstanceOf(StorageInterface::class, $storage->innerStorage());
+        self::assertSame(['any'], $storage->tableNames());
+        self::assertTrue($storage->isReadonly('we_dont_care'));
+        self::assertInstanceOf(StorageInterface::class, $storage->innerStorage());
 
         $storage = new ReadonlyStorage(new ArrayStorage());
-        $this->assertFalse($storage->isReadonly('we_dont_care'));
+        self::assertFalse($storage->isReadonly('we_dont_care'));
         $storage->save('we_dont_care', []);
         $storage->delete('we_dont_care');
     }

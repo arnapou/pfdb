@@ -22,7 +22,7 @@ class NoPKTableFactoryTest extends TestCase
         $factory = new NoPKTableFactory();
 
         $table = $factory->create(new ArrayStorage(), 'table');
-        $this->assertNull($table->getPrimaryKey());
-        $this->assertSame('table', $table->getName());
+        self::assertNull($table->getPrimaryKey());
+        self::assertSame('table', $table->getName());
     }
 }

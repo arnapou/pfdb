@@ -21,10 +21,10 @@ class LockedStorageTest extends TestCase
     {
         $storage = new LockedStorage(new ArrayStorage(['tata' => []]));
 
-        $this->assertSame([], $storage->load('tutu'));
-        $this->assertSame(['tata'], $storage->tableNames());
-        $this->assertInstanceOf(ArrayStorage::class, $storage->innerStorage());
-        $this->assertFalse($storage->isReadonly('tata'));
+        self::assertSame([], $storage->load('tutu'));
+        self::assertSame(['tata'], $storage->tableNames());
+        self::assertInstanceOf(ArrayStorage::class, $storage->innerStorage());
+        self::assertFalse($storage->isReadonly('tata'));
 
         $storage->delete('tutu');
         $storage->save('tutu', []);

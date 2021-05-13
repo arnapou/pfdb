@@ -48,47 +48,47 @@ class ComparisonExprTest extends TestCase
     {
         $expr = new ComparisonExpr('field', '*', '');
         $expr(['field' => 42], null);
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     public function test_swap_field_and_value()
     {
         $expr = new ComparisonExpr(42, '=', new Field('field'));
-        $this->assertTrue($expr(['field' => 42], null));
+        self::assertTrue($expr(['field' => 42], null));
     }
 
     public function test_regexp_non_case_sensitive()
     {
         $expr = new ComparisonExpr('field', 'regexp', '/^[a-z]+$/', false);
-        $this->assertTrue($expr(['field' => 'ABCDEF'], null));
+        self::assertTrue($expr(['field' => 'ABCDEF'], null));
     }
 
     public function test_get_field()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        $this->assertIsCallable($expr->getField());
-        $this->assertSame(66, \call_user_func($expr->getField(), ['field' => 66], null));
+        self::assertIsCallable($expr->getField());
+        self::assertSame(66, \call_user_func($expr->getField(), ['field' => 66], null));
 
         $expr = new ComparisonExpr(42, '=', new Field('field'), false);
-        $this->assertSame(42, \call_user_func($expr->getField(), ['we dont care the value']));
+        self::assertSame(42, \call_user_func($expr->getField(), ['we dont care the value']));
     }
 
     public function test_get_value()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        $this->assertIsCallable($expr->getValue());
-        $this->assertSame(42, \call_user_func($expr->getValue(), ['we dont care the value']));
+        self::assertIsCallable($expr->getValue());
+        self::assertSame(42, \call_user_func($expr->getValue(), ['we dont care the value']));
 
         $expr = new ComparisonExpr(42, '=', new Field('field'), false);
-        $this->assertSame(66, \call_user_func($expr->getValue(), ['field' => 66], null));
+        self::assertSame(66, \call_user_func($expr->getValue(), ['field' => 66], null));
 
         $expr = new ComparisonExpr('field', '=', $this->fields()->value(42), false);
-        $this->assertSame(42, \call_user_func($expr->getValue(), ['field' => 66], null));
+        self::assertSame(42, \call_user_func($expr->getValue(), ['field' => 66], null));
     }
 
     public function test_is_case_sensitive()
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        $this->assertSame(false, $expr->isCaseSensitive());
+        self::assertSame(false, $expr->isCaseSensitive());
     }
 }

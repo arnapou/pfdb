@@ -37,18 +37,18 @@ class QueryTest extends TestCase
 
     public function test_count()
     {
-        $this->assertCount(9, $this->table());
-        $this->assertCount(2, $this->table()->find($this->expr()->eq('color', 'Brown')));
+        self::assertCount(9, $this->table());
+        self::assertCount(2, $this->table()->find($this->expr()->eq('color', 'Brown')));
     }
 
     public function test_limit()
     {
-        $this->assertCount(1, $this->table()->find()->limit(0, 1));
+        self::assertCount(1, $this->table()->find()->limit(0, 1));
     }
 
     public function test_first()
     {
-        $this->assertSame([
+        self::assertSame([
             'id'    => 5,
             'mark'  => 'Peugeot',
             'color' => 'Red',
@@ -58,7 +58,7 @@ class QueryTest extends TestCase
 
     public function test_last()
     {
-        $this->assertSame([
+        self::assertSame([
             'id'    => 89,
             'mark'  => 'Nissan',
             'color' => 'Red',
@@ -68,7 +68,7 @@ class QueryTest extends TestCase
 
     public function test_get()
     {
-        $this->assertSame(
+        self::assertSame(
             ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
             $this->table('id')->get(67)
         );
@@ -76,21 +76,21 @@ class QueryTest extends TestCase
 
     public function test_select()
     {
-        $this->assertSame(
+        self::assertSame(
             [5, 14, 22, 31, 45, 52, 67, 71, 89],
             array_keys(iterator_to_array($this->table('id')->find()->select('id')))
         );
-        $this->assertSame(
+        self::assertSame(
             [['id' => 5], ['id' => 14], ['id' => 22], ['id' => 31], ['id' => 45], ['id' => 52], ['id' => 67], ['id' => 71], ['id' => 89]],
             array_values(iterator_to_array($this->table()->find()->select('id')))
         );
-        $this->assertSame(
+        self::assertSame(
             [['ID' => '50'], ['ID' => '140'], ['ID' => '220'], ['ID' => '310'], ['ID' => '450'], ['ID' => '520'], ['ID' => '670'], ['ID' => '710'], ['ID' => '890']],
             array_values(iterator_to_array($this->table()->find()->select(function ($row) {
                 return ['ID' => \strval(10 * $row['id'])];
             })))
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 ['ID' => '50', 'mark' => 'Peugeot'],
                 ['ID' => '140', 'mark' => 'Peugeot'],
@@ -110,21 +110,21 @@ class QueryTest extends TestCase
 
     public function test_sorts()
     {
-        $this->assertSame(
+        self::assertSame(
             [['id' => 14], ['id' => 22], ['id' => 52], ['id' => 89], ['id' => 5], ['id' => 67], ['id' => 71], ['id' => 45], ['id' => 31]],
             array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price')))
         );
-        $this->assertSame(
+        self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
             array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')))
         );
-        $this->assertSame(
+        self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
             array_values(iterator_to_array($this->table()->find()->select('id')->addSort(function ($row1, $row2) {
                 return -($row1['price'] <=> $row2['price']);
             })))
         );
-        $this->assertSame(
+        self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 52], ['id' => 22], ['id' => 14]],
             array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')->addSort('mark')))
         );
@@ -132,7 +132,7 @@ class QueryTest extends TestCase
 
     public function test_group()
     {
-        $this->assertSame(
+        self::assertSame(
             [['sum' => 4150, 'count' => 3], ['sum' => 5200, 'count' => 3], ['sum' => 4950, 'count' => 3]],
             iterator_to_array($this->table()->find()->group(
                 ['mark'],
@@ -144,7 +144,7 @@ class QueryTest extends TestCase
                 }
             ))
         );
-        $this->assertSame(
+        self::assertSame(
             [['avg' => 1383.3], ['avg' => 1733.3], ['avg' => 1650.0]],
             iterator_to_array($this->table()->find()->group(
                 ['mark'],
@@ -159,7 +159,7 @@ class QueryTest extends TestCase
                 }
             ))
         );
-        $this->assertSame(
+        self::assertSame(
             [['ids' => [5, 31, 45, 67, 71, 89]], ['ids' => [14, 22, 52]]],
             iterator_to_array($this->table()->find()->group(
                 [
@@ -183,7 +183,7 @@ class QueryTest extends TestCase
         $limited  = (new Query($sorted))->limit(0, 2);
         $final    = (new Query($limited))->select('id');
 
-        $this->assertSame(
+        self::assertSame(
             [52 => ['id' => 52], 89 => ['id' => 89]],
             iterator_to_array($final)
         );
@@ -196,7 +196,7 @@ class QueryTest extends TestCase
             ->chain()->limit(0, 2)
             ->chain()->select('id');
 
-        $this->assertSame(
+        self::assertSame(
             [52 => ['id' => 52], 89 => ['id' => 89]],
             iterator_to_array($final)
         );
@@ -209,7 +209,7 @@ class QueryTest extends TestCase
         $query1 = new Query(new \ArrayIterator($data));
         $query2 = (new Query())->from(new \ArrayIterator($data));
 
-        $this->assertSame(iterator_to_array($query1), iterator_to_array($query2));
+        self::assertSame(iterator_to_array($query1), iterator_to_array($query2));
     }
 
     public function test_standar_select_from()
@@ -217,7 +217,7 @@ class QueryTest extends TestCase
         $data  = PhpFileStorageTest::pfdbStorage()->load('vehicle');
         $query = new Query(new \ArrayIterator($data));
 
-        $this->assertSame(
+        self::assertSame(
             [
                 4 => [
                     'id'    => 45,

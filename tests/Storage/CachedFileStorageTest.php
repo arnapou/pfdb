@@ -37,10 +37,10 @@ class CachedFileStorageTest extends TestCase
     {
         $storage = $this->fileStorage();
 
-        $this->assertFalse($storage->isReadonly(self::TMP_NAME));
-        $this->assertInstanceOf(PhpFileStorage::class, $storage->cacheStorage());
-        $this->assertInstanceOf(YamlFileStorage::class, $storage->innerStorage());
-        $this->assertIsArray($storage->tableNames());
+        self::assertFalse($storage->isReadonly(self::TMP_NAME));
+        self::assertInstanceOf(PhpFileStorage::class, $storage->cacheStorage());
+        self::assertInstanceOf(YamlFileStorage::class, $storage->innerStorage());
+        self::assertIsArray($storage->tableNames());
     }
 
     public function test_save_and_delete()
@@ -48,30 +48,30 @@ class CachedFileStorageTest extends TestCase
         $storage = $this->fileStorage();
         $storage->save(self::TMP_NAME, ArrayTableTest::DATA);
 
-        $this->assertCount(5, $storage->load(self::TMP_NAME));
-        $this->assertSame(
+        self::assertCount(5, $storage->load(self::TMP_NAME));
+        self::assertSame(
             $storage->cacheStorage()->load(self::TMP_NAME),
             $storage->innerStorage()->load(self::TMP_NAME)
         );
 
         $storage->delete(self::TMP_NAME);
-        $this->assertFalse(is_file($storage->cacheStorage()->getFilename(self::TMP_NAME)));
-        $this->assertFalse(is_file($storage->innerStorage()->getFilename(self::TMP_NAME)));
+        self::assertFalse(is_file($storage->cacheStorage()->getFilename(self::TMP_NAME)));
+        self::assertFalse(is_file($storage->innerStorage()->getFilename(self::TMP_NAME)));
     }
 
     public function test_source_not_exists_with_remaining_cache_return_empty()
     {
         $storage = $this->fileStorage();
         $storage->cacheStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
-        $this->assertCount(5, $storage->cacheStorage()->load(self::TMP_NAME));
-        $this->assertCount(0, $storage->load(self::TMP_NAME));
+        self::assertCount(5, $storage->cacheStorage()->load(self::TMP_NAME));
+        self::assertCount(0, $storage->load(self::TMP_NAME));
     }
 
     public function test_source_exists_with_cache_not_present()
     {
         $storage = $this->fileStorage();
         $storage->innerStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
-        $this->assertCount(5, $storage->load(self::TMP_NAME));
+        self::assertCount(5, $storage->load(self::TMP_NAME));
     }
 
     public function test_cache_loaded_instead_of_source()
@@ -79,12 +79,12 @@ class CachedFileStorageTest extends TestCase
         $storage = $this->fileStorage();
         $DATA    = ArrayTableTest::DATA;
         $storage->save(self::TMP_NAME, $DATA);
-        $this->assertCount(5, $storage->load(self::TMP_NAME));
+        self::assertCount(5, $storage->load(self::TMP_NAME));
 
         // hack cached storage with fresher timestamp ... bad idea in real use case ... here just for testing !
         touch($storage->innerStorage()->getFilename(self::TMP_NAME), time() - 10);
         $DATA[0]['name'] = 'XXX';
         $storage->cacheStorage()->save(self::TMP_NAME, $DATA);
-        $this->assertSame($DATA, $storage->load(self::TMP_NAME));
+        self::assertSame($DATA, $storage->load(self::TMP_NAME));
     }
 }

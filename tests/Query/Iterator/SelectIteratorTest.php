@@ -23,7 +23,7 @@ class SelectIteratorTest extends TestCase
         $data   = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), ['*']);
 
-        $this->assertSame(
+        self::assertSame(
             ['id' => 1, 'name' => 'Red'],
             iterator_to_array($select)[0]
         );
@@ -34,7 +34,7 @@ class SelectIteratorTest extends TestCase
         $data   = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), []);
 
-        $this->assertSame(
+        self::assertSame(
             ['id' => 1, 'name' => 'Red'],
             iterator_to_array($select)[0]
         );
@@ -45,7 +45,7 @@ class SelectIteratorTest extends TestCase
         $data   = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), ['name']);
 
-        $this->assertSame(
+        self::assertSame(
             ['name' => 'Red'],
             iterator_to_array($select)[0]
         );
@@ -56,7 +56,7 @@ class SelectIteratorTest extends TestCase
         $data   = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), [new Field('id')]);
 
-        $this->assertSame(
+        self::assertSame(
             ['id' => 1],
             iterator_to_array($select)[0]
         );
@@ -71,7 +71,7 @@ class SelectIteratorTest extends TestCase
             },
         ]);
 
-        $this->assertSame(
+        self::assertSame(
             ['id:color' => '1:Red'],
             iterator_to_array($select)[0]
         );

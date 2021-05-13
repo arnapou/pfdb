@@ -64,25 +64,25 @@ class TableTest extends TestCase
     public function test_load_with_no_pk()
     {
         $table = new Table(new ArrayStorage(), 'test', null);
-        $this->assertCount(0, $table);
+        self::assertCount(0, $table);
     }
 
     public function test_flush_no_change()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
-        $this->assertFalse($table->flush());
+        self::assertFalse($table->flush());
     }
 
     public function test_primary_key()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
-        $this->assertSame('id', $table->getPrimaryKey());
+        self::assertSame('id', $table->getPrimaryKey());
     }
 
     public function test_get_data()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
-        $this->assertSame([], $table->getData());
+        self::assertSame([], $table->getData());
     }
 
     public function test_insert()
@@ -91,13 +91,13 @@ class TableTest extends TestCase
 
         $table->insert(['name' => 'Joe']);
         $table->insert(['name' => 'Joe']);
-        $this->assertSame(1, $table->getLastInsertedKey());
+        self::assertSame(1, $table->getLastInsertedKey());
 
         $table->setPrimaryKeyGenerator(function () {
             return 42;
         });
         $table->insert(['name' => 'Joe']);
-        $this->assertSame(42, $table->getLastInsertedKey());
+        self::assertSame(42, $table->getLastInsertedKey());
     }
 
     public function test_delete()
@@ -105,9 +105,9 @@ class TableTest extends TestCase
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
         $table->insert(['name' => 'Joe'], 42);
-        $this->assertCount(1, $table);
+        self::assertCount(1, $table);
         $table->delete(42);
-        $this->assertCount(0, $table);
+        self::assertCount(0, $table);
     }
 
     public function test_update()
@@ -116,7 +116,7 @@ class TableTest extends TestCase
 
         $table->insert(['name' => 'Joe'], 42);
         $table->update(['name' => 'Lea'], 42);
-        $this->assertSame('Lea', $table->get(42)['name']);
+        self::assertSame('Lea', $table->get(42)['name']);
     }
 
     public function test_upsert()
@@ -124,13 +124,13 @@ class TableTest extends TestCase
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
         $table->upsert(['name' => 'Joe'], 42);
-        $this->assertSame('Joe', $table->get(42)['name']);
+        self::assertSame('Joe', $table->get(42)['name']);
 
         $table->upsert(['name' => 'Lea'], 42);
-        $this->assertSame('Lea', $table->get(42)['name']);
+        self::assertSame('Lea', $table->get(42)['name']);
 
         $table->upsert(['name' => 'Lea']);
-        $this->assertSame(43, $table->getLastInsertedKey());
+        self::assertSame(43, $table->getLastInsertedKey());
     }
 
     public function test_update_multiple()
@@ -148,7 +148,7 @@ class TableTest extends TestCase
             }
         );
 
-        $this->assertSame([
+        self::assertSame([
             0 => ['price' => 10],
             1 => ['price' => 15],
             2 => ['price' => 200],
@@ -166,7 +166,7 @@ class TableTest extends TestCase
             $this->expr()->lte('price', 150)
         );
 
-        $this->assertSame([
+        self::assertSame([
             2 => ['price' => 200],
         ], $table->getData());
     }
@@ -178,9 +178,9 @@ class TableTest extends TestCase
         $table->upsert(['price' => 100]);
         $table->upsert(['price' => 150]);
         $table->upsert(['price' => 200]);
-        $this->assertCount(3, $table);
+        self::assertCount(3, $table);
 
         $table->clear();
-        $this->assertCount(0, $table);
+        self::assertCount(0, $table);
     }
 }

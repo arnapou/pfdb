@@ -19,19 +19,19 @@ class KeyFieldTest extends TestCase
     public function test_name()
     {
         $field = new KeyField(':key');
-        $this->assertSame(':key', $field->name());
+        self::assertSame(':key', $field->name());
     }
 
     public function test_value()
     {
         $field = new KeyField(':key');
 
-        $this->assertSame(
+        self::assertSame(
             666,
             $field->value(['name' => 'Joe', 'age' => 20], 666)
         );
 
-        $this->assertSame(
+        self::assertSame(
             [':key' => 666],
             $field->select(['name' => 'Joe', 'age' => 20], 666)
         );

@@ -25,9 +25,9 @@ class NestedExprTest extends TestCase
             $this->expr()->gt('age', 20)
         );
 
-        $this->assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
     }
 
     public function test_OR()
@@ -37,10 +37,10 @@ class NestedExprTest extends TestCase
             $this->expr()->gt('age', 20)
         );
 
-        $this->assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        $this->assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        $this->assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
     public function test_NOT()
@@ -52,15 +52,15 @@ class NestedExprTest extends TestCase
             )
         );
 
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        $this->assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
-        $this->assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
     public function test_children_count()
     {
-        $this->assertCount(
+        self::assertCount(
             3,
             $this->expr()->and(
                 $this->expr()->eq('field1', 1),

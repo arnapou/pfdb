@@ -32,19 +32,19 @@ class ArrayTableTest extends TestCase
     {
         $table = new ArrayTable(self::DATA, 'id');
 
-        $this->assertCount(5, $table);
-        $this->assertSame('id', $table->getPrimaryKey());
-        $this->assertSame(self::DATA, array_values($table->getData()));
-        $this->assertSame(ArrayTable::NAME, $table->getName());
-        $this->assertSame(['id' => 4, 'name' => 'Yellow'], $table->get(4));
+        self::assertCount(5, $table);
+        self::assertSame('id', $table->getPrimaryKey());
+        self::assertSame(self::DATA, array_values($table->getData()));
+        self::assertSame(ArrayTable::NAME, $table->getName());
+        self::assertSame(['id' => 4, 'name' => 'Yellow'], $table->get(4));
 
         $table->setReadonly(true);
-        $this->assertSame(true, $table->isReadonly());
-        $this->assertInstanceOf(Table::class, $table->getIterator());
+        self::assertSame(true, $table->isReadonly());
+        self::assertInstanceOf(Table::class, $table->getIterator());
 
-        $this->assertSame(false, $table->flush());
+        self::assertSame(false, $table->flush());
         $table->clear();
-        $this->assertCount(0, $table);
+        self::assertCount(0, $table);
     }
 
     public function test_delete()
@@ -52,12 +52,12 @@ class ArrayTableTest extends TestCase
         $table = new ArrayTable(self::DATA, 'id');
 
         $table->delete(2);
-        $this->assertNull($table->get(2));
-        $this->assertCount(4, $table);
+        self::assertNull($table->get(2));
+        self::assertCount(4, $table);
 
         $table->deleteMultiple($this->expr()->gt('id', 2));
-        $this->assertSame(['id' => 1, 'name' => 'Red'], $table->get(1));
-        $this->assertCount(1, $table);
+        self::assertSame(['id' => 1, 'name' => 'Red'], $table->get(1));
+        self::assertCount(1, $table);
     }
 
     public function test_update()
@@ -65,13 +65,13 @@ class ArrayTableTest extends TestCase
         $table = new ArrayTable(self::DATA, 'id');
 
         $table->update(['id' => 3, 'name' => 'Orange']);
-        $this->assertSame('Orange', $table->get(3)['name']);
+        self::assertSame('Orange', $table->get(3)['name']);
 
         $table->updateMultiple($this->expr()->bool(true), function ($row, $key) {
             $row['upper'] = strtoupper($row['name']);
             return $row;
         });
-        $this->assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
+        self::assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
     }
 
     public function test_insert()
@@ -79,15 +79,15 @@ class ArrayTableTest extends TestCase
         $table = new ArrayTable(self::DATA, 'id');
 
         $table->insert(['id' => 6, 'name' => 'Orange']);
-        $this->assertSame(['id' => 6, 'name' => 'Orange'], $table->get(6));
+        self::assertSame(['id' => 6, 'name' => 'Orange'], $table->get(6));
 
         $table->insert(['name' => 'Black']);
-        $this->assertSame(7, $table->getLastInsertedKey());
-        $this->assertSame('Black', $table->get(7)['name']);
+        self::assertSame(7, $table->getLastInsertedKey());
+        self::assertSame('Black', $table->get(7)['name']);
 
         $table->insertMultiple([['id' => 60, 'name' => 'Purple'], ['name' => 'White']]);
-        $this->assertSame(61, $table->getLastInsertedKey());
-        $this->assertSame(['Purple', 'White'], array_column(iterator_to_array($table->find($this->expr()->gt('id', 20))), 'name'));
+        self::assertSame(61, $table->getLastInsertedKey());
+        self::assertSame(['Purple', 'White'], array_column(iterator_to_array($table->find($this->expr()->gt('id', 20))), 'name'));
     }
 
     public function test_insert_multiple_with_exception_should_not_change_data()
@@ -99,7 +99,7 @@ class ArrayTableTest extends TestCase
             $table->insertMultiple([['name' => 'White'], ['id' => 6, 'name' => 'Purple']]);
             $this->fail('a MultipleActionException should have been raised for the multiple insert');
         } catch (MultipleActionException $exception) {
-            $this->assertSame($keys, array_keys($table->getData()));
+            self::assertSame($keys, array_keys($table->getData()));
         }
     }
 
@@ -115,7 +115,7 @@ class ArrayTableTest extends TestCase
             });
             $this->fail('a MultipleActionException should have been raised for the multiple update');
         } catch (MultipleActionException $exception) {
-            $this->assertSame($keys, array_keys($table->getData()));
+            self::assertSame($keys, array_keys($table->getData()));
         }
     }
 
@@ -130,7 +130,7 @@ class ArrayTableTest extends TestCase
             }));
             $this->fail('a MultipleActionException should have been raised for the multiple delete');
         } catch (MultipleActionException $exception) {
-            $this->assertSame($keys, array_keys($table->getData()));
+            self::assertSame($keys, array_keys($table->getData()));
         }
     }
 
@@ -139,9 +139,9 @@ class ArrayTableTest extends TestCase
         $table = new ArrayTable(self::DATA, 'id');
 
         $table->upsert(['id' => 2, 'name' => 'Purple']);
-        $this->assertSame(['id' => 2, 'name' => 'Purple'], $table->get(2));
+        self::assertSame(['id' => 2, 'name' => 'Purple'], $table->get(2));
 
         $table->upsert(['name' => 'White']);
-        $this->assertSame(['name' => 'White', 'id' => 6], $table->get(6));
+        self::assertSame(['name' => 'White', 'id' => 6], $table->get(6));
     }
 }

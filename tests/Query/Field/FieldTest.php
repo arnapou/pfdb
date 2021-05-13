@@ -19,19 +19,19 @@ class FieldTest extends TestCase
     public function test_name()
     {
         $field = new Field('name');
-        $this->assertSame('name', $field->name());
+        self::assertSame('name', $field->name());
     }
 
     public function test_select()
     {
         $field = new Field('name');
 
-        $this->assertSame(
+        self::assertSame(
             ['name' => 'Joe'],
             $field->select(['name' => 'Joe', 'age' => 20])
         );
 
-        $this->assertSame(
+        self::assertSame(
             ['name' => null],
             $field->select(['firstname' => 'Joe', 'age' => 20])
         );

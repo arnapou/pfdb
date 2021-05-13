@@ -23,16 +23,16 @@ class FieldTest extends TestCase
 
     public function test_normal_field()
     {
-        $this->assertSame('test', $this->fields()->normal('test')->name());
+        self::assertSame('test', $this->fields()->normal('test')->name());
     }
 
     public function test_key_field()
     {
-        $this->assertSame('test', $this->fields()->key('test')->name());
+        self::assertSame('test', $this->fields()->key('test')->name());
     }
 
     public function test_parent_field()
     {
-        $this->assertIsCallable($this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name());
+        self::assertIsCallable($this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name());
     }
 }

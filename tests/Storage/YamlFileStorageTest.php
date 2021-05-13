@@ -40,25 +40,25 @@ class YamlFileStorageTest extends TestCase
     public function test_getter_and_setters()
     {
         $storage = self::pfdbStorage();
-        $this->assertSame(100, $storage->setParseFlags(100)->getParseFlags());
-        $this->assertSame(200, $storage->setDumpFlags(200)->getDumpFlags());
-        $this->assertSame(300, $storage->setDumpIndent(300)->getDumpIndent());
-        $this->assertSame(400, $storage->setDumpInline(400)->getDumpInline());
+        self::assertSame(100, $storage->setParseFlags(100)->getParseFlags());
+        self::assertSame(200, $storage->setDumpFlags(200)->getDumpFlags());
+        self::assertSame(300, $storage->setDumpIndent(300)->getDumpIndent());
+        self::assertSame(400, $storage->setDumpInline(400)->getDumpInline());
     }
 
     public function test_count()
     {
         $storage = self::pfdbStorage();
 
-        $this->assertSame(9, \count($storage->load('vehicle')));
-        $this->assertSame(0, \count($storage->load('not_exists')));
+        self::assertSame(9, \count($storage->load('vehicle')));
+        self::assertSame(0, \count($storage->load('not_exists')));
     }
 
     public function test_save()
     {
         $storage = $this->fileStorage(false);
         $storage->save(self::TMP_NAME, []);
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     public function test_save_readonly_raises_exception()
@@ -72,7 +72,7 @@ class YamlFileStorageTest extends TestCase
     {
         $storage = $this->fileStorage(false);
         $storage->delete(self::TMP_NAME);
-        $this->assertTrue(true);
+        self::assertTrue(true);
     }
 
     public function test_delete_readonly_raises_exception()

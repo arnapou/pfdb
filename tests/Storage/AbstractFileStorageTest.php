@@ -40,12 +40,12 @@ class AbstractFileStorageTest extends TestCase
     {
         $storage = new PhpFileStorage(__DIR__ . DIRECTORY_SEPARATOR);
 
-        $this->assertSame(__DIR__, $storage->getPath());
+        self::assertSame(__DIR__, $storage->getPath());
     }
 
     public function test_tablenames()
     {
-        $this->assertSame(['vehicle'], YamlFileStorageTest::pfdbStorage()->tableNames());
+        self::assertSame(['vehicle'], YamlFileStorageTest::pfdbStorage()->tableNames());
     }
 
     public function test_readonly_folder()
@@ -54,7 +54,7 @@ class AbstractFileStorageTest extends TestCase
         if (!is_dir($dir)) {
             mkdir($dir, 0000, true);
             $storage = new PhpFileStorage($dir);
-            $this->assertTrue($storage->isReadonly('any_folder'));
+            self::assertTrue($storage->isReadonly('any_folder'));
             @rmdir($dir);
         } else {
             $this->markTestSkipped('test folder already exists. That should never occur.');
