@@ -39,7 +39,7 @@ class DatabaseTest extends TestCase
     public function test_drop_exception()
     {
         $db = self::pfdbDatabase();
-        $table =$db->getTable('vehicle');
+        $table = $db->getTable('vehicle');
 
         $db->dropTable($table);
 

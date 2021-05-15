@@ -11,11 +11,11 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
+            "dev-master": "3.x-dev"
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.0",
         "symfony/yaml": "^4.0",
         "symfony/lock": "^4.0"
     },

@@ -17,18 +17,9 @@ use Arnapou\PFDB\Exception\ReadonlyException;
 
 abstract class AbstractFileStorage implements StorageInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
-    /**
-     * @var bool
-     */
-    private $readonly;
-    /**
-     * @var string
-     */
-    private $prefixName;
+    private string $path;
+    private bool   $readonly;
+    private string $prefixName;
 
     public function __construct(string $path, string $prefixName = 'table')
     {

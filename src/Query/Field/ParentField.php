@@ -17,34 +17,42 @@ use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 use Arnapou\PFDB\Table;
 
-class ParentField implements FieldInterface
+/**
+ * Complex "parent" field which returns
+ * - value : the parent matching field
+ * - select : a multiple field array to simulates joins.
+ *
+ * Callable Arguments must follow these signatures :
+ * - `$name` + `$parentField` :
+ * <pre>
+ * function(array $row, int|string|null $key = null): string|int|float|bool|null|array {
+ *     // compute $value
+ *     return $value;
+ * }
+ * </pre>
+ * - `$parentRow` :
+ * <pre>
+ * function(int|string $key, TableInterface $parentTable): array {
+ *     // compute $parentRow using the table and key
+ *     return $parentRow;
+ * }
+ * </pre>
+ */
+class ParentField implements FieldValueInterface, FieldSelectInterface
 {
     use SanitizeHelperTrait;
 
+    private string $selectAlias;
+    private bool   $selectAll = true;
+    private bool   $selectArray = false;
     /**
      * @var callable
      */
     private $name;
     /**
-     * @var string
-     */
-    private $selectAlias;
-    /**
-     * @var TableInterface
-     */
-    private $parentTable;
-    /**
      * @var ?callable
      */
     private $parentField;
-    /**
-     * @var bool
-     */
-    private $selectAll = true;
-    /**
-     * @var bool
-     */
-    private $selectArray = false;
     /**
      * @var ?callable
      */
@@ -61,10 +69,14 @@ class ParentField implements FieldInterface
      *
      * @throws InvalidFieldException
      */
-    public function __construct($name, TableInterface $parentTable, $parentField = null, ?string $selectAlias = null, ?callable $parentRow = null)
-    {
+    public function __construct(
+        string | FieldValueInterface | callable $name,
+        private TableInterface $parentTable,
+        string | FieldValueInterface | callable | null $parentField = null,
+        ?string $selectAlias = null,
+        ?callable $parentRow = null
+    ) {
         $this->name = $this->sanitizeField($name);
-        $this->parentTable = $parentTable;
         $this->parentField = null === $parentField ? null : $this->sanitizeField($parentField);
         $this->selectAlias = $selectAlias ?: $parentTable->getName();
         $this->selectAll = null === $parentField;
@@ -118,7 +130,7 @@ class ParentField implements FieldInterface
         return $this->parentTable;
     }
 
-    public function value(array $row, $key = null)
+    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
     {
         if ($this->parentField) {
             $value = \call_user_func($this->name, $row, $key);
@@ -137,7 +149,7 @@ class ParentField implements FieldInterface
         return null;
     }
 
-    public function select(array $row, $key = null): array
+    public function select(array $row, string | int | null $key = null): array
     {
         $value = \call_user_func($this->name, $row, $key);
 

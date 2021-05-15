@@ -13,8 +13,5 @@ namespace Arnapou\PFDB\Query\Expr;
 
 interface ExprInterface
 {
-    /**
-     * @param scalar|null $key
-     */
-    public function __invoke(array $row, $key = null): bool;
+    public function __invoke(array $row, null | int | string $key = null): bool;
 }

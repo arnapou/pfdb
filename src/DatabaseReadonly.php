@@ -16,10 +16,13 @@ use Arnapou\PFDB\Factory\TableFactoryInterface;
 use Arnapou\PFDB\Storage\ReadonlyStorage;
 use Arnapou\PFDB\Storage\StorageInterface;
 
-class DatabaseReadonly extends AbstractDatabase
+final class DatabaseReadonly extends AbstractDatabase
 {
-    public function __construct(StorageInterface $storage, bool $quiet = true, ?TableFactoryInterface $tableFactory = null)
-    {
+    public function __construct(
+        StorageInterface $storage,
+        bool $quiet = true,
+        ?TableFactoryInterface $tableFactory = null
+    ) {
         parent::__construct(new ReadonlyStorage($storage, $quiet), $tableFactory);
     }
 }

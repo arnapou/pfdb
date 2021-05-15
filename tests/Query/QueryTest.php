@@ -48,22 +48,28 @@ class QueryTest extends TestCase
 
     public function test_first()
     {
-        self::assertSame([
-            'id'    => 5,
-            'mark'  => 'Peugeot',
-            'color' => 'Red',
-            'price' => '1550',
-        ], $this->table()->find()->first());
+        self::assertSame(
+            [
+                'id'    => 5,
+                'mark'  => 'Peugeot',
+                'color' => 'Red',
+                'price' => '1550',
+            ],
+            $this->table()->find()->first()
+        );
     }
 
     public function test_last()
     {
-        self::assertSame([
-            'id'    => 89,
-            'mark'  => 'Nissan',
-            'color' => 'Red',
-            'price' => '1500',
-        ], $this->table()->find()->last());
+        self::assertSame(
+            [
+                'id'    => 89,
+                'mark'  => 'Nissan',
+                'color' => 'Red',
+                'price' => '1500',
+            ],
+            $this->table()->find()->last()
+        );
     }
 
     public function test_get()
@@ -86,9 +92,15 @@ class QueryTest extends TestCase
         );
         self::assertSame(
             [['ID' => '50'], ['ID' => '140'], ['ID' => '220'], ['ID' => '310'], ['ID' => '450'], ['ID' => '520'], ['ID' => '670'], ['ID' => '710'], ['ID' => '890']],
-            array_values(iterator_to_array($this->table()->find()->select(function ($row) {
-                return ['ID' => \strval(10 * $row['id'])];
-            })))
+            array_values(
+                iterator_to_array(
+                    $this->table()->find()->select(
+                        function ($row) {
+                            return ['ID' => \strval(10 * $row['id'])];
+                        }
+                    )
+                )
+            )
         );
         self::assertSame(
             [
@@ -102,9 +114,15 @@ class QueryTest extends TestCase
                 ['ID' => '710', 'mark' => 'Nissan'],
                 ['ID' => '890', 'mark' => 'Nissan'],
             ],
-            array_values(iterator_to_array($this->table()->find()->select(function ($row) {
-                return ['ID' => \strval(10 * $row['id'])];
-            })->addSelect('mark')))
+            array_values(
+                iterator_to_array(
+                    $this->table()->find()->select(
+                        function ($row) {
+                            return ['ID' => \strval(10 * $row['id'])];
+                        }
+                    )->addSelect('mark')
+                )
+            )
         );
     }
 
@@ -120,9 +138,15 @@ class QueryTest extends TestCase
         );
         self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
-            array_values(iterator_to_array($this->table()->find()->select('id')->addSort(function ($row1, $row2) {
-                return -($row1['price'] <=> $row2['price']);
-            })))
+            array_values(
+                iterator_to_array(
+                    $this->table()->find()->select('id')->addSort(
+                        function ($row1, $row2) {
+                            return -($row1['price'] <=> $row2['price']);
+                        }
+                    )
+                )
+            )
         );
         self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 52], ['id' => 22], ['id' => 14]],
@@ -134,54 +158,60 @@ class QueryTest extends TestCase
     {
         self::assertSame(
             [['sum' => 4150, 'count' => 3], ['sum' => 5200, 'count' => 3], ['sum' => 4950, 'count' => 3]],
-            iterator_to_array($this->table()->find()->group(
-                ['mark'],
-                ['sum' => 0, 'count' => 0],
-                function ($group, $row) {
-                    $group['sum'] += $row['price'];
-                    $group['count']++;
-                    return $group;
-                }
-            ))
+            iterator_to_array(
+                $this->table()->find()->group(
+                    ['mark'],
+                    ['sum' => 0, 'count' => 0],
+                    function ($group, $row) {
+                        $group['sum'] += $row['price'];
+                        $group['count']++;
+                        return $group;
+                    }
+                )
+            )
         );
         self::assertSame(
             [['avg' => 1383.3], ['avg' => 1733.3], ['avg' => 1650.0]],
-            iterator_to_array($this->table()->find()->group(
-                ['mark'],
-                ['sum' => 0, 'count' => 0],
-                function ($group, $row) {
-                    $group['sum'] += $row['price'];
-                    $group['count']++;
-                    return $group;
-                },
-                function ($group) {
-                    return ['avg' => round($group['sum'] / $group['count'], 1)];
-                }
-            ))
+            iterator_to_array(
+                $this->table()->find()->group(
+                    ['mark'],
+                    ['sum' => 0, 'count' => 0],
+                    function ($group, $row) {
+                        $group['sum'] += $row['price'];
+                        $group['count']++;
+                        return $group;
+                    },
+                    function ($group) {
+                        return ['avg' => round($group['sum'] / $group['count'], 1)];
+                    }
+                )
+            )
         );
         self::assertSame(
             [['ids' => [5, 31, 45, 67, 71, 89]], ['ids' => [14, 22, 52]]],
-            iterator_to_array($this->table()->find()->group(
-                [
-                    function ($row) {
-                        return $row['price'] < 1500 ? 'A' : 'B';
-                    },
-                ],
-                ['ids' => []],
-                function ($group, $row) {
-                    $group['ids'][] = $row['id'];
-                    return $group;
-                }
-            ))
+            iterator_to_array(
+                $this->table()->find()->group(
+                    [
+                        function ($row) {
+                            return $row['price'] < 1500 ? 'A' : 'B';
+                        },
+                    ],
+                    ['ids' => []],
+                    function ($group, $row) {
+                        $group['ids'][] = $row['id'];
+                        return $group;
+                    }
+                )
+            )
         );
     }
 
     public function test_forced_chaining()
     {
         $filtered = $this->table()->find($this->expr()->lte('price', 1500));
-        $sorted   = (new Query($filtered))->sort('mark');
-        $limited  = (new Query($sorted))->limit(0, 2);
-        $final    = (new Query($limited))->select('id');
+        $sorted = (new Query($filtered))->sort('mark');
+        $limited = (new Query($sorted))->limit(0, 2);
+        $final = (new Query($limited))->select('id');
 
         self::assertSame(
             [52 => ['id' => 52], 89 => ['id' => 89]],
@@ -214,7 +244,7 @@ class QueryTest extends TestCase
 
     public function test_standar_select_from()
     {
-        $data  = PhpFileStorageTest::pfdbStorage()->load('vehicle');
+        $data = PhpFileStorageTest::pfdbStorage()->load('vehicle');
         $query = new Query(new \ArrayIterator($data));
 
         self::assertSame(
@@ -226,11 +256,13 @@ class QueryTest extends TestCase
                     'price' => '1800',
                 ],
             ],
-            iterator_to_array($query->select()->where(
-                $this->expr()->and(
-                    $this->expr()->eq('color', 'Yellow', false)
+            iterator_to_array(
+                $query->select()->where(
+                    $this->expr()->and(
+                        $this->expr()->eq('color', 'Yellow', false)
+                    )
                 )
-            ))
+            )
         );
     }
 }

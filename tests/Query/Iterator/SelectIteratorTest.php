@@ -20,7 +20,7 @@ class SelectIteratorTest extends TestCase
 {
     public function test_select_all_fields()
     {
-        $data   = PhpFileStorageTest::pfdbStorage()->load('color');
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), ['*']);
 
         self::assertSame(
@@ -31,7 +31,7 @@ class SelectIteratorTest extends TestCase
 
     public function test_no_select_fields()
     {
-        $data   = PhpFileStorageTest::pfdbStorage()->load('color');
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), []);
 
         self::assertSame(
@@ -42,7 +42,7 @@ class SelectIteratorTest extends TestCase
 
     public function test_basic_fields()
     {
-        $data   = PhpFileStorageTest::pfdbStorage()->load('color');
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), ['name']);
 
         self::assertSame(
@@ -53,7 +53,7 @@ class SelectIteratorTest extends TestCase
 
     public function test_select_interface_fields()
     {
-        $data   = PhpFileStorageTest::pfdbStorage()->load('color');
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new \ArrayIterator($data), [new Field('id')]);
 
         self::assertSame(
@@ -64,12 +64,14 @@ class SelectIteratorTest extends TestCase
 
     public function test_callback_fields()
     {
-        $data   = PhpFileStorageTest::pfdbStorage()->load('color');
-        $select = new SelectIterator(new \ArrayIterator($data), [
+        $data = PhpFileStorageTest::pfdbStorage()->load('color');
+        $select = new SelectIterator(
+            new \ArrayIterator($data), [
             function ($row, $key) {
                 return ['id:color' => $row['id'] . ':' . $row['name']];
             },
-        ]);
+        ]
+        );
 
         self::assertSame(
             ['id:color' => '1:Red'],

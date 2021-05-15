@@ -31,11 +31,12 @@ class DynamicPKTableFactory extends AbstractTableFactory
 
     public function __construct(?callable $pkFactory = null)
     {
+        parent::__construct();
+
         $this->pkFactory = $pkFactory
             ?: static function (string $name): string {
                 return "id$name";
             };
-        $this->setTableClass(Table::class);
     }
 
     public function getPkFactory(): callable
@@ -52,13 +53,6 @@ class DynamicPKTableFactory extends AbstractTableFactory
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
-        $class = $this->getTableClass();
-
-        $table = new $class($storage, $name, \call_user_func($this->pkFactory, $name));
-        if (!$table instanceof TableInterface) {
-            throw new \TypeError('The table is not a valid TableInterface object');
-        }
-
-        return $table;
+        return $this->createInstance($storage, $name, \call_user_func($this->pkFactory, $name));
     }
 }

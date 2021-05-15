@@ -13,18 +13,13 @@ namespace Arnapou\PFDB\Storage;
 
 class CachedFileStorage implements StorageInterface
 {
-    /**
-     * @var AbstractFileStorage
-     */
-    private $storage;
-    /**
-     * @var PhpFileStorage
-     */
-    private $cache;
+    private PhpFileStorage $cache;
 
-    public function __construct(AbstractFileStorage $fileStorage, string $cachePath, string $cachedPrefixName = 'cached')
-    {
-        $this->storage = $fileStorage;
+    public function __construct(
+        private AbstractFileStorage $storage,
+        string $cachePath,
+        string $cachedPrefixName = 'cached'
+    ) {
         $this->cache = new PhpFileStorage($cachePath, $cachedPrefixName);
     }
 

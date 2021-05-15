@@ -13,18 +13,9 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 class GroupIterator implements \IteratorAggregate
 {
-    /**
-     * @var \Iterator
-     */
-    private $iterator;
-    /**
-     * @var array
-     */
-    private $fields;
-    /**
-     * @var array
-     */
-    private $initial;
+    private \Iterator $iterator;
+    private array     $fields;
+    private array     $initial;
     /**
      * @var callable
      */
@@ -32,14 +23,12 @@ class GroupIterator implements \IteratorAggregate
     /**
      * @var callable|null
      */
-    private $onfinish;
+    private $onfinish = null;
 
     /**
      * GroupIterator constructor.
-     *
-     * @param array|string $fields
      */
-    public function __construct(\Iterator $iterator, $fields, array $initial, callable $reduce, ?callable $onfinish)
+    public function __construct(\Iterator $iterator, array | string $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
         $this->fields = (array) $fields;

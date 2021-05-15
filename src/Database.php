@@ -13,6 +13,6 @@ namespace Arnapou\PFDB;
 
 use Arnapou\PFDB\Core\AbstractDatabase;
 
-class Database extends AbstractDatabase
+final class Database extends AbstractDatabase
 {
 }

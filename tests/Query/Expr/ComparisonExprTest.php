@@ -25,18 +25,6 @@ class ComparisonExprTest extends TestCase
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    public function test_constructor_exception_field()
-    {
-        $this->expectException(InvalidFieldException::class);
-        new ComparisonExpr(new \stdClass(), '==', 42);
-    }
-
-    public function test_constructor_exception_value()
-    {
-        $this->expectException(InvalidValueException::class);
-        new ComparisonExpr('field', '==', new \stdClass());
-    }
-
     public function test_constructor_exception_operator()
     {
         $this->expectException(InvalidOperatorException::class);

@@ -11,12 +11,14 @@
 
 namespace Arnapou\PFDB\Query\Field;
 
-class KeyField implements FieldInterface
+/**
+ * This field returns
+ * - value : the key itself
+ * - select : a custom field with the provided name.
+ */
+class KeyField implements FieldValueInterface, FieldSelectInterface
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
     public function __construct(?string $name = null)
     {
@@ -28,12 +30,12 @@ class KeyField implements FieldInterface
         return $this->name;
     }
 
-    public function value(array $row, $key = null)
+    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
     {
         return $key;
     }
 
-    public function select(array $row, $key = null): array
+    public function select(array $row, string | int | null $key = null): array
     {
         return [$this->name => $key];
     }

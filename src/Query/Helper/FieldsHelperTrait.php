@@ -13,10 +13,7 @@ namespace Arnapou\PFDB\Query\Helper;
 
 trait FieldsHelperTrait
 {
-    /**
-     * @var FieldsHelper|null
-     */
-    private $pfdbFieldsHelper = null;
+    private ?FieldsHelper $pfdbFieldsHelper = null;
 
     public function fields(): FieldsHelper
     {

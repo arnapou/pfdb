@@ -20,8 +20,8 @@ class MultipleStorageTest extends TestCase
 {
     public function test_misc()
     {
-        $child1  = new ArrayStorage(['table1' => [['data1' => 1]]]);
-        $child2  = new ArrayStorage(['table2' => [['data2' => 2]]]);
+        $child1 = new ArrayStorage(['table1' => [['data1' => 1]]]);
+        $child2 = new ArrayStorage(['table2' => [['data2' => 2]]]);
         $storage = new MultipleStorage($child1);
         $storage->add($child2);
 

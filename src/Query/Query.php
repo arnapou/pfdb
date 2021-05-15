@@ -30,27 +30,12 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @var array<FieldSelectInterface|scalar|callable>
      */
-    private $select = [];
-    /**
-     * @var ?\Iterator
-     */
-    private $from;
-    /**
-     * @var NestedExprInterface
-     */
-    private $where;
-    /**
-     * @var array
-     */
-    private $group = [];
-    /**
-     * @var array
-     */
-    private $limit = [0, PHP_INT_MAX];
-    /**
-     * @var array
-     */
-    private $sorts = [];
+    private array               $select = [];
+    private ?\Iterator          $from = null;
+    private NestedExprInterface $where;
+    private array               $group = [];
+    private array               $limit = [0, PHP_INT_MAX];
+    private array               $sorts = [];
 
     public function __construct(?\Traversable $from = null)
     {
@@ -98,11 +83,9 @@ class Query implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param array|string ...$fields
-     *
      * @return $this
      */
-    public function addSelect(...$fields): self
+    public function addSelect(array | string ...$fields): self
     {
         foreach ($fields as $field) {
             $this->select[] = $field;
@@ -123,11 +106,9 @@ class Query implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param array|string $fields
-     *
      * @return $this
      */
-    public function group($fields, array $initial, callable $reduce, ?callable $onfinish = null): self
+    public function group(array | string $fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
         $this->group = [$fields, $initial, $reduce, $onfinish];
 
@@ -157,11 +138,9 @@ class Query implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param mixed $field
-     *
      * @return $this
      */
-    public function addSort($field, string $order = 'ASC'): self
+    public function addSort(string | callable $field, string $order = 'ASC'): self
     {
         if (\is_callable($field)) {
             $this->sorts[] = $field;
@@ -210,10 +189,7 @@ class Query implements \IteratorAggregate, \Countable
         return new self($this);
     }
 
-    /**
-     * @return mixed
-     */
-    public function first()
+    public function first(): ?array
     {
         $first = null;
         foreach ($this as $item) {
@@ -224,10 +200,7 @@ class Query implements \IteratorAggregate, \Countable
         return $first;
     }
 
-    /**
-     * @return mixed
-     */
-    public function last()
+    public function last(): ?array
     {
         $last = null;
         foreach ($this as $item) {

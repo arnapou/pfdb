@@ -12,14 +12,22 @@
 namespace Arnapou\PFDB\Factory;
 
 use Arnapou\PFDB\Core\AbstractTable;
+use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\InvalidTableClassException;
+use Arnapou\PFDB\Storage\StorageInterface;
+use Arnapou\PFDB\Table;
 
+/**
+ * All the children classes of this abstract work with an AbstractTable class.
+ */
 abstract class AbstractTableFactory implements TableFactoryInterface
 {
-    /**
-     * @var string
-     */
-    private $tableClass;
+    private string $tableClass;
+
+    public function __construct()
+    {
+        $this->tableClass = Table::class;
+    }
 
     public function getTableClass(): string
     {
@@ -28,11 +36,36 @@ abstract class AbstractTableFactory implements TableFactoryInterface
 
     public function setTableClass(string $tableClass): self
     {
-        if (!is_subclass_of($tableClass, AbstractTable::class)) {
-            throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
-        }
+        $this->checkTableClass($tableClass);
         $this->tableClass = $tableClass;
 
         return $this;
+    }
+
+    public function isTableClassValid(string $tableClass): bool
+    {
+        return is_subclass_of($tableClass, AbstractTable::class);
+    }
+
+    public function checkTableClass(string $tableClass): void
+    {
+        if (!$this->isTableClassValid($tableClass)) {
+            throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
+        }
+    }
+
+    protected function createInstance(
+        StorageInterface $storage,
+        string $name,
+        ?string $primaryKey
+    ): TableInterface {
+        $this->checkTableClass($class = $this->getTableClass());
+
+        $table = new $class($storage, $name, $primaryKey);
+        if (!$table instanceof TableInterface) {
+            throw new \TypeError('The table is not a valid TableInterface object');
+        }
+
+        return $table;
     }
 }

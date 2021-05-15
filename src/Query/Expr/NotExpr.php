@@ -11,19 +11,16 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+/**
+ * Decorator to invert another expression.
+ */
 class NotExpr implements ExprInterface
 {
-    /**
-     * @var ExprInterface
-     */
-    private $expr;
-
-    public function __construct(ExprInterface $expr)
+    public function __construct(private ExprInterface $expr)
     {
-        $this->expr = $expr;
     }
 
-    public function __invoke(array $row, $key = null): bool
+    public function __invoke(array $row, null | int | string $key = null): bool
     {
         return !$this->expr->__invoke($row, $key);
     }

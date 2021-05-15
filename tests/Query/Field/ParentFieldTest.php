@@ -30,7 +30,7 @@ class ParentFieldTest extends TestCase
     public function test_getters()
     {
         $foreignTable = self::foreignTable();
-        $field        = new ParentField('fkid', $foreignTable, 'name');
+        $field = new ParentField('fkid', $foreignTable, 'name');
 
         self::assertIsCallable($field->name());
         self::assertSame(42, \call_user_func($field->name(), ['fkid' => 42]));
@@ -70,9 +70,11 @@ class ParentFieldTest extends TestCase
 
     public function test_parent_field_is_a_callable()
     {
-        $field = new ParentField('fkid', self::foreignTable(), function ($row, $key) {
+        $field = new ParentField(
+            'fkid', self::foreignTable(), function ($row, $key) {
             return $row['id'] . ':' . $row['name'];
-        });
+        }
+        );
 
         self::assertSame('2:Green', $field->value(['toy' => 'balloon', 'fkid' => 2]));
         self::assertSame(['color' => '2:Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
@@ -131,9 +133,11 @@ class ParentFieldTest extends TestCase
 
     public function test_NOT_select_all_and_select_array()
     {
-        $field = new ParentField('fkid', self::foreignTable(), function ($row, $key) {
+        $field = new ParentField(
+            'fkid', self::foreignTable(), function ($row, $key) {
             return ['row' => $row, 'key' => $key];
-        });
+        }
+        );
         $field->selectAll(false)->selectArray(true);
 
         self::assertSame(['row' => ['id' => 2, 'name' => 'Green'], 'key' => 2], $field->select(['toy' => 'balloon', 'fkid' => 2]));
@@ -150,9 +154,11 @@ class ParentFieldTest extends TestCase
 
     public function test_parent_row_in_value_method()
     {
-        $field = new ParentField('fkid', self::foreignTable(), 'name', null, function ($value) {
+        $field = new ParentField(
+            'fkid', self::foreignTable(), 'name', null, function ($value) {
             return self::foreignTable()->get($value + 1);
-        });
+        }
+        );
         self::assertSame('Blue', $field->value(['toy' => 'balloon', 'fkid' => 2]));
 
         $field = new ParentField(
@@ -173,9 +179,11 @@ class ParentFieldTest extends TestCase
 
     public function test_parent_row_in_select_method()
     {
-        $field = new ParentField('fkid', self::foreignTable(), 'name', null, function ($value) {
+        $field = new ParentField(
+            'fkid', self::foreignTable(), 'name', null, function ($value) {
             return self::foreignTable()->get($value + 1);
-        });
+        }
+        );
         self::assertSame(['color' => 'Blue'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
 
         $field = new ParentField(

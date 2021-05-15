@@ -11,9 +11,12 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+/**
+ * Evaluation children expression with AND logic.
+ */
 class AndExpr extends AbstractNestedExpr
 {
-    public function __invoke(array $row, $key = null): bool
+    public function __invoke(array $row, null | int | string $key = null): bool
     {
         foreach ($this->exprs as $expr) {
             if (!$expr->__invoke($row, $key)) {

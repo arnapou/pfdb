@@ -77,7 +77,7 @@ class CachedFileStorageTest extends TestCase
     public function test_cache_loaded_instead_of_source()
     {
         $storage = $this->fileStorage();
-        $DATA    = ArrayTableTest::DATA;
+        $DATA = ArrayTableTest::DATA;
         $storage->save(self::TMP_NAME, $DATA);
         self::assertCount(5, $storage->load(self::TMP_NAME));
 

@@ -18,7 +18,7 @@ class MultipleStorage implements StorageInterface
     /**
      * @var StorageInterface[]
      */
-    private $storages = [];
+    private array $storages;
 
     public function __construct(StorageInterface ...$storages)
     {
@@ -35,7 +35,7 @@ class MultipleStorage implements StorageInterface
     public function findChild(string $name): ?StorageInterface
     {
         foreach ($this->storages as $storage) {
-            if (\in_array($name, $storage->tableNames())) {
+            if (\in_array($name, $storage->tableNames(), true)) {
                 return $storage;
             }
         }
@@ -65,7 +65,7 @@ class MultipleStorage implements StorageInterface
     {
         $storage = $this->findChild($name);
 
-        return $storage ? $storage->isReadonly($name) : false;
+        return $storage && $storage->isReadonly($name);
     }
 
     public function delete(string $name): void

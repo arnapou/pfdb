@@ -86,8 +86,8 @@ class ExprTest extends TestCase
 
     public function test_NOTLIKE()
     {
-        self::assertFalse(\call_user_func($this->expr()->notlike('test', '%lo_w%'), ['test' => 'hello world']));
-        self::assertTrue(\call_user_func($this->expr()->notlike('test', '%loz%'), ['test' => 'hello world']));
+        self::assertFalse(\call_user_func($this->expr()->notlike('test', '%lo_w%'), ['test' => 'hello world']), '%lo_w%');
+        self::assertTrue(\call_user_func($this->expr()->notlike('test', '%loz%'), ['test' => 'hello world']), '%loz%');
     }
 
     public function test_MATCH()
@@ -157,7 +157,7 @@ class ExprTest extends TestCase
 
     public function test_both_field_and_value_are_callable()
     {
-        $left  = function (array $row) {
+        $left = function (array $row) {
             return 'a' . $row['left'];
         };
         $right = function (array $row) {
@@ -174,18 +174,6 @@ class ExprTest extends TestCase
         self::assertTrue(\call_user_func($this->expr()->eq(new Field('left'), 'abcd'), ['left' => 'abcd', 'right' => 'abcd']));
         self::assertTrue(\call_user_func($this->expr()->eq(new Field('left'), new Field('right')), ['left' => 'abcd', 'right' => 'abcd']));
         self::assertFalse(\call_user_func($this->expr()->eq(new Field('left'), new Field('right')), ['left' => 'abcd', 'right' => 'ABCD']));
-    }
-
-    public function test_IN_wrong_value()
-    {
-        $this->expectException(InvalidValueException::class);
-        \call_user_func($this->expr()->in('test', 'not_an_array'), ['test' => 'foo bar']);
-    }
-
-    public function test_MATCH_wrong_value()
-    {
-        $this->expectException(InvalidValueException::class);
-        \call_user_func($this->expr()->match('test', ['not', 'a', 'string']), ['test' => 'foo bar']);
     }
 
     public function test_sanitize_operator()

@@ -11,7 +11,7 @@
 
 namespace Arnapou\PFDB;
 
-use Arnapou\PFDB\Core\AbstractTableAdapter;
+use Arnapou\PFDB\Core\TableDecorator;
 use Arnapou\PFDB\Storage\ArrayStorage;
 
 /**
@@ -21,13 +21,20 @@ use Arnapou\PFDB\Storage\ArrayStorage;
  * it is probably better to just use the Query object with the array passed as an ArrayIterator
  * ie: $query = new \Arnapou\PFDB\Query\Query(new \ArrayIterator($yourArray))
  */
-class ArrayTable extends AbstractTableAdapter
+final class ArrayTable extends TableDecorator
 {
     public const NAME = 'array';
 
-    public function __construct(array $data, ?string $primaryKey)
-    {
-        $table = new Table(new ArrayStorage([self::NAME => $data]), self::NAME, $primaryKey);
-        parent::__construct($table);
+    public function __construct(
+        array $data,
+        ?string $primaryKey
+    ) {
+        parent::__construct(
+            new Table(
+                new ArrayStorage([self::NAME => $data]),
+                self::NAME,
+                $primaryKey
+            )
+        );
     }
 }

@@ -13,19 +13,13 @@ namespace Arnapou\PFDB\Factory;
 
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Storage\StorageInterface;
-use Arnapou\PFDB\Table;
 
 class StaticPKTableFactory extends AbstractTableFactory
 {
-    /**
-     * @var string|null
-     */
-    private $defaultPrimaryKey;
-
-    public function __construct(?string $defaultPrimaryKey = 'id')
-    {
-        $this->defaultPrimaryKey = $defaultPrimaryKey;
-        $this->setTableClass(Table::class);
+    public function __construct(
+        private ?string $defaultPrimaryKey = 'id'
+    ) {
+        parent::__construct();
     }
 
     public function getDefaultPrimaryKey(): ?string
@@ -42,13 +36,6 @@ class StaticPKTableFactory extends AbstractTableFactory
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
-        $class = $this->getTableClass();
-
-        $table = new $class($storage, $name, $this->defaultPrimaryKey);
-        if (!$table instanceof TableInterface) {
-            throw new \TypeError('The table is not a valid TableInterface object');
-        }
-
-        return $table;
+        return $this->createInstance($storage, $name, $this->defaultPrimaryKey);
     }
 }

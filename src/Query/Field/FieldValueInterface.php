@@ -11,12 +11,10 @@
 
 namespace Arnapou\PFDB\Query\Field;
 
+/**
+ * Represents any value when can get from a row and a key.
+ */
 interface FieldValueInterface
 {
-    /**
-     * @param scalar|null $key
-     *
-     * @return mixed
-     */
-    public function value(array $row, $key = null);
+    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array;
 }

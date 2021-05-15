@@ -11,7 +11,6 @@
 
 namespace Arnapou\PFDB\Query\Helper;
 
-use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidOperatorException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\Field;
@@ -22,60 +21,61 @@ trait SanitizeHelperTrait
 {
     private function sanitizeOperator(string $operator, bool &$not = false): string
     {
-        $sanitized = strtolower($operator);
-        if (false !== strpos($sanitized, 'not')) {
-            $not = true;
-            $sanitized = trim(str_replace('not', '', $sanitized));
-        }
-        $aliases = [
-            'match' => 'regexp',
-            'regex' => 'regexp',
-            '~' => 'regexp',
-            '=' => '==',
-            '<>' => '!=',
-        ];
-        $sanitized = $aliases[$sanitized] ?? $sanitized;
-        if (!\in_array($sanitized, ['==', '===', '!=', '!==', '>', '>=', '<', '<=', '*', '^', '$', 'in', 'like', 'regexp'])) {
-            throw new InvalidOperatorException("Unknown operator '$sanitized'");
+        if (\in_array($operator, ExprHelper::OPERATORS, true)) {
+            return $operator;
         }
 
-        return $sanitized;
+        $alias = strtolower($operator);
+        if (str_starts_with($operator, '!')) {
+            $not = true;
+            $alias = trim(substr($alias, 1));
+        } elseif (str_starts_with($operator, 'not')) {
+            $not = true;
+            $alias = trim(substr($alias, 3));
+        }
+
+        if (\in_array($alias, ExprHelper::OPERATORS, true)) {
+            return $operator;
+        }
+
+        $aliases = [
+            'match' => ExprHelper::MATCH,
+            'regex' => ExprHelper::MATCH,
+            '~' => ExprHelper::MATCH,
+            '=' => ExprHelper::EQ,
+            '<>' => ExprHelper::NEQ,
+        ];
+        if (isset($aliases[$alias])) {
+            return $aliases[$alias];
+        }
+
+        throw new InvalidOperatorException("Unknown operator '$operator'");
     }
 
-    /**
-     * @param mixed $field
-     *
-     * @throws InvalidFieldException
-     */
-    private function sanitizeField($field): callable
+    private function sanitizeField(string | int | float | bool | null | array | FieldValueInterface | callable $field): callable
     {
         if (\is_string($field)) {
             return [new Field($field), 'value'];
         }
+
         if ($field instanceof FieldValueInterface) {
             return [$field, 'value'];
         }
+
         if (\is_callable($field)) {
             return $field;
         }
-        if (is_scalar($field)) {
-            return [new Value($field), 'value'];
-        }
-        throw new InvalidFieldException();
+
+        return [new Value($field), 'value'];
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @throws InvalidValueException
-     */
-    private function sanitizeValue($value, string $operator, bool $caseSensitive): callable
+    private function sanitizeValue(string | int | float | bool | null | array | FieldValueInterface | callable $value, string $operator, bool $caseSensitive): callable
     {
-        if ('in' === $operator && !\is_array($value)) {
+        if (ExprHelper::IN === $operator && !\is_array($value)) {
             throw new InvalidValueException('Value for operator "' . $operator . '" should be an array');
         }
 
-        if ('like' === $operator) {
+        if (ExprHelper::LIKE === $operator || ExprHelper::NLIKE === $operator) {
             if (!\is_string($value)) {
                 throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
             }
@@ -87,17 +87,17 @@ trait SanitizeHelperTrait
             return [new Value($value), 'value'];
         }
 
-        if ('regexp' === $operator) {
+        if (ExprHelper::MATCH === $operator || ExprHelper::NMATCH === $operator) {
             if (!\is_string($value)) {
                 throw new InvalidValueException('Value for operator "' . $operator . '" should be a string');
             }
 
-            $char = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
-            if (!preg_match('/^' . $char . '.+' . $char . '[imsxeADSUXJu]*$/', $value)) {
+            $delim = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
+            if (!preg_match('/^' . $delim . '.+' . $delim . '[imsxeADSUXJu]*$/', $value)) {
                 $value = '/' . $value . '/' . ($caseSensitive ? '' : 'i');
             } elseif (!$caseSensitive) {
                 $flags = substr($value, (int) strrpos($value, $value[0]) + 1);
-                if (false === strpos($flags, 'i')) {
+                if (!str_contains($flags, 'i')) {
                     $value .= 'i';
                 }
             }
@@ -113,10 +113,6 @@ trait SanitizeHelperTrait
             return $value;
         }
 
-        if (\is_scalar($value) || \is_array($value)) {
-            return [new Value($value), 'value'];
-        }
-
-        throw new InvalidValueException();
+        return [new Value($value), 'value'];
     }
 }

@@ -13,21 +13,39 @@ namespace Arnapou\PFDB\Core;
 
 use Arnapou\PFDB\Storage\StorageInterface;
 
+/**
+ * Generic Database Interface.
+ */
 interface DatabaseInterface
 {
-    public function getStorage(): StorageInterface;
-
-    public function getTable(string $name): TableInterface;
-
     /**
+     * Return a list of tables of this database.
+     *
      * @return TableInterface[]
      */
     public function getTables(): array;
 
+    /**
+     * Return a list of table names.
+     *
+     * @return string[]
+     */
     public function getTableNames(): array;
 
     /**
-     * @return self
+     * Gets the table for a specific name.
+     *
+     * By default, the table is auto created thanks to a TableFactoryInterface.
      */
-    public function dropTable(TableInterface $table);
+    public function getTable(string $name): TableInterface;
+
+    /**
+     * Get the storage object for all tables.
+     */
+    public function getStorage(): StorageInterface;
+
+    /**
+     * Remove a table.
+     */
+    public function dropTable(TableInterface $table): self;
 }

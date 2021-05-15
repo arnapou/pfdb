@@ -13,6 +13,6 @@ namespace Arnapou\PFDB;
 
 use Arnapou\PFDB\Core\AbstractTable;
 
-class Table extends AbstractTable
+final class Table extends AbstractTable
 {
 }

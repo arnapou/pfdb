@@ -67,10 +67,13 @@ class ArrayTableTest extends TestCase
         $table->update(['id' => 3, 'name' => 'Orange']);
         self::assertSame('Orange', $table->get(3)['name']);
 
-        $table->updateMultiple($this->expr()->bool(true), function ($row, $key) {
-            $row['upper'] = strtoupper($row['name']);
-            return $row;
-        });
+        $table->updateMultiple(
+            $this->expr()->bool(true),
+            function ($row, $key) {
+                $row['upper'] = strtoupper($row['name']);
+                return $row;
+            }
+        );
         self::assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
     }
 
@@ -109,10 +112,13 @@ class ArrayTableTest extends TestCase
 
         $keys = array_keys($table->getData());
         try {
-            $table->updateMultiple($this->expr()->bool(true), function ($row, $key) {
-                $row['name'] .= $row['not_existsing_field_will_cause_error'];
-                return $row;
-            });
+            $table->updateMultiple(
+                $this->expr()->bool(true),
+                function ($row, $key) {
+                    $row['name'] .= $row['not_existsing_field_will_cause_error'];
+                    return $row;
+                }
+            );
             $this->fail('a MultipleActionException should have been raised for the multiple update');
         } catch (MultipleActionException $exception) {
             self::assertSame($keys, array_keys($table->getData()));
@@ -125,9 +131,13 @@ class ArrayTableTest extends TestCase
 
         $keys = array_keys($table->getData());
         try {
-            $table->deleteMultiple($this->expr()->func(function ($row, $key) {
-                return $row['not_existsing_field_will_cause_error'] == 42;
-            }));
+            $table->deleteMultiple(
+                $this->expr()->func(
+                    function ($row, $key) {
+                        return $row['not_existsing_field_will_cause_error'] == 42;
+                    }
+                )
+            );
             $this->fail('a MultipleActionException should have been raised for the multiple delete');
         } catch (MultipleActionException $exception) {
             self::assertSame($keys, array_keys($table->getData()));

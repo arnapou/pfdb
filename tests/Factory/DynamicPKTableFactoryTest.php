@@ -31,7 +31,7 @@ class DynamicPKTableFactoryTest extends TestCase
         $pkFactory = function ($name) {
             return $name . '_pk';
         };
-        $factory   = new DynamicPKTableFactory($pkFactory);
+        $factory = new DynamicPKTableFactory($pkFactory);
 
         $table = $factory->create(new ArrayStorage(), 'table');
         self::assertSame('table_pk', $table->getPrimaryKey());

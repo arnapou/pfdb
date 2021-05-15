@@ -11,6 +11,17 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+/**
+ * Evaluate the expression with a custom callable.
+ *
+ * Signature of the callable :
+ * <pre>
+ * function(array $row, int|string|null $key = null): string|int|float|bool|null|array {
+ *     // compute $value
+ *     return $value;
+ * }
+ * </pre>
+ */
 class FuncExpr implements ExprInterface
 {
     /**
@@ -23,8 +34,8 @@ class FuncExpr implements ExprInterface
         $this->callable = $callable;
     }
 
-    public function __invoke(array $row, $key = null): bool
+    public function __invoke(array $row, null | int | string $key = null): bool
     {
-        return \call_user_func($this->callable, $row, $key) ? true : false;
+        return (bool) \call_user_func($this->callable, $row, $key);
     }
 }

@@ -12,26 +12,15 @@
 namespace Arnapou\PFDB\Query\Field;
 
 /**
- * The purpose is only to expose a simple value behind a valid interface.
+ * Like a constant value behind the FieldValueInterface.
  */
 class Value implements FieldValueInterface
 {
-    /**
-     * @var mixed
-     */
-    private $value;
-
-    /**
-     * Value constructor.
-     *
-     * @param mixed $value
-     */
-    public function __construct($value)
+    public function __construct(private string | int | float | bool | null | array $value)
     {
-        $this->value = $value;
     }
 
-    public function value(array $row, $key = null)
+    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
     {
         return $this->value;
     }

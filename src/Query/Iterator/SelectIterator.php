@@ -15,14 +15,11 @@ use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 
 class SelectIterator implements \Iterator
 {
-    /**
-     * @var \Iterator
-     */
-    private $iterator;
+    private \Iterator $iterator;
     /**
      * @var array<FieldSelectInterface|scalar|callable>
      */
-    private $fields;
+    private array $fields;
 
     public function __construct(\Iterator $iterator, array $fields)
     {

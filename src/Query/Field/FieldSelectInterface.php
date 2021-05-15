@@ -11,12 +11,19 @@
 
 namespace Arnapou\PFDB\Query\Field;
 
+/**
+ * Represents any values when can select from a row and a key.
+ *
+ * This is used for instance to build several fields from one (joins, ...).
+ */
 interface FieldSelectInterface
 {
     /**
-     * @param scalar|null $key
+     * Return the list of fields we have built.
      *
-     * @return array<string, ?mixed>
+     * For most cases, this will return a single {field_name => value} array.
+     *
+     * @return array<string, string|int|float|bool|array|null>
      */
-    public function select(array $row, $key = null): array;
+    public function select(array $row, string | int | null $key = null): array;
 }

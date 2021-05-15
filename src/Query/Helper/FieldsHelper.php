@@ -13,6 +13,7 @@ namespace Arnapou\PFDB\Query\Helper;
 
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Query\Field\Field;
+use Arnapou\PFDB\Query\Field\FieldValueInterface;
 use Arnapou\PFDB\Query\Field\KeyField;
 use Arnapou\PFDB\Query\Field\ParentField;
 use Arnapou\PFDB\Query\Field\Value;
@@ -24,10 +25,7 @@ class FieldsHelper
         return new Field($name);
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function value($value): Value
+    public function value(string | int | float | bool | null | array $value): Value
     {
         return new Value($value);
     }
@@ -37,14 +35,13 @@ class FieldsHelper
         return new KeyField($name);
     }
 
-    /**
-     * @param null        $parentField
-     * @param string|null $selectAlias
-     *
-     * @throws \Arnapou\PFDB\Exception\InvalidFieldException
-     */
-    public function parent(string $name, TableInterface $table, $parentField = null, $selectAlias = null, ?callable $parentRow = null): ParentField
-    {
+    public function parent(
+        string $name,
+        TableInterface $table,
+        string | FieldValueInterface | callable | null $parentField = null,
+        ?string $selectAlias = null,
+        ?callable $parentRow = null
+    ): ParentField {
         return new ParentField($name, $table, $parentField, $selectAlias, $parentRow);
     }
 }

@@ -18,28 +18,18 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 class LockedStorage implements StorageInterface
 {
-    /**
-     * @var LockFactory
-     */
-    private $lockFactory;
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
+    private LockFactory $lockFactory;
     /**
      * @var array<string, LockInterface>
      */
-    private $locks = [];
-    /**
-     * @var string
-     */
-    private $lockNamePrefix;
+    private array $locks = [];
 
-    public function __construct(StorageInterface $storage, ?LockFactory $lockFactory = null, string $lockNamePrefix = 'pfdb.')
-    {
-        $this->storage = $storage;
+    public function __construct(
+        private StorageInterface $storage,
+        ?LockFactory $lockFactory = null,
+        private string $lockNamePrefix = 'pfdb.'
+    ) {
         $this->lockFactory = $lockFactory ?: new LockFactory(new FlockStore());
-        $this->lockNamePrefix = $lockNamePrefix;
     }
 
     private function lock(string $name): void

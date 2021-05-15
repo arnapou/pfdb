@@ -14,19 +14,16 @@ namespace Arnapou\PFDB\Core;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
 
-abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterface
+/**
+ * Utility abstract class to facilitate the creation of custom Table based on others.
+ */
+class TableDecorator implements \IteratorAggregate, TableInterface
 {
-    /**
-     * @var TableInterface
-     */
-    protected $table;
-
-    public function __construct(TableInterface $table)
+    public function __construct(protected TableInterface $table)
     {
-        $this->table = $table;
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->table->count();
     }
@@ -36,7 +33,7 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
         return $this->table->isReadonly();
     }
 
-    public function setReadonly(bool $readonly)
+    public function setReadonly(bool $readonly): self
     {
         $this->table->setReadonly($readonly);
 
@@ -48,9 +45,9 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
         return $this->table->find(...$exprs);
     }
 
-    public function get($id): ?array
+    public function get(int | string $key): ?array
     {
-        return $this->table->get($id);
+        return $this->table->get($key);
     }
 
     public function getName(): string
@@ -68,54 +65,54 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
         return $this->table->getData();
     }
 
-    public function delete($id)
+    public function delete(null | int | string $key): self
     {
-        $this->table->delete($id);
+        $this->table->delete($key);
 
         return $this;
     }
 
-    public function getLastInsertedKey()
+    public function getLastInsertedKey(): string | int | null
     {
         return $this->table->getLastInsertedKey();
     }
 
-    public function update(array $value, $key = null)
+    public function update(array $row, null | int | string $key = null): self
     {
-        $this->table->update($value, $key);
+        $this->table->update($row, $key);
 
         return $this;
     }
 
-    public function insert(array $value, $key = null)
+    public function insert(array $row, null | int | string $key = null): self
     {
-        $this->table->insert($value, $key);
+        $this->table->insert($row, $key);
 
         return $this;
     }
 
-    public function upsert(array $value, $key = null)
+    public function upsert(array $row, null | int | string $key = null): self
     {
-        $this->table->upsert($value, $key);
+        $this->table->upsert($row, $key);
 
         return $this;
     }
 
-    public function insertMultiple(array $rows)
+    public function insertMultiple(array $rows): self
     {
         $this->table->insertMultiple($rows);
 
         return $this;
     }
 
-    public function updateMultiple(ExprInterface $expr, callable $function)
+    public function updateMultiple(ExprInterface $expr, callable $function): self
     {
         $this->table->updateMultiple($expr, $function);
 
         return $this;
     }
 
-    public function deleteMultiple(ExprInterface $expr)
+    public function deleteMultiple(ExprInterface $expr): self
     {
         $this->table->deleteMultiple($expr);
 
@@ -127,7 +124,7 @@ abstract class AbstractTableAdapter implements \IteratorAggregate, TableInterfac
         return $this->table->flush();
     }
 
-    public function clear()
+    public function clear(): self
     {
         $this->table->clear();
 

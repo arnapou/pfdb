@@ -3,7 +3,7 @@ Introduction
 
 What it is :
 
-* Pure POO (php 7.2 required)
+* Pure POO
 * Lightweight
 * Extendable (interfaces, ...)
 
@@ -131,6 +131,6 @@ Look at the existing storages and write your own.
 
 | Date       | Branche | Php | 
 |------------|---------|-----|
-| 13/05/2021 | master  | 8.0 |
-| 27/02/2019 | v2.x    | 7.2 |
-| 07/11/2013 | v1.x    | 5.4 |
+| 15/05/2021 | master  | 8.0 |
+| 27/02/2019 | 2.x     | 7.2 |
+| 07/11/2013 | 1.x     | 5.4 |

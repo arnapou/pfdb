@@ -93,9 +93,11 @@ class TableTest extends TestCase
         $table->insert(['name' => 'Joe']);
         self::assertSame(1, $table->getLastInsertedKey());
 
-        $table->setPrimaryKeyGenerator(function () {
-            return 42;
-        });
+        $table->setPrimaryKeyGenerator(
+            function () {
+                return 42;
+            }
+        );
         $table->insert(['name' => 'Joe']);
         self::assertSame(42, $table->getLastInsertedKey());
     }
@@ -148,11 +150,14 @@ class TableTest extends TestCase
             }
         );
 
-        self::assertSame([
-            0 => ['price' => 10],
-            1 => ['price' => 15],
-            2 => ['price' => 200],
-        ], $table->getData());
+        self::assertSame(
+            [
+                0 => ['price' => 10],
+                1 => ['price' => 15],
+                2 => ['price' => 200],
+            ],
+            $table->getData()
+        );
     }
 
     public function test_delete_multiple()
@@ -166,9 +171,12 @@ class TableTest extends TestCase
             $this->expr()->lte('price', 150)
         );
 
-        self::assertSame([
-            2 => ['price' => 200],
-        ], $table->getData());
+        self::assertSame(
+            [
+                2 => ['price' => 200],
+            ],
+            $table->getData()
+        );
     }
 
     public function test_clear()

@@ -11,19 +11,19 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+/**
+ * Simple static boolean expression.
+ */
 class BoolExpr implements ExprInterface
 {
-    /**
-     * @var bool
-     */
-    private $bool;
+    private bool $bool;
 
     public function __construct(bool $bool)
     {
         $this->bool = $bool;
     }
 
-    public function __invoke(array $row, $key = null): bool
+    public function __invoke(array $row, null | int | string $key = null): bool
     {
         return $this->bool;
     }

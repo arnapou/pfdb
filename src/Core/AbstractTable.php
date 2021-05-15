@@ -22,50 +22,45 @@ use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\StorageInterface;
 
+/**
+ * Main table class you can extend at your needs.
+ */
 abstract class AbstractTable implements \IteratorAggregate, TableInterface
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /**
-     * @var string
-     */
-    private $name;
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
-    /**
-     * @var array
-     */
-    private $data = [];
-    /**
-     * @var bool
-     */
-    private $changed = false;
-    /**
-     * @var ?string
-     */
-    private $primaryKey = null;
-    /**
-     * @var bool
-     */
-    private $readonly = false;
-    /**
-     * @var mixed
-     */
-    private $lastInsertedKey = null;
+    private array           $data = [];
+    private bool            $changed = false;
+    private bool            $readonly = false;
+    private string | int | null $lastInsertedKey = null;
     /**
      * @var callable
      */
     private $primaryKeyGenerator;
 
-    final public function __construct(StorageInterface $storage, string $name, ?string $primaryKey)
+    /**
+     * This constructor if final to be sure that it will be always constructed with these 3 arguments.
+     *
+     * It you need to "override" it anyway, just extend the TableDecorator (look at ArrayTable for an example).
+     */
+    final public function __construct(
+        private StorageInterface $storage,
+        private string $name,
+        private ?string $primaryKey
+    ) {
+        $this->primaryKeyGenerator = $this->getDefaultPrimaryKeyGenerator();
+        $this->load($this->storage->load($this->name));
+    }
+
+    /**
+     * This is a default primary key generator you can extend.
+     *
+     * It is simple and "auto-increments" the key as an integer.
+     */
+    protected function getDefaultPrimaryKeyGenerator(): callable
     {
-        $this->storage = $storage;
-        $this->name = $name;
-        $this->primaryKey = $primaryKey;
-        $this->primaryKeyGenerator = function (): int {
+        return function (): int {
             $maxKey = -1;
             foreach ($this->data as $key => $value) {
                 if (ctype_digit((string) $key) && (int) $key > $maxKey) {
@@ -78,58 +73,11 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
             return $maxKey;
         };
-        $this->load($this->storage->load($this->name));
     }
 
     public function setPrimaryKeyGenerator(callable $callable): self
     {
         $this->primaryKeyGenerator = $callable;
-
-        return $this;
-    }
-
-    public function getLastInsertedKey()
-    {
-        return $this->lastInsertedKey;
-    }
-
-    public function isReadonly(): bool
-    {
-        return $this->readonly || $this->storage->isReadonly($this->name);
-    }
-
-    public function setReadonly(bool $readonly): self
-    {
-        $this->readonly = $readonly;
-
-        return $this;
-    }
-
-    public function __destruct()
-    {
-        if (!$this->isReadonly()) {
-            $this->flush();
-        }
-    }
-
-    public function flush(): bool
-    {
-        if ($this->changed) {
-            if ($this->isReadonly()) {
-                throw new ReadonlyException();
-            }
-            $this->storage->save($this->name, $this->primaryKey ? array_values($this->data) : $this->data);
-            $this->changed = false;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function clear(): self
-    {
-        $this->data = [];
 
         return $this;
     }
@@ -150,6 +98,61 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         $this->changed = false;
     }
 
+    public function __destruct()
+    {
+        if (!$this->isReadonly()) {
+            $this->flush();
+        }
+    }
+
+    public function getLastInsertedKey(): string | int | null
+    {
+        return $this->lastInsertedKey;
+    }
+
+    public function isReadonly(): bool
+    {
+        return $this->readonly || $this->storage->isReadonly($this->name);
+    }
+
+    public function setReadonly(bool $readonly): self
+    {
+        $this->readonly = $readonly;
+
+        return $this;
+    }
+
+    public function flush(): bool
+    {
+        if ($this->changed) {
+            if ($this->isReadonly()) {
+                throw new ReadonlyException();
+            }
+            $this->storage->save($this->name, $this->primaryKey ? array_values($this->data) : $this->data);
+            $this->changed = false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function retrieveKeyFromRow(array $value): int | string
+    {
+        if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
+            throw new PrimaryKeyNotFoundException();
+        }
+
+        return $value[$this->primaryKey];
+    }
+
+    public function clear(): self
+    {
+        $this->data = [];
+
+        return $this;
+    }
+
     public function find(ExprInterface ...$exprs): Query
     {
         $query = new Query($this);
@@ -157,9 +160,9 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $query->where(...$exprs);
     }
 
-    public function get($id): ?array
+    public function get(int | string $key): ?array
     {
-        return $this->data[$id] ?? null;
+        return $this->data[$key] ?? null;
     }
 
     public function getIterator(): \Traversable
@@ -187,81 +190,63 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this->data;
     }
 
-    /**
-     * @param int|string|null $key
-     *
-     * @return int|string
-     */
-    protected function detectKey(array $value, $key = null)
+    public function delete(null | int | string $key): self
     {
-        if (null === $key) {
-            if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
-                throw new PrimaryKeyNotFoundException();
-            }
-
-            return $value[$this->primaryKey];
-        }
-
-        return $key;
-    }
-
-    public function delete($id): self
-    {
-        if (null === $id || !\array_key_exists($id, $this->data)) {
+        if (null === $key || !\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
-        unset($this->data[$id]);
+        unset($this->data[$key]);
         $this->changed = true;
 
         return $this;
     }
 
-    public function update(array $value, $key = null): self
+    public function update(array $row, null | int | string $key = null): self
     {
-        $key = $this->detectKey($value, $key);
+        $key = $key ?? $this->retrieveKeyFromRow($row);
         if (!\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
-        $this->data[$key] = array_merge($this->data[$key], $value);
+        $this->data[$key] = array_merge($this->data[$key], $row);
         $this->changed = true;
 
         return $this;
     }
 
-    public function insert(array $value, $key = null): self
+    public function insert(array $row, null | int | string $key = null): self
     {
         try {
-            $key = $this->detectKey($value, $key);
+            $key = $key ?? $this->retrieveKeyFromRow($row);
             if (\array_key_exists($key, $this->data)) {
                 throw new PrimaryKeyAlreadyExistsException();
             }
-        } catch (PrimaryKeyNotFoundException $e) {
+        } catch (PrimaryKeyNotFoundException) {
             $key = \call_user_func($this->primaryKeyGenerator);
         }
         if ($this->primaryKey) {
-            $value[$this->primaryKey] = $key;
+            $row[$this->primaryKey] = $key;
         }
 
-        $this->data[$key] = $value;
+        $this->data[$key] = $row;
         $this->changed = true;
         $this->lastInsertedKey = $key;
 
         return $this;
     }
 
-    public function upsert(array $value, $key = null): self
+    public function upsert(array $row, null | int | string $key = null): self
     {
         try {
-            $key = $this->detectKey($value, $key);
-        } catch (PrimaryKeyNotFoundException $e) {
+            $key = $key ?? $this->retrieveKeyFromRow($row);
+        } catch (PrimaryKeyNotFoundException) {
             $key = null;
         }
 
         if (null !== $key && \array_key_exists($key, $this->data)) {
-            return $this->update($value, $key);
+            return $this->update($row, $key);
         }
 
-        return $this->insert($value, $key);
+        return $this->insert($row, $key);
     }
 
     public function insertMultiple(array $rows): self

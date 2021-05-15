@@ -12,123 +12,91 @@
 namespace Arnapou\PFDB\Query\Expr;
 
 use Arnapou\PFDB\Exception\InvalidFieldException;
-use Arnapou\PFDB\Exception\InvalidOperatorException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
+use Arnapou\PFDB\Query\Helper\ExprHelper;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 
 class ComparisonExpr implements ExprInterface
 {
     use SanitizeHelperTrait;
 
+    private bool $not = false;
     /**
      * @var callable
      */
     private $field;
     /**
-     * @var string
-     */
-    private $operator;
-    /**
      * @var callable
      */
     private $value;
-    /**
-     * @var bool
-     */
-    private $caseSensitive;
-    /**
-     * @var bool
-     */
-    private $not = false;
 
-    /**
-     * @param string|FieldValueInterface|callable $field
-     * @param mixed|FieldValueInterface|callable  $value
-     *
-     * @throws InvalidFieldException
-     * @throws InvalidOperatorException
-     * @throws InvalidValueException
-     */
-    public function __construct($field, string $operator, $value, bool $caseSensitive = true)
-    {
-        $this->caseSensitive = $caseSensitive;
+    public function __construct(
+        string | int | float | bool | null | FieldValueInterface | callable $field,
+        private string $operator,
+        string | int | float | bool | null | array | FieldValueInterface | callable $value,
+        private bool $caseSensitive = true
+    ) {
         $this->operator = $this->sanitizeOperator($operator, $this->not);
         $this->field = $this->sanitizeField($field);
         $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
-    public function __invoke(array $row, $key = null): bool
+    public function __invoke(array $row, null | int | string $key = null): bool
     {
         $field = \call_user_func($this->field, $row, $key);
         $value = \call_user_func($this->value, $row, $key);
 
-        if (!$this->caseSensitive) {
-            switch ($this->operator) {
-                case 'like':
-                case 'regexp':
-                    // nothing to do, already managed in sanitizeValue method
-                    break;
-                case 'in':
-                    $field = strtolower($field);
-                    $value = array_map('strtolower', (array) $value);
-                    break;
-                default:
-                    $field = strtolower($field);
-                    $value = strtolower($value);
+        if (!is_scalar($field)) {
+            throw new InvalidFieldException('The field value is not a scalar.');
+        }
+
+        if (\in_array($this->operator, [ExprHelper::IN, ExprHelper::NIN], true)) {
+            if (!\is_array($value)) {
+                if (!is_scalar($value)) {
+                    throw new InvalidValueException('Value for operator "' . $this->operator . '" should be an array');
+                }
+                $value = (array) $value;
             }
+
+            if (!$this->caseSensitive) {
+                $field = strtolower((string) $field);
+                $value = array_map('strtolower', $value);
+            }
+
+            $bool = match ($this->operator) {
+                ExprHelper::IN => \in_array($field, $value),
+                ExprHelper::NIN => !\in_array($field, $value),
+            };
+        } else {
+            if (\is_array($value)) {
+                throw new InvalidValueException('Value for operator "' . $this->operator . '" should NOT be an array');
+            }
+
+            if (!$this->caseSensitive && !\in_array($this->operator, [ExprHelper::LIKE, ExprHelper::NLIKE, ExprHelper::MATCH, ExprHelper::NMATCH], true)) {
+                $field = strtolower((string) $field);
+                $value = strtolower((string) $value);
+            }
+
+            $bool = match ($this->operator) {
+                ExprHelper::EQ => $field == $value,
+                ExprHelper::EQSTRICT => $field === $value,
+                ExprHelper::NEQ => $field != $value,
+                ExprHelper::NEQSTRICT => $field !== $value,
+                ExprHelper::GT => $field > $value,
+                ExprHelper::GTE => $field >= $value,
+                ExprHelper::LT => $field < $value,
+                ExprHelper::LTE => $field <= $value,
+                ExprHelper::CONTAINS => '' === $value || str_contains((string) $field, (string) $value),
+                ExprHelper::BEGINS => '' === $value || str_starts_with((string) $field, (string) $value),
+                ExprHelper::ENDS => '' === $value || str_ends_with((string) $field, (string) $value),
+                ExprHelper::LIKE, ExprHelper::MATCH => (bool) preg_match((string) $value, (string) $field),
+                ExprHelper::NLIKE, ExprHelper::NMATCH => !(bool) preg_match((string) $value, (string) $field),
+                default => false,
+            };
         }
 
-        if ($this->not) {
-            return !$this->evaluate($field, $value);
-        }
-
-        return $this->evaluate($field, $value);
-    }
-
-    /**
-     * @param mixed $field
-     * @param mixed $value
-     */
-    private function evaluate($field, $value): bool
-    {
-        switch ($this->operator) {
-            case '==':
-                return $field == $value;
-            case '===':
-                return $field === $value;
-            case '!=':
-                return $field != $value;
-            case '!==':
-                return $field !== $value;
-            case '>':
-                return $field > $value;
-            case '>=':
-                return $field >= $value;
-            case '<':
-                return $field < $value;
-            case '<=':
-                return $field <= $value;
-            case '*':
-                return '' !== $value ? false !== strpos($field, $value) : true;
-            case '^':
-                return '' !== $value ? 0 === strpos($field, $value) : true;
-            case '$':
-                return substr($field, -\strlen($value)) === "$value";
-            case 'in':
-                return \in_array($field, (array) $value);
-            case 'like':
-            case 'regexp':
-                return preg_match($value, $field) ? true : false;
-        }
-        // ------------------------
-        // @codeCoverageIgnoreStart
-        // -> this code should NEVER happen because the operator is sanitized in the object construction
-        trigger_error('Operator not implemented', E_USER_ERROR);
-
-        return false;
-        // ------------------------
-        // @codeCoverageIgnoreEnd
+        return $this->not ? !$bool : $bool;
     }
 
     public function getField(): callable

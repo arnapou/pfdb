@@ -16,22 +16,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends AbstractFileStorage
 {
-    /**
-     * @var int
-     */
-    private $dumpInline = 2;
-    /**
-     * @var int
-     */
-    private $dumpIndent = 2;
-    /**
-     * @var int
-     */
-    private $dumpFlags = Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK;
-    /**
-     * @var int
-     */
-    private $parseFlags = 0;
+    private int $dumpInline = 2;
+    private int $dumpIndent = 2;
+    private int $dumpFlags = Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK;
+    private int $parseFlags = 0;
 
     protected function getExtension(): string
     {

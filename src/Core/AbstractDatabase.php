@@ -23,22 +23,16 @@ abstract class AbstractDatabase implements DatabaseInterface
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /**
-     * @var StorageInterface
-     */
-    private $storage;
-    /**
-     * @var TableFactoryInterface
-     */
-    private $tableFactory;
+    private TableFactoryInterface $tableFactory;
     /**
      * @var TableInterface[]
      */
-    private $tables = [];
+    private array $tables = [];
 
-    public function __construct(StorageInterface $storage, ?TableFactoryInterface $tableFactory = null)
-    {
-        $this->storage = $storage;
+    public function __construct(
+        private StorageInterface $storage,
+        ?TableFactoryInterface $tableFactory = null
+    ) {
         $this->tableFactory = $tableFactory ?: new StaticPKTableFactory('id');
     }
 
