@@ -47,7 +47,7 @@ class ComparisonExpr implements ExprInterface
         $field = \call_user_func($this->field, $row, $key);
         $value = \call_user_func($this->value, $row, $key);
 
-        if (!is_scalar($field)) {
+        if (null !== $field && !is_scalar($field)) {
             throw new InvalidFieldException('The field value is not a scalar.');
         }
 

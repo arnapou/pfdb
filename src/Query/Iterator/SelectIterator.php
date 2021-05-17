@@ -17,10 +17,15 @@ class SelectIterator implements \Iterator
 {
     private \Iterator $iterator;
     /**
-     * @var array<FieldSelectInterface|scalar|callable>
+     * @var array<FieldSelectInterface|string|\Stringable|callable>
      */
     private array $fields;
 
+    /**
+     * SelectIterator constructor.
+     *
+     * @param array<FieldSelectInterface|string|\Stringable|callable> $fields
+     */
     public function __construct(\Iterator $iterator, array $fields)
     {
         $this->iterator = $iterator;

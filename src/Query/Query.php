@@ -28,7 +28,7 @@ class Query implements \IteratorAggregate, \Countable
     use FieldsHelperTrait;
 
     /**
-     * @var array<FieldSelectInterface|scalar|callable>
+     * @var array<FieldSelectInterface|string|\Stringable|callable>
      */
     private array               $select = [];
     private ?\Iterator          $from = null;
@@ -45,6 +45,9 @@ class Query implements \IteratorAggregate, \Countable
         }
     }
 
+    /**
+     * @return $this
+     */
     public function where(ExprInterface ...$exprs): self
     {
         if (1 === \count($exprs) && $exprs[0] instanceof NestedExprInterface) {
@@ -57,6 +60,9 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function addWhere(ExprInterface ...$exprs): self
     {
         foreach ($exprs as $expr) {
@@ -67,11 +73,9 @@ class Query implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @param array<FieldSelectInterface|scalar|callable> $fields
-     *
-     * @return Query
+     * @return $this
      */
-    public function select(...$fields): self
+    public function select(FieldSelectInterface | string | \Stringable | callable ...$fields): self
     {
         if (empty($fields)) {
             $this->select = [];
@@ -85,7 +89,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function addSelect(array | string ...$fields): self
+    public function addSelect(FieldSelectInterface | string | \Stringable | callable ...$fields): self
     {
         foreach ($fields as $field) {
             $this->select[] = $field;
@@ -94,6 +98,9 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function from(\Traversable $iterator): self
     {
         if ($iterator instanceof \Iterator) {
