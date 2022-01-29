@@ -31,8 +31,8 @@ class YamlFileStorageTest extends TestCase
             @unlink($storage->getFilename(self::TMP_NAME));
         }
         $storage->save(self::TMP_NAME, []);
-        if ($readonly) {
-            chmod($storage->getFilename(self::TMP_NAME), 000);
+        if ($readonly && !chmod($storage->getFilename(self::TMP_NAME), 0000)) {
+            self::markTestSkipped('chmod does not work');
         }
         return $storage;
     }

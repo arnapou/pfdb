@@ -52,12 +52,14 @@ class AbstractFileStorageTest extends TestCase
     {
         $dir = sys_get_temp_dir() . '/test_' . md5(uniqid('', true) . mt_rand(0, PHP_INT_MAX));
         if (!is_dir($dir)) {
-            mkdir($dir, 0000, true);
+            if (!mkdir($dir, 0000, true)) {
+                self::markTestSkipped('chmod does not work');
+            }
             $storage = new PhpFileStorage($dir);
             self::assertTrue($storage->isReadonly('any_folder'));
             @rmdir($dir);
         } else {
-            $this->markTestSkipped('test folder already exists. That should never occur.');
+            self::markTestSkipped('test folder already exists. That should never occur.');
         }
     }
 }
