@@ -76,17 +76,17 @@ class ExprHelper
     }
 
     public function comparison(
-        string | FieldValueInterface | callable $field,
+        string|FieldValueInterface|callable $field,
         string $operator,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, $operator, $value, $caseSensitive);
     }
 
     public function eq(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true,
         bool $strict = true
     ): ComparisonExpr {
@@ -94,8 +94,8 @@ class ExprHelper
     }
 
     public function neq(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true,
         bool $strict = true
     ): ComparisonExpr {
@@ -103,78 +103,78 @@ class ExprHelper
     }
 
     public function gt(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, self::GT, $value, $caseSensitive);
     }
 
     public function gte(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, self::GTE, $value, $caseSensitive);
     }
 
     public function lt(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, self::LT, $value, $caseSensitive);
     }
 
     public function lte(
-        string | FieldValueInterface | callable $field,
-        string | int | float | bool | null | FieldValueInterface | callable $value,
+        string|FieldValueInterface|callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, self::LTE, $value, $caseSensitive);
     }
 
-    public function contains(string | FieldValueInterface | callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
+    public function contains(string|FieldValueInterface|callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::CONTAINS, $value, $caseSensitive);
     }
 
-    public function ends(string | FieldValueInterface | callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
+    public function ends(string|FieldValueInterface|callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::ENDS, $value, $caseSensitive);
     }
 
-    public function begins(string | FieldValueInterface | callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
+    public function begins(string|FieldValueInterface|callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::BEGINS, $value, $caseSensitive);
     }
 
-    public function like(string | FieldValueInterface | callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
+    public function like(string|FieldValueInterface|callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::LIKE, $value, $caseSensitive);
     }
 
-    public function notlike(string | FieldValueInterface | callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
+    public function notlike(string|FieldValueInterface|callable $field, string $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::NLIKE, $value, $caseSensitive);
     }
 
-    public function match(string | FieldValueInterface | callable $field, string $regexp): ComparisonExpr
+    public function match(string|FieldValueInterface|callable $field, string $regexp): ComparisonExpr
     {
         return new ComparisonExpr($field, self::MATCH, $regexp);
     }
 
-    public function notmatch(string | FieldValueInterface | callable $field, string $regexp): ComparisonExpr
+    public function notmatch(string|FieldValueInterface|callable $field, string $regexp): ComparisonExpr
     {
         return new ComparisonExpr($field, self::NMATCH, $regexp);
     }
 
-    public function in(string | FieldValueInterface | callable $field, array $value, bool $caseSensitive = true): ComparisonExpr
+    public function in(string|FieldValueInterface|callable $field, array $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::IN, $value, $caseSensitive);
     }
 
-    public function notin(string | FieldValueInterface | callable $field, array $value, bool $caseSensitive = true): ComparisonExpr
+    public function notin(string|FieldValueInterface|callable $field, array $value, bool $caseSensitive = true): ComparisonExpr
     {
         return new ComparisonExpr($field, self::NIN, $value, $caseSensitive);
     }

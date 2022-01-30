@@ -33,7 +33,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     private array           $data = [];
     private bool            $changed = false;
     private bool            $readonly = false;
-    private string | int | null $lastInsertedKey = null;
+    private string|int|null $lastInsertedKey = null;
     /**
      * @var callable
      */
@@ -105,7 +105,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         }
     }
 
-    public function getLastInsertedKey(): string | int | null
+    public function getLastInsertedKey(): string|int|null
     {
         return $this->lastInsertedKey;
     }
@@ -137,7 +137,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return false;
     }
 
-    protected function retrieveKeyFromRow(array $value): int | string
+    protected function retrieveKeyFromRow(array $value): int|string
     {
         if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
             throw new PrimaryKeyNotFoundException();
@@ -160,7 +160,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $query->where(...$exprs);
     }
 
-    public function get(int | string $key): ?array
+    public function get(int|string $key): ?array
     {
         return $this->data[$key] ?? null;
     }
@@ -190,7 +190,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this->data;
     }
 
-    public function delete(null | int | string $key): self
+    public function delete(null|int|string $key): self
     {
         if (null === $key || !\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
@@ -201,9 +201,9 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function update(array $row, null | int | string $key = null): self
+    public function update(array $row, null|int|string $key = null): self
     {
-        $key = $key ?? $this->retrieveKeyFromRow($row);
+        $key ??= $this->retrieveKeyFromRow($row);
         if (!\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
@@ -213,10 +213,10 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function insert(array $row, null | int | string $key = null): self
+    public function insert(array $row, null|int|string $key = null): self
     {
         try {
-            $key = $key ?? $this->retrieveKeyFromRow($row);
+            $key ??= $this->retrieveKeyFromRow($row);
             if (\array_key_exists($key, $this->data)) {
                 throw new PrimaryKeyAlreadyExistsException();
             }
@@ -234,10 +234,10 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function upsert(array $row, null | int | string $key = null): self
+    public function upsert(array $row, null|int|string $key = null): self
     {
         try {
-            $key = $key ?? $this->retrieveKeyFromRow($row);
+            $key ??= $this->retrieveKeyFromRow($row);
         } catch (PrimaryKeyNotFoundException) {
             $key = null;
         }

@@ -70,9 +70,9 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
      * @throws InvalidFieldException
      */
     public function __construct(
-        string | FieldValueInterface | callable $name,
+        string|FieldValueInterface|callable $name,
         private TableInterface $parentTable,
-        string | FieldValueInterface | callable | null $parentField = null,
+        string|FieldValueInterface|callable|null $parentField = null,
         ?string $selectAlias = null,
         ?callable $parentRow = null
     ) {
@@ -130,7 +130,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->parentTable;
     }
 
-    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
+    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
     {
         if ($this->parentField) {
             $value = \call_user_func($this->name, $row, $key);
@@ -149,7 +149,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return null;
     }
 
-    public function select(array $row, string | int | null $key = null): array
+    public function select(array $row, string|int|null $key = null): array
     {
         $value = \call_user_func($this->name, $row, $key);
 

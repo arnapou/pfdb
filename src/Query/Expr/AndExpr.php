@@ -16,7 +16,7 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class AndExpr extends AbstractNestedExpr
 {
-    public function __invoke(array $row, null | int | string $key = null): bool
+    public function __invoke(array $row, null|int|string $key = null): bool
     {
         foreach ($this->exprs as $expr) {
             if (!$expr->__invoke($row, $key)) {

@@ -75,7 +75,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function select(FieldSelectInterface | string | \Stringable | callable ...$fields): self
+    public function select(FieldSelectInterface|string|\Stringable|callable ...$fields): self
     {
         if (empty($fields)) {
             $this->select = [];
@@ -89,7 +89,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function addSelect(FieldSelectInterface | string | \Stringable | callable ...$fields): self
+    public function addSelect(FieldSelectInterface|string|\Stringable|callable ...$fields): self
     {
         foreach ($fields as $field) {
             $this->select[] = $field;
@@ -115,7 +115,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function group(array | string $fields, array $initial, callable $reduce, ?callable $onfinish = null): self
+    public function group(array|string $fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
         $this->group = [$fields, $initial, $reduce, $onfinish];
 
@@ -147,7 +147,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function addSort(string | callable $field, string $order = 'ASC'): self
+    public function addSort(string|callable $field, string $order = 'ASC'): self
     {
         if (\is_callable($field)) {
             $this->sorts[] = $field;

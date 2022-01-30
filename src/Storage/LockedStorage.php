@@ -11,7 +11,6 @@
 
 namespace Arnapou\PFDB\Storage;
 
-use Symfony\Component\Lock\Lock;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Lock\Store\FlockStore;

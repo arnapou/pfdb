@@ -7,5 +7,6 @@ composer-setup.php
 demo/coverage
 vendor
 .php_cs.cache
+.php-cs-fixer.cache
 githubhook.log
 

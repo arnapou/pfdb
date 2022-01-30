@@ -28,7 +28,7 @@ class GroupIterator implements \IteratorAggregate
     /**
      * GroupIterator constructor.
      */
-    public function __construct(\Iterator $iterator, array | string $fields, array $initial, callable $reduce, ?callable $onfinish)
+    public function __construct(\Iterator $iterator, array|string $fields, array $initial, callable $reduce, ?callable $onfinish)
     {
         $this->iterator = $iterator;
         $this->fields = (array) $fields;

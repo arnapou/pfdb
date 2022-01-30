@@ -23,7 +23,7 @@ class BoolExpr implements ExprInterface
         $this->bool = $bool;
     }
 
-    public function __invoke(array $row, null | int | string $key = null): bool
+    public function __invoke(array $row, null|int|string $key = null): bool
     {
         return $this->bool;
     }

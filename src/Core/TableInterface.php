@@ -42,7 +42,7 @@ interface TableInterface extends \Traversable, Countable
     /**
      * Get a row based on it's key.
      */
-    public function get(int | string $key): ?array;
+    public function get(int|string $key): ?array;
 
     /**
      * Return the current table name.
@@ -62,27 +62,27 @@ interface TableInterface extends \Traversable, Countable
     /**
      * Delete one row based on a key.
      */
-    public function delete(null | int | string $key): self;
+    public function delete(null|int|string $key): self;
 
     /**
      * Return last inserted Key.
      */
-    public function getLastInsertedKey(): string | int | null;
+    public function getLastInsertedKey(): string|int|null;
 
     /**
      * Update one row based on a key.
      */
-    public function update(array $row, null | int | string $key = null): self;
+    public function update(array $row, null|int|string $key = null): self;
 
     /**
      * Insert one row based on a key.
      */
-    public function insert(array $row, null | int | string $key = null): self;
+    public function insert(array $row, null|int|string $key = null): self;
 
     /**
      * Upsert one row based on a key.
      */
-    public function upsert(array $row, null | int | string $key = null): self;
+    public function upsert(array $row, null|int|string $key = null): self;
 
     /**
      * Insert multiple rows selected with an expression.

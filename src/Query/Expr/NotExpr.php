@@ -20,7 +20,7 @@ class NotExpr implements ExprInterface
     {
     }
 
-    public function __invoke(array $row, null | int | string $key = null): bool
+    public function __invoke(array $row, null|int|string $key = null): bool
     {
         return !$this->expr->__invoke($row, $key);
     }

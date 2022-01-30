@@ -45,7 +45,7 @@ class TableDecorator implements \IteratorAggregate, TableInterface
         return $this->table->find(...$exprs);
     }
 
-    public function get(int | string $key): ?array
+    public function get(int|string $key): ?array
     {
         return $this->table->get($key);
     }
@@ -65,33 +65,33 @@ class TableDecorator implements \IteratorAggregate, TableInterface
         return $this->table->getData();
     }
 
-    public function delete(null | int | string $key): self
+    public function delete(null|int|string $key): self
     {
         $this->table->delete($key);
 
         return $this;
     }
 
-    public function getLastInsertedKey(): string | int | null
+    public function getLastInsertedKey(): string|int|null
     {
         return $this->table->getLastInsertedKey();
     }
 
-    public function update(array $row, null | int | string $key = null): self
+    public function update(array $row, null|int|string $key = null): self
     {
         $this->table->update($row, $key);
 
         return $this;
     }
 
-    public function insert(array $row, null | int | string $key = null): self
+    public function insert(array $row, null|int|string $key = null): self
     {
         $this->table->insert($row, $key);
 
         return $this;
     }
 
-    public function upsert(array $row, null | int | string $key = null): self
+    public function upsert(array $row, null|int|string $key = null): self
     {
         $this->table->upsert($row, $key);
 

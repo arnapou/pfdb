@@ -30,12 +30,12 @@ class KeyField implements FieldValueInterface, FieldSelectInterface
         return $this->name;
     }
 
-    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
+    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
     {
         return $key;
     }
 
-    public function select(array $row, string | int | null $key = null): array
+    public function select(array $row, string|int|null $key = null): array
     {
         return [$this->name => $key];
     }

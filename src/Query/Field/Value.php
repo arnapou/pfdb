@@ -16,11 +16,11 @@ namespace Arnapou\PFDB\Query\Field;
  */
 class Value implements FieldValueInterface
 {
-    public function __construct(private string | int | float | bool | null | array $value)
+    public function __construct(private string|int|float|bool|null|array $value)
     {
     }
 
-    public function value(array $row, string | int | null $key = null): string | int | float | bool | null | array
+    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
     {
         return $this->value;
     }

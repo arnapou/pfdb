@@ -25,7 +25,7 @@ class FieldsHelper
         return new Field($name);
     }
 
-    public function value(string | int | float | bool | null | array $value): Value
+    public function value(string|int|float|bool|null|array $value): Value
     {
         return new Value($value);
     }
@@ -38,7 +38,7 @@ class FieldsHelper
     public function parent(
         string $name,
         TableInterface $table,
-        string | FieldValueInterface | callable | null $parentField = null,
+        string|FieldValueInterface|callable|null $parentField = null,
         ?string $selectAlias = null,
         ?callable $parentRow = null
     ): ParentField {

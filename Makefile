@@ -1,5 +1,5 @@
 default: composer
-	vendor/bin/php-cs-fixer fix
+	vendor/bin/php-cs-fixer fix --using-cache=no
 	vendor/bin/psalm --no-cache
 	vendor/bin/phpunit
 

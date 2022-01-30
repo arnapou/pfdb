@@ -32,9 +32,9 @@ class ComparisonExpr implements ExprInterface
     private $value;
 
     public function __construct(
-        string | int | float | bool | null | FieldValueInterface | callable $field,
+        string|int|float|bool|null|FieldValueInterface|callable $field,
         private string $operator,
-        string | int | float | bool | null | array | FieldValueInterface | callable $value,
+        string|int|float|bool|null|array|FieldValueInterface|callable $value,
         private bool $caseSensitive = true
     ) {
         $this->operator = $this->sanitizeOperator($operator, $this->not);
@@ -42,7 +42,7 @@ class ComparisonExpr implements ExprInterface
         $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
-    public function __invoke(array $row, null | int | string $key = null): bool
+    public function __invoke(array $row, null|int|string $key = null): bool
     {
         $field = \call_user_func($this->field, $row, $key);
         $value = \call_user_func($this->value, $row, $key);

@@ -52,7 +52,7 @@ trait SanitizeHelperTrait
         throw new InvalidOperatorException("Unknown operator '$operator'");
     }
 
-    private function sanitizeField(string | int | float | bool | null | array | FieldValueInterface | callable $field): callable
+    private function sanitizeField(string|int|float|bool|null|array|FieldValueInterface|callable $field): callable
     {
         if (\is_string($field)) {
             return [new Field($field), 'value'];
@@ -69,7 +69,7 @@ trait SanitizeHelperTrait
         return [new Value($field), 'value'];
     }
 
-    private function sanitizeValue(string | int | float | bool | null | array | FieldValueInterface | callable $value, string $operator, bool $caseSensitive): callable
+    private function sanitizeValue(string|int|float|bool|null|array|FieldValueInterface|callable $value, string $operator, bool $caseSensitive): callable
     {
         if (ExprHelper::IN === $operator && !\is_array($value)) {
             throw new InvalidValueException('Value for operator "' . $operator . '" should be an array');
