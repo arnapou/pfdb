@@ -17,10 +17,6 @@ trait FieldsHelperTrait
 
     public function fields(): FieldsHelper
     {
-        if (!$this->pfdbFieldsHelper) {
-            $this->pfdbFieldsHelper = new FieldsHelper();
-        }
-
-        return $this->pfdbFieldsHelper;
+        return $this->pfdbFieldsHelper ??= new FieldsHelper();
     }
 }
