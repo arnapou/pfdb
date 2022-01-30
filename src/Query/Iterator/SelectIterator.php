@@ -32,7 +32,7 @@ class SelectIterator implements \Iterator
         $this->fields = $fields;
     }
 
-    public function current()
+    public function current(): mixed
     {
         $row = $this->iterator->current();
         $key = $this->iterator->key();
@@ -55,22 +55,22 @@ class SelectIterator implements \Iterator
         return $data;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->iterator->next();
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->iterator->key();
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return $this->iterator->valid();
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->iterator->rewind();
     }

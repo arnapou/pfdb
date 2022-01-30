@@ -6,18 +6,18 @@
         {
             "name": "Arnaud Buathier",
             "email": "arnaud@arnapou.net",
-            "homepage": "http://arnapou.net"
+            "homepage": "https://arnapou.net/"
         }
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "3.x-dev"
+            "dev-master": "4.x-dev"
         }
     },
     "require": {
-        "php": ">=8.0",
-        "symfony/yaml": "^4.0",
-        "symfony/lock": "^4.0"
+        "php": ">=8.1",
+        "symfony/yaml": "^4.0 || ^5.0",
+        "symfony/lock": "^4.0 || ^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": ">=5.0",

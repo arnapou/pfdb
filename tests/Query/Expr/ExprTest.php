@@ -178,13 +178,13 @@ class ExprTest extends TestCase
 
     public function test_sanitize_operator()
     {
-        self::assertSame('regexp', $this->expr()->comparison('xx', '~', 'yy')->getOperator());
-        self::assertSame('regexp', $this->expr()->comparison('xx', 'regex', 'yy')->getOperator());
-        self::assertSame('regexp', $this->expr()->comparison('xx', 'match', 'yy')->getOperator());
-        self::assertSame('regexp', $this->expr()->comparison('xx', 'not match', 'yy')->getOperator());
-        self::assertSame('==', $this->expr()->comparison('xx', '=', 'yy')->getOperator());
-        self::assertSame('==', $this->expr()->comparison('xx', 'not =', 'yy')->getOperator());
-        self::assertSame('!=', $this->expr()->comparison('xx', '<>', 'yy')->getOperator());
+        self::assertSame('regexp', $this->expr()->comparison('xx', '~', 'yy')->getOperator()->value);
+        self::assertSame('regexp', $this->expr()->comparison('xx', 'regex', 'yy')->getOperator()->value);
+        self::assertSame('regexp', $this->expr()->comparison('xx', 'match', 'yy')->getOperator()->value);
+        self::assertSame('regexp', $this->expr()->comparison('xx', 'not match', 'yy')->getOperator()->value);
+        self::assertSame('==', $this->expr()->comparison('xx', '=', 'yy')->getOperator()->value);
+        self::assertSame('==', $this->expr()->comparison('xx', 'not =', 'yy')->getOperator()->value);
+        self::assertSame('!=', $this->expr()->comparison('xx', '<>', 'yy')->getOperator()->value);
         self::assertTrue($this->expr()->comparison('xx', 'not =', 'yy')->isNot());
         self::assertFalse($this->expr()->comparison('xx', '>', 'yy')->isNot());
     }

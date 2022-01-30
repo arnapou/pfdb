@@ -30,14 +30,11 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    private array           $data = [];
-    private bool            $changed = false;
-    private bool            $readonly = false;
+    private array $data = [];
+    private bool $changed = false;
+    private bool $readonly = false;
     private string|int|null $lastInsertedKey = null;
-    /**
-     * @var callable
-     */
-    private $primaryKeyGenerator;
+    private \Closure $primaryKeyGenerator;
 
     /**
      * This constructor if final to be sure that it will be always constructed with these 3 arguments.
@@ -58,7 +55,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
      *
      * It is simple and "auto-increments" the key as an integer.
      */
-    protected function getDefaultPrimaryKeyGenerator(): callable
+    protected function getDefaultPrimaryKeyGenerator(): \Closure
     {
         return function (): int {
             $maxKey = -1;
@@ -77,7 +74,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     public function setPrimaryKeyGenerator(callable $callable): self
     {
-        $this->primaryKeyGenerator = $callable;
+        $this->primaryKeyGenerator = $callable(...);
 
         return $this;
     }
@@ -221,7 +218,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
                 throw new PrimaryKeyAlreadyExistsException();
             }
         } catch (PrimaryKeyNotFoundException) {
-            $key = \call_user_func($this->primaryKeyGenerator);
+            $key = ($this->primaryKeyGenerator)();
         }
         if ($this->primaryKey) {
             $row[$this->primaryKey] = $key;

@@ -13,7 +13,7 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 class SortIterator implements \IteratorAggregate
 {
-    private array     $sorts;
+    private array $sorts;
     private \Iterator $iterator;
 
     public function __construct(\Iterator $iterator, array $sorts)
@@ -57,16 +57,12 @@ class SortIterator implements \IteratorAggregate
         return $sanitized;
     }
 
-    private function createCallable(string $field, string $order): callable
+    private function createCallable(string $field, string $order): \Closure
     {
         if ('ASC' === strtoupper($order)) {
-            return static function (array $row1, array $row2) use ($field) {
-                return ($row1[$field] ?? '') <=> ($row2[$field] ?? '');
-            };
+            return static fn (array $r1, array $r2) => ($r1[$field] ?? '') <=> ($r2[$field] ?? '');
         }
 
-        return static function (array $row1, array $row2) use ($field) {
-            return -(($row1[$field] ?? '') <=> ($row2[$field] ?? ''));
-        };
+        return static fn (array $r1, array $r2) => -(($r1[$field] ?? '') <=> ($r2[$field] ?? ''));
     }
 }

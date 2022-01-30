@@ -16,11 +16,6 @@ stages:
     paths:
       - vendor
 
-
-test:php-8.0:
-  <<: *job-test
-  image: 'registry.gitlab.com/arnapou/docker/php:8.0-cron'
-
 test:php-8.1:
   <<: *job-test
   image: 'registry.gitlab.com/arnapou/docker/php:8.1-cron'

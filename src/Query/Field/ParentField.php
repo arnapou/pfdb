@@ -43,20 +43,11 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
     use SanitizeHelperTrait;
 
     private string $selectAlias;
-    private bool   $selectAll = true;
-    private bool   $selectArray = false;
-    /**
-     * @var callable
-     */
-    private $name;
-    /**
-     * @var ?callable
-     */
-    private $parentField;
-    /**
-     * @var ?callable
-     */
-    private $parentRow;
+    private bool $selectAll = true;
+    private bool $selectArray = false;
+    private \Closure $name;
+    private ?\Closure $parentField;
+    private ?\Closure $parentRow;
 
     /**
      * @param string|FieldValueInterface|callable      $name        current table foreign key
@@ -80,7 +71,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         $this->parentField = null === $parentField ? null : $this->sanitizeField($parentField);
         $this->selectAlias = $selectAlias ?: $parentTable->getName();
         $this->selectAll = null === $parentField;
-        $this->parentRow = $parentRow;
+        $this->parentRow = null === $parentRow ? null : $parentRow(...);
     }
 
     public function selectAll(bool $all = true): self
@@ -110,7 +101,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->selectArray;
     }
 
-    public function name(): callable
+    public function name(): \Closure
     {
         return $this->name;
     }
@@ -120,7 +111,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->selectAlias;
     }
 
-    public function getParentField(): ?callable
+    public function getParentField(): ?\Closure
     {
         return $this->parentField;
     }
@@ -133,16 +124,16 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
     public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
     {
         if ($this->parentField) {
-            $value = \call_user_func($this->name, $row, $key);
+            $value = ($this->name)($row, $key);
             if (null !== $value) {
                 $parentRow = null === $this->parentRow
                     ? $this->parentTable->get($value)
-                    : \call_user_func($this->parentRow, $value, $this->parentTable);
+                    : ($this->parentRow)($value, $this->parentTable);
                 if (null === $parentRow) {
                     return null;
                 }
 
-                return \call_user_func($this->parentField, $parentRow, $value);
+                return ($this->parentField)($parentRow, $value);
             }
         }
 
@@ -151,7 +142,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 
     public function select(array $row, string|int|null $key = null): array
     {
-        $value = \call_user_func($this->name, $row, $key);
+        $value = ($this->name)($row, $key);
 
         if (null === $value) {
             return [$this->selectAlias => null];
@@ -159,7 +150,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 
         $parentRow = null === $this->parentRow
             ? $this->parentTable->get($value)
-            : \call_user_func($this->parentRow, $value, $this->parentTable);
+            : ($this->parentRow)($value, $this->parentTable);
 
         if (null === $parentRow) {
             return [$this->selectAlias => null];
@@ -183,7 +174,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         }
 
         if ($this->selectArray) {
-            $value = \call_user_func($this->parentField, $parentRow, $value);
+            $value = ($this->parentField)($parentRow, $value);
             if (!\is_array($value)) {
                 throw new InvalidCallableException('The specified callable for the parent field should return an array :(');
             }
@@ -191,6 +182,6 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
             return $value;
         }
 
-        return [$this->selectAlias => \call_user_func($this->parentField, $parentRow, $value)];
+        return [$this->selectAlias => ($this->parentField)($parentRow, $value)];
     }
 }

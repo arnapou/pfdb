@@ -12,6 +12,7 @@
 namespace Arnapou\PFDB;
 
 use Arnapou\PFDB\Core\AbstractDatabase;
+use Arnapou\PFDB\Factory\StaticPKTableFactory;
 use Arnapou\PFDB\Factory\TableFactoryInterface;
 use Arnapou\PFDB\Storage\ReadonlyStorage;
 use Arnapou\PFDB\Storage\StorageInterface;
@@ -21,7 +22,7 @@ final class DatabaseReadonly extends AbstractDatabase
     public function __construct(
         StorageInterface $storage,
         bool $quiet = true,
-        ?TableFactoryInterface $tableFactory = null
+        TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
     ) {
         parent::__construct(new ReadonlyStorage($storage, $quiet), $tableFactory);
     }

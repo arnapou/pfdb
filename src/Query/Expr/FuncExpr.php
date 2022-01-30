@@ -24,18 +24,15 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class FuncExpr implements ExprInterface
 {
-    /**
-     * @var callable
-     */
-    private $callable;
+    private \Closure $callable;
 
     public function __construct(callable $callable)
     {
-        $this->callable = $callable;
+        $this->callable = $callable(...);
     }
 
     public function __invoke(array $row, null|int|string $key = null): bool
     {
-        return (bool) \call_user_func($this->callable, $row, $key);
+        return (bool) ($this->callable)($row, $key);
     }
 }

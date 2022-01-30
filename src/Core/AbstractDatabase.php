@@ -23,7 +23,6 @@ abstract class AbstractDatabase implements DatabaseInterface
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    private TableFactoryInterface $tableFactory;
     /**
      * @var TableInterface[]
      */
@@ -31,9 +30,8 @@ abstract class AbstractDatabase implements DatabaseInterface
 
     public function __construct(
         private StorageInterface $storage,
-        ?TableFactoryInterface $tableFactory = null
+        private TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
     ) {
-        $this->tableFactory = $tableFactory ?: new StaticPKTableFactory('id');
     }
 
     public function getTable(string $name, ?string $primaryKey = null): TableInterface

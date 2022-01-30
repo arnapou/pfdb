@@ -30,12 +30,12 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @var array<FieldSelectInterface|string|\Stringable|callable>
      */
-    private array               $select = [];
-    private ?\Iterator          $from = null;
+    private array $select = [];
+    private ?\Iterator $from = null;
     private NestedExprInterface $where;
-    private array               $group = [];
-    private array               $limit = [0, PHP_INT_MAX];
-    private array               $sorts = [];
+    private array $group = [];
+    private array $limit = [0, PHP_INT_MAX];
+    private array $sorts = [];
 
     public function __construct(?\Traversable $from = null)
     {

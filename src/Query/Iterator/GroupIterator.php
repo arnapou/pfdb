@@ -14,27 +14,26 @@ namespace Arnapou\PFDB\Query\Iterator;
 class GroupIterator implements \IteratorAggregate
 {
     private \Iterator $iterator;
-    private array     $fields;
-    private array     $initial;
-    /**
-     * @var callable
-     */
-    private $reduce;
-    /**
-     * @var callable|null
-     */
-    private $onfinish = null;
+    private array $fields;
+    private array $initial;
+    private \Closure $reduce;
+    private ?\Closure $onfinish = null;
 
     /**
      * GroupIterator constructor.
      */
-    public function __construct(\Iterator $iterator, array|string $fields, array $initial, callable $reduce, ?callable $onfinish)
-    {
+    public function __construct(
+        \Iterator $iterator,
+        array|string $fields,
+        array $initial,
+        callable $reduce,
+        ?callable $onfinish
+    ) {
         $this->iterator = $iterator;
         $this->fields = (array) $fields;
         $this->initial = $initial;
-        $this->reduce = $reduce;
-        $this->onfinish = $onfinish;
+        $this->reduce = $reduce(...);
+        $this->onfinish = $onfinish ? $onfinish(...) : null;
     }
 
     public function getIterator(): \Traversable
@@ -43,7 +42,7 @@ class GroupIterator implements \IteratorAggregate
         foreach ($this->iterator as $key => $row) {
             $groupKey = $this->getGroupKey($row, $key);
             $value = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
-            $grouped[$groupKey] = \call_user_func($this->reduce, $value, $row, $key);
+            $grouped[$groupKey] = ($this->reduce)($value, $row, $key);
         }
         if ($this->onfinish) {
             $grouped = array_map($this->onfinish, $grouped);

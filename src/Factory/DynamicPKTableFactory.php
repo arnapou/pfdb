@@ -24,35 +24,31 @@ use Arnapou\PFDB\Table;
  */
 class DynamicPKTableFactory extends AbstractTableFactory
 {
-    /**
-     * @var callable
-     */
-    private $pkFactory;
+    private \Closure $pkFactory;
 
     public function __construct(?callable $pkFactory = null)
     {
         parent::__construct();
 
         $this->pkFactory = $pkFactory
-            ?: static function (string $name): string {
-                return "id$name";
-            };
+            ? $pkFactory(...)
+            : static fn (string $name): string => "id$name";
     }
 
-    public function getPkFactory(): callable
+    public function getPkFactory(): \Closure
     {
         return $this->pkFactory;
     }
 
     public function setPkFactory(callable $pkFactory): self
     {
-        $this->pkFactory = $pkFactory;
+        $this->pkFactory = $pkFactory(...);
 
         return $this;
     }
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
-        return $this->createInstance($storage, $name, \call_user_func($this->pkFactory, $name));
+        return $this->createInstance($storage, $name, ($this->pkFactory)($name));
     }
 }

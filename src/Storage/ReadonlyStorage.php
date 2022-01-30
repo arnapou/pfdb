@@ -16,7 +16,7 @@ use Arnapou\PFDB\Exception\ReadonlyException;
 class ReadonlyStorage implements StorageInterface
 {
     private StorageInterface $storage;
-    private bool             $quiet;
+    private bool $quiet;
 
     /**
      * ReadonlyStorage constructor.

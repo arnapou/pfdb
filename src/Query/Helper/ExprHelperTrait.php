@@ -17,10 +17,6 @@ trait ExprHelperTrait
 
     public function expr(): ExprHelper
     {
-        if (!$this->pfdbExprHelper) {
-            $this->pfdbExprHelper = new ExprHelper();
-        }
-
-        return $this->pfdbExprHelper;
+        return $this->pfdbExprHelper ??= new ExprHelper();
     }
 }

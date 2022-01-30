@@ -14,7 +14,7 @@ namespace Arnapou\PFDB\Query\Expr;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
-use Arnapou\PFDB\Query\Helper\ExprHelper;
+use Arnapou\PFDB\Query\Helper\ExprOperator;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 
 class ComparisonExpr implements ExprInterface
@@ -22,94 +22,104 @@ class ComparisonExpr implements ExprInterface
     use SanitizeHelperTrait;
 
     private bool $not = false;
-    /**
-     * @var callable
-     */
-    private $field;
-    /**
-     * @var callable
-     */
-    private $value;
+    private ExprOperator $operator;
+    private \Closure $field;
+    private \Closure $value;
 
     public function __construct(
         string|int|float|bool|null|FieldValueInterface|callable $field,
-        private string $operator,
+        string|ExprOperator $operator,
         string|int|float|bool|null|array|FieldValueInterface|callable $value,
         private bool $caseSensitive = true
     ) {
-        $this->operator = $this->sanitizeOperator($operator, $this->not);
+        $this->operator = ExprOperator::sanitize($operator, $this->not);
         $this->field = $this->sanitizeField($field);
         $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
     public function __invoke(array $row, null|int|string $key = null): bool
     {
-        $field = \call_user_func($this->field, $row, $key);
-        $value = \call_user_func($this->value, $row, $key);
+        $field = ($this->field)($row, $key);
+        $value = ($this->value)($row, $key);
 
         if (null !== $field && !is_scalar($field)) {
             throw new InvalidFieldException('The field value is not a scalar.');
         }
 
-        if (\in_array($this->operator, [ExprHelper::IN, ExprHelper::NIN], true)) {
-            if (!\is_array($value)) {
-                if (!is_scalar($value)) {
-                    throw new InvalidValueException('Value for operator "' . $this->operator . '" should be an array');
-                }
-                $value = (array) $value;
+        if (\in_array($this->operator, [ExprOperator::IN, ExprOperator::NIN], true)) {
+            if (!\is_array($value) && !\is_string($value) && !\is_int($value)
+                && !\is_float($value) && !\is_bool($value)) {
+                throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should be an array');
             }
 
-            if (!$this->caseSensitive) {
-                $field = strtolower((string) $field);
-                $value = array_map('strtolower', $value);
-            }
-
-            $bool = match ($this->operator) {
-                ExprHelper::IN => \in_array($field, $value),
-                ExprHelper::NIN => !\in_array($field, $value),
-            };
+            $bool = $this->evaluateIn($value, $field);
         } else {
             if (\is_array($value)) {
-                throw new InvalidValueException('Value for operator "' . $this->operator . '" should NOT be an array');
+                throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should NOT be an array');
             }
 
-            if (!$this->caseSensitive && !\in_array($this->operator, [ExprHelper::LIKE, ExprHelper::NLIKE, ExprHelper::MATCH, ExprHelper::NMATCH], true)) {
-                $field = strtolower((string) $field);
-                $value = strtolower((string) $value);
-            }
-
-            $bool = match ($this->operator) {
-                ExprHelper::EQ => $field == $value,
-                ExprHelper::EQSTRICT => $field === $value,
-                ExprHelper::NEQ => $field != $value,
-                ExprHelper::NEQSTRICT => $field !== $value,
-                ExprHelper::GT => $field > $value,
-                ExprHelper::GTE => $field >= $value,
-                ExprHelper::LT => $field < $value,
-                ExprHelper::LTE => $field <= $value,
-                ExprHelper::CONTAINS => '' === $value || str_contains((string) $field, (string) $value),
-                ExprHelper::BEGINS => '' === $value || str_starts_with((string) $field, (string) $value),
-                ExprHelper::ENDS => '' === $value || str_ends_with((string) $field, (string) $value),
-                ExprHelper::LIKE, ExprHelper::MATCH => (bool) preg_match((string) $value, (string) $field),
-                ExprHelper::NLIKE, ExprHelper::NMATCH => !(bool) preg_match((string) $value, (string) $field),
-                default => false,
-            };
+            $bool = $this->evaluateOther($value, $field);
         }
 
         return $this->not ? !$bool : $bool;
     }
 
-    public function getField(): callable
+    private function evaluateOther(string|int|float|bool|null $value, mixed $field): bool
+    {
+        if (!$this->caseSensitive && !\in_array(
+            $this->operator,
+            [ExprOperator::LIKE, ExprOperator::NLIKE, ExprOperator::MATCH, ExprOperator::NMATCH],
+            true
+        )) {
+            $field = strtolower((string) $field);
+            $value = strtolower((string) $value);
+        }
+
+        return match ($this->operator) {
+            ExprOperator::EQ => $field == $value,
+            ExprOperator::EQSTRICT => $field === $value,
+            ExprOperator::NEQ => $field != $value,
+            ExprOperator::NEQSTRICT => $field !== $value,
+            ExprOperator::GT => $field > $value,
+            ExprOperator::GTE => $field >= $value,
+            ExprOperator::LT => $field < $value,
+            ExprOperator::LTE => $field <= $value,
+            ExprOperator::CONTAINS => '' === $value || str_contains((string) $field, (string) $value),
+            ExprOperator::BEGINS => '' === $value || str_starts_with((string) $field, (string) $value),
+            ExprOperator::ENDS => '' === $value || str_ends_with((string) $field, (string) $value),
+            ExprOperator::LIKE, ExprOperator::MATCH => (bool) preg_match((string) $value, (string) $field),
+            ExprOperator::NLIKE, ExprOperator::NMATCH => !(bool) preg_match((string) $value, (string) $field),
+            default => false,
+        };
+    }
+
+    private function evaluateIn(string|int|float|bool|array $value, mixed $field): bool
+    {
+        $value = (array) $value;
+
+        if (!$this->caseSensitive) {
+            $field = strtolower((string) $field);
+            $value = array_map('strtolower', $value);
+        }
+
+        return match ($this->operator) {
+            ExprOperator::IN => \in_array($field, $value),
+            ExprOperator::NIN => !\in_array($field, $value),
+            default => false
+        };
+    }
+
+    public function getField(): \Closure
     {
         return $this->field;
     }
 
-    public function getOperator(): string
+    public function getOperator(): ExprOperator
     {
         return $this->operator;
     }
 
-    public function getValue(): callable
+    public function getValue(): \Closure
     {
         return $this->value;
     }

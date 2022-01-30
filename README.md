@@ -129,8 +129,9 @@ Look at the existing storages and write your own.
 
 ### Changelog versions techniques
 
-| Date       | Branche | Php | 
-|------------|---------|-----|
-| 15/05/2021 | master  | 8.0 |
-| 27/02/2019 | 2.x     | 7.2 |
-| 07/11/2013 | 1.x     | 5.4 |
+| Date       | Tag, Branche | Php | 
+|------------|--------------|-----|
+| 30/01/2022 | 4.x, master  | 8.1 |
+| 15/05/2021 | 3.x          | 8.0 |
+| 27/02/2019 | 2.x          | 7.2 |
+| 07/11/2013 | 1.x          | 5.4 |
