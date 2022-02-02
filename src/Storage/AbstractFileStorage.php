@@ -35,7 +35,7 @@ abstract class AbstractFileStorage implements StorageInterface
     public function getFilename(string $name): string
     {
         if (!$this->isValidTableName($name)) {
-            throw new InvalidTableNameException('The name must follow this regexp [a-z0-9_\.-]+');
+            throw new InvalidTableNameException('The name must follow this regexp [a-zA-Z0-9_\.-]+');
         }
 
         return $this->path . '/' . $this->prefixName . ".$name." . $this->getExtension();
@@ -48,7 +48,7 @@ abstract class AbstractFileStorage implements StorageInterface
 
     public function isValidTableName(string $name): bool
     {
-        return (bool) preg_match('!^[a-z0-9_\.-]+$!', $name);
+        return (bool) preg_match('!^[a-zA-Z0-9_\.-]+$!', $name);
     }
 
     public function tableNames(): array
