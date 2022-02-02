@@ -17,16 +17,16 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 class LockedStorage implements StorageInterface
 {
-    private LockFactory $lockFactory;
+    private readonly LockFactory $lockFactory;
     /**
      * @var array<string, LockInterface>
      */
     private array $locks = [];
 
     public function __construct(
-        private StorageInterface $storage,
+        private readonly StorageInterface $storage,
         ?LockFactory $lockFactory = null,
-        private string $lockNamePrefix = 'pfdb.'
+        private readonly string $lockNamePrefix = 'pfdb.'
     ) {
         $this->lockFactory = $lockFactory ?: new LockFactory(new FlockStore());
     }

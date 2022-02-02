@@ -17,18 +17,16 @@ use Arnapou\PFDB\Exception\ReadonlyException;
 
 abstract class AbstractFileStorage implements StorageInterface
 {
-    private string $path;
-    private bool $readonly;
-    private string $prefixName;
+    private readonly string $path;
+    private readonly bool $readonly;
 
-    public function __construct(string $path, string $prefixName = 'table')
+    public function __construct(string $path, private readonly string $prefixName = 'table')
     {
         $this->path = rtrim(rtrim($path, '/'), '\\');
         if (!is_dir($this->path)) {
             throw new DirectoryNotFoundException("path: $path");
         }
         $this->readonly = !is_writable($path);
-        $this->prefixName = $prefixName;
         if (!$this->isValidTableName($prefixName)) {
             throw new InvalidTableNameException('The prefix name must follow the same rules as table name [a-z0-9_\.-]+');
         }

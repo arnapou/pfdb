@@ -22,15 +22,15 @@ class ComparisonExpr implements ExprInterface
     use SanitizeHelperTrait;
 
     private bool $not = false;
-    private ExprOperator $operator;
-    private \Closure $field;
-    private \Closure $value;
+    private readonly ExprOperator $operator;
+    private readonly \Closure $field;
+    private readonly \Closure $value;
 
     public function __construct(
         string|int|float|bool|null|FieldValueInterface|callable $field,
         string|ExprOperator $operator,
         string|int|float|bool|null|array|FieldValueInterface|callable $value,
-        private bool $caseSensitive = true
+        private readonly bool $caseSensitive = true
     ) {
         $this->operator = ExprOperator::sanitize($operator, $this->not);
         $this->field = $this->sanitizeField($field);

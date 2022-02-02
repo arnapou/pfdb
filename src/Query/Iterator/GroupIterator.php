@@ -13,25 +13,21 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 class GroupIterator implements \IteratorAggregate
 {
-    private \Iterator $iterator;
-    private array $fields;
-    private array $initial;
-    private \Closure $reduce;
+    private readonly array $fields;
+    private readonly \Closure $reduce;
     private ?\Closure $onfinish = null;
 
     /**
      * GroupIterator constructor.
      */
     public function __construct(
-        \Iterator $iterator,
+        private readonly \Iterator $iterator,
         array|string $fields,
-        array $initial,
+        private readonly array $initial,
         callable $reduce,
         ?callable $onfinish
     ) {
-        $this->iterator = $iterator;
         $this->fields = (array) $fields;
-        $this->initial = $initial;
         $this->reduce = $reduce(...);
         $this->onfinish = $onfinish ? $onfinish(...) : null;
     }

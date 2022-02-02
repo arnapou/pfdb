@@ -16,11 +16,8 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class BoolExpr implements ExprInterface
 {
-    private bool $bool;
-
-    public function __construct(bool $bool)
+    public function __construct(private readonly bool $bool)
     {
-        $this->bool = $bool;
     }
 
     public function __invoke(array $row, null|int|string $key = null): bool

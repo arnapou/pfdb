@@ -18,11 +18,8 @@ namespace Arnapou\PFDB\Query\Field;
  */
 class Field implements FieldValueInterface, FieldSelectInterface
 {
-    private string $name;
-
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
-        $this->name = $name;
     }
 
     public function name(): string

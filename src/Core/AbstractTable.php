@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Core;
 
+use Arnapou\PFDB\ArrayTable;
 use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Exception\PrimaryKeyAlreadyExistsException;
 use Arnapou\PFDB\Exception\PrimaryKeyNotFoundException;
@@ -40,10 +41,13 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
      * This constructor if final to be sure that it will be always constructed with these 3 arguments.
      *
      * It you need to "override" it anyway, just extend the TableDecorator (look at ArrayTable for an example).
+     *
+     * @see TableDecorator
+     * @see ArrayTable
      */
     final public function __construct(
-        private StorageInterface $storage,
-        private string $name,
+        private readonly StorageInterface $storage,
+        private readonly string $name,
         private ?string $primaryKey
     ) {
         $this->primaryKeyGenerator = $this->getDefaultPrimaryKeyGenerator();

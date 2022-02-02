@@ -29,8 +29,8 @@ abstract class AbstractDatabase implements DatabaseInterface
     private array $tables = [];
 
     public function __construct(
-        private StorageInterface $storage,
-        private TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
+        private readonly StorageInterface $storage,
+        private readonly TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
     ) {
     }
 

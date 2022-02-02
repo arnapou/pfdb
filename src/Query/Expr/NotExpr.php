@@ -16,7 +16,7 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class NotExpr implements ExprInterface
 {
-    public function __construct(private ExprInterface $expr)
+    public function __construct(private readonly ExprInterface $expr)
     {
     }
 

@@ -15,21 +15,13 @@ use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 
 class SelectIterator implements \Iterator
 {
-    private \Iterator $iterator;
-    /**
-     * @var array<FieldSelectInterface|string|\Stringable|callable>
-     */
-    private array $fields;
-
     /**
      * SelectIterator constructor.
      *
      * @param array<FieldSelectInterface|string|\Stringable|callable> $fields
      */
-    public function __construct(\Iterator $iterator, array $fields)
+    public function __construct(private readonly \Iterator $iterator, private readonly array $fields)
     {
-        $this->iterator = $iterator;
-        $this->fields = $fields;
     }
 
     public function current(): mixed

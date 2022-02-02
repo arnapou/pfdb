@@ -24,7 +24,7 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class FuncExpr implements ExprInterface
 {
-    private \Closure $callable;
+    private readonly \Closure $callable;
 
     public function __construct(callable $callable)
     {

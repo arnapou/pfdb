@@ -15,18 +15,13 @@ use Arnapou\PFDB\Exception\ReadonlyException;
 
 class ReadonlyStorage implements StorageInterface
 {
-    private StorageInterface $storage;
-    private bool $quiet;
-
     /**
      * ReadonlyStorage constructor.
      *
      * @param bool $quiet No Readonly exception will be thrown if set to true
      */
-    public function __construct(StorageInterface $storage, bool $quiet = true)
+    public function __construct(private readonly StorageInterface $storage, private readonly bool $quiet = true)
     {
-        $this->storage = $storage;
-        $this->quiet = $quiet;
     }
 
     public function load(string $name): array

@@ -18,7 +18,7 @@ namespace Arnapou\PFDB\Query\Field;
  */
 class KeyField implements FieldValueInterface, FieldSelectInterface
 {
-    private string $name;
+    private readonly string $name;
 
     public function __construct(?string $name = null)
     {

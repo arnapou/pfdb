@@ -13,12 +13,10 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 class SortIterator implements \IteratorAggregate
 {
-    private array $sorts;
-    private \Iterator $iterator;
+    private readonly array $sorts;
 
-    public function __construct(\Iterator $iterator, array $sorts)
+    public function __construct(private readonly \Iterator $iterator, array $sorts)
     {
-        $this->iterator = $iterator;
         $this->sorts = $this->sanitizeOrderings($sorts);
     }
 

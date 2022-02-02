@@ -42,12 +42,12 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 {
     use SanitizeHelperTrait;
 
-    private string $selectAlias;
+    private readonly string $selectAlias;
     private bool $selectAll = true;
     private bool $selectArray = false;
-    private \Closure $name;
-    private ?\Closure $parentField;
-    private ?\Closure $parentRow;
+    private readonly \Closure $name;
+    private readonly ?\Closure $parentField;
+    private readonly ?\Closure $parentRow;
 
     /**
      * @param string|FieldValueInterface|callable      $name        current table foreign key
@@ -62,7 +62,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
      */
     public function __construct(
         string|FieldValueInterface|callable $name,
-        private TableInterface $parentTable,
+        private readonly TableInterface $parentTable,
         string|FieldValueInterface|callable|null $parentField = null,
         ?string $selectAlias = null,
         ?callable $parentRow = null
