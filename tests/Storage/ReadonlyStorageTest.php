@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -49,21 +51,21 @@ class ReadonlyStorageTest extends TestCase
         };
     }
 
-    public function test_exception_on_save()
+    public function testExceptionOnSave()
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
         $this->expectException(ReadonlyException::class);
         $storage->save('we_dont_care', []);
     }
 
-    public function test_exception_on_delete()
+    public function testExceptionOnDelete()
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
         $this->expectException(ReadonlyException::class);
         $storage->delete('we_dont_care');
     }
 
-    public function test_for_coverage()
+    public function testForCoverage()
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
 

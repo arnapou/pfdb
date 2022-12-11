@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -17,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class LockedStorageTest extends TestCase
 {
-    public function test_misc()
+    public function testMisc()
     {
         $storage = new LockedStorage(new ArrayStorage(['tata' => []]));
 

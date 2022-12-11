@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -26,17 +28,18 @@ class DatabaseTest extends TestCase
                 PhpFileStorageTest::pfdbStorage()
             )
         );
+
         return $db;
     }
 
-    public function test_tables()
+    public function testTables()
     {
         $db = self::pfdbDatabase();
 
         self::assertCount(4, $db->getTables());
     }
 
-    public function test_drop_exception()
+    public function testDropException()
     {
         $db = self::pfdbDatabase();
         $table = $db->getTable('vehicle');

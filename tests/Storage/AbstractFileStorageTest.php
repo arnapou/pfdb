@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -18,41 +20,41 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractFileStorageTest extends TestCase
 {
-    public function test_directory_not_exists()
+    public function testDirectoryNotExists()
     {
         $this->expectException(DirectoryNotFoundException::class);
         new PhpFileStorage('/does/not/exists/or/very/not/lucky');
     }
 
-    public function test_invalid_tablename()
+    public function testInvalidTablename()
     {
         $this->expectException(InvalidTableNameException::class);
         PhpFileStorageTest::pfdbStorage()->load('bad:characters@');
     }
 
-    public function test_invalid_prefix_tablename()
+    public function testInvalidPrefixTablename()
     {
         $this->expectException(InvalidTableNameException::class);
         new PhpFileStorage(sys_get_temp_dir(), 'bad:characters@');
     }
 
-    public function test_get_path()
+    public function testGetPath()
     {
         $storage = new PhpFileStorage(__DIR__ . DIRECTORY_SEPARATOR);
 
         self::assertSame(__DIR__, $storage->getPath());
     }
 
-    public function test_tablenames()
+    public function testTablenames()
     {
         self::assertSame(['vehicle'], YamlFileStorageTest::pfdbStorage()->tableNames());
     }
 
-    public function test_readonly_folder()
+    public function testReadonlyFolder()
     {
         $dir = sys_get_temp_dir() . '/test_' . md5(uniqid('', true) . mt_rand(0, PHP_INT_MAX));
         if (!is_dir($dir)) {
-            if (!mkdir($dir, 0000, true)) {
+            if ($this->mkdirFailed($dir)) {
                 self::markTestSkipped('chmod does not work');
             }
             $storage = new PhpFileStorage($dir);
@@ -61,5 +63,10 @@ class AbstractFileStorageTest extends TestCase
         } else {
             self::markTestSkipped('test folder already exists. That should never occur.');
         }
+    }
+
+    private function mkdirFailed(string $dir): bool
+    {
+        return getenv('CI_JOB_NAME') || !mkdir($dir, 0, true);
     }
 }

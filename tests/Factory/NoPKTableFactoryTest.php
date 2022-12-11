@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -17,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class NoPKTableFactoryTest extends TestCase
 {
-    public function test_basic()
+    public function testBasic()
     {
         $factory = new NoPKTableFactory();
 

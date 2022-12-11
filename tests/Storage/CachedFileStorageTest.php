@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -19,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class CachedFileStorageTest extends TestCase
 {
-    const TMP_NAME = 'test_table_cached';
+    public const TMP_NAME = 'test_table_cached';
 
     private function fileStorage(): CachedFileStorage
     {
@@ -30,10 +32,11 @@ class CachedFileStorageTest extends TestCase
         if (is_file($storage->cacheStorage()->getFilename(self::TMP_NAME))) {
             @unlink($storage->cacheStorage()->getFilename(self::TMP_NAME));
         }
+
         return $storage;
     }
 
-    public function test_getters()
+    public function testGetters()
     {
         $storage = $this->fileStorage();
 
@@ -43,7 +46,7 @@ class CachedFileStorageTest extends TestCase
         self::assertIsArray($storage->tableNames());
     }
 
-    public function test_save_and_delete()
+    public function testSaveAndDelete()
     {
         $storage = $this->fileStorage();
         $storage->save(self::TMP_NAME, ArrayTableTest::DATA);
@@ -59,7 +62,7 @@ class CachedFileStorageTest extends TestCase
         self::assertFalse(is_file($storage->innerStorage()->getFilename(self::TMP_NAME)));
     }
 
-    public function test_source_not_exists_with_remaining_cache_return_empty()
+    public function testSourceNotExistsWithRemainingCacheReturnEmpty()
     {
         $storage = $this->fileStorage();
         $storage->cacheStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
@@ -67,14 +70,14 @@ class CachedFileStorageTest extends TestCase
         self::assertCount(0, $storage->load(self::TMP_NAME));
     }
 
-    public function test_source_exists_with_cache_not_present()
+    public function testSourceExistsWithCacheNotPresent()
     {
         $storage = $this->fileStorage();
         $storage->innerStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
         self::assertCount(5, $storage->load(self::TMP_NAME));
     }
 
-    public function test_cache_loaded_instead_of_source()
+    public function testCacheLoadedInsteadOfSource()
     {
         $storage = $this->fileStorage();
         $DATA = ArrayTableTest::DATA;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -16,13 +18,13 @@ use PHPUnit\Framework\TestCase;
 
 class FieldTest extends TestCase
 {
-    public function test_name()
+    public function testName()
     {
         $field = new Field('name');
         self::assertSame('name', $field->name());
     }
 
-    public function test_select()
+    public function testSelect()
     {
         $field = new Field('name');
 

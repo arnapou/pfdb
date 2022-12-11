@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -16,13 +18,13 @@ use PHPUnit\Framework\TestCase;
 
 class KeyFieldTest extends TestCase
 {
-    public function test_name()
+    public function testName()
     {
         $field = new KeyField(':key');
         self::assertSame(':key', $field->name());
     }
 
-    public function test_value()
+    public function testValue()
     {
         $field = new KeyField(':key');
 

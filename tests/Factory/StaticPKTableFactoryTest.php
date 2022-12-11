@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -19,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class StaticPKTableFactoryTest extends TestCase
 {
-    public function test_getters_and_setters()
+    public function testGettersAndSetters()
     {
         $factory = new StaticPKTableFactory('id');
 
@@ -30,7 +32,7 @@ class StaticPKTableFactoryTest extends TestCase
         self::assertSame(Table::class, $factory->setTableClass(Table::class)->getTableClass());
     }
 
-    public function test_set_table_exception()
+    public function testSetTableException()
     {
         $factory = new StaticPKTableFactory();
 

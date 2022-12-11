@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -18,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class MultipleStorageTest extends TestCase
 {
-    public function test_misc()
+    public function testMisc()
     {
         $child1 = new ArrayStorage(['table1' => [['data1' => 1]]]);
         $child2 = new ArrayStorage(['table2' => [['data2' => 2]]]);
@@ -45,14 +47,14 @@ class MultipleStorageTest extends TestCase
         self::assertNull($storage->findChild('table3'));
     }
 
-    public function test_exception_on_save()
+    public function testExceptionOnSave()
     {
         $storage = new MultipleStorage();
         $this->expectException(StorageException::class);
         $storage->save('we_dont_care', []);
     }
 
-    public function test_exception_on_delete()
+    public function testExceptionOnDelete()
     {
         $storage = new MultipleStorage();
         $this->expectException(StorageException::class);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -13,15 +15,23 @@ namespace Arnapou\PFDB\Tests\Storage;
 
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Storage\PhpFileStorage;
+
+use function count;
+
 use PHPUnit\Framework\TestCase;
 
 class PhpFileStorageTest extends TestCase
 {
-    const TMP_NAME = 'test_table';
+    public const TMP_NAME = 'test_table';
 
     public static function pfdbStorage(): PhpFileStorage
     {
         return new PhpFileStorage(__DIR__ . '/../../demo/database');
+    }
+
+    private function chmodFailed(string $filename): bool
+    {
+        return getenv('CI_JOB_NAME') || !chmod($filename, 0);
     }
 
     private function fileStorage(bool $readonly): PhpFileStorage
@@ -31,42 +41,43 @@ class PhpFileStorageTest extends TestCase
             @unlink($storage->getFilename(self::TMP_NAME));
         }
         $storage->save(self::TMP_NAME, []);
-        if ($readonly && !chmod($storage->getFilename(self::TMP_NAME), 0000)) {
+        if ($readonly && $this->chmodFailed($storage->getFilename(self::TMP_NAME))) {
             self::markTestSkipped('chmod does not work');
         }
+
         return $storage;
     }
 
-    public function test_count()
+    public function testCount()
     {
         $storage = self::pfdbStorage();
 
-        self::assertSame(9, \count($storage->load('vehicle')));
-        self::assertSame(0, \count($storage->load('not_exists')));
+        self::assertSame(9, count($storage->load('vehicle')));
+        self::assertSame(0, count($storage->load('not_exists')));
     }
 
-    public function test_save()
+    public function testSave()
     {
         $storage = $this->fileStorage(false);
         $storage->save(self::TMP_NAME, []);
         self::assertTrue(true);
     }
 
-    public function test_save_readonly_raises_exception()
+    public function testSaveReadonlyRaisesException()
     {
         $storage = $this->fileStorage(true);
         $this->expectException(ReadonlyException::class);
         $storage->save(self::TMP_NAME, []);
     }
 
-    public function test_delete()
+    public function testDelete()
     {
         $storage = $this->fileStorage(false);
         $storage->delete(self::TMP_NAME);
         self::assertTrue(true);
     }
 
-    public function test_delete_readonly_raises_exception()
+    public function testDeleteReadonlyRaisesException()
     {
         $storage = $this->fileStorage(true);
         $this->expectException(ReadonlyException::class);

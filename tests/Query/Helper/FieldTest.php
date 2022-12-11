@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -21,17 +23,17 @@ class FieldTest extends TestCase
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    public function test_normal_field()
+    public function testNormalField()
     {
         self::assertSame('test', $this->fields()->normal('test')->name());
     }
 
-    public function test_key_field()
+    public function testKeyField()
     {
         self::assertSame('test', $this->fields()->key('test')->name());
     }
 
-    public function test_parent_field()
+    public function testParentField()
     {
         self::assertIsCallable($this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name());
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -17,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class DynamicPKTableFactoryTest extends TestCase
 {
-    public function test_no_callable()
+    public function testNoCallable()
     {
         $factory = new DynamicPKTableFactory();
 
@@ -26,7 +28,7 @@ class DynamicPKTableFactoryTest extends TestCase
         self::assertSame('table', $table->getName());
     }
 
-    public function test_with_callable()
+    public function testWithCallable()
     {
         $pkFactory = function ($name) {
             return $name . '_pk';

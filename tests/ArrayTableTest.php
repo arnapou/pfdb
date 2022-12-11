@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -19,16 +21,16 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayTableTest extends TestCase
 {
-    const DATA = [
+    use ExprHelperTrait;
+    public const DATA = [
         ['id' => 1, 'name' => 'Red'],
         ['id' => 2, 'name' => 'Green'],
         ['id' => 3, 'name' => 'Blue'],
         ['id' => 4, 'name' => 'Yellow'],
         ['id' => 5, 'name' => 'Brown'],
     ];
-    use ExprHelperTrait;
 
-    public function test_getters()
+    public function testGetters()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -47,7 +49,7 @@ class ArrayTableTest extends TestCase
         self::assertCount(0, $table);
     }
 
-    public function test_delete()
+    public function testDelete()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -60,7 +62,7 @@ class ArrayTableTest extends TestCase
         self::assertCount(1, $table);
     }
 
-    public function test_update()
+    public function testUpdate()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -71,13 +73,14 @@ class ArrayTableTest extends TestCase
             $this->expr()->bool(true),
             function ($row, $key) {
                 $row['upper'] = strtoupper($row['name']);
+
                 return $row;
             }
         );
         self::assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
     }
 
-    public function test_insert()
+    public function testInsert()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -93,7 +96,7 @@ class ArrayTableTest extends TestCase
         self::assertSame(['Purple', 'White'], array_column(iterator_to_array($table->find($this->expr()->gt('id', 20))), 'name'));
     }
 
-    public function test_insert_multiple_with_exception_should_not_change_data()
+    public function testInsertMultipleWithExceptionShouldNotChangeData()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -106,7 +109,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function test_update_multiple_with_exception_should_not_change_data()
+    public function testUpdateMultipleWithExceptionShouldNotChangeData()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -116,6 +119,7 @@ class ArrayTableTest extends TestCase
                 $this->expr()->bool(true),
                 function ($row, $key) {
                     $row['name'] .= $row['not_existsing_field_will_cause_error'];
+
                     return $row;
                 }
             );
@@ -125,7 +129,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function test_delete_multiple_with_exception_should_not_change_data()
+    public function testDeleteMultipleWithExceptionShouldNotChangeData()
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -134,7 +138,7 @@ class ArrayTableTest extends TestCase
             $table->deleteMultiple(
                 $this->expr()->func(
                     function ($row, $key) {
-                        return $row['not_existsing_field_will_cause_error'] == 42;
+                        return 42 == $row['not_existsing_field_will_cause_error'];
                     }
                 )
             );
@@ -144,7 +148,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function test_upsert()
+    public function testUpsert()
     {
         $table = new ArrayTable(self::DATA, 'id');
 

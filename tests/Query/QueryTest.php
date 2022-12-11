@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -16,7 +18,10 @@ use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Table;
 use Arnapou\PFDB\Tests\DatabaseTest;
 use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
+
+use function strval;
 
 class QueryTest extends TestCase
 {
@@ -32,26 +37,27 @@ class QueryTest extends TestCase
         if (!isset($this->table["_$pk"])) {
             $this->tables["_$pk"] = DatabaseTest::pfdbDatabase()->getTable('vehicle', $pk);
         }
+
         return $this->tables["_$pk"];
     }
 
-    public function test_count()
+    public function testCount()
     {
         self::assertCount(9, $this->table());
         self::assertCount(2, $this->table()->find($this->expr()->eq('color', 'Brown')));
     }
 
-    public function test_limit()
+    public function testLimit()
     {
         self::assertCount(1, $this->table()->find()->limit(0, 1));
     }
 
-    public function test_first()
+    public function testFirst()
     {
         self::assertSame(
             [
-                'id'    => 5,
-                'mark'  => 'Peugeot',
+                'id' => 5,
+                'mark' => 'Peugeot',
                 'color' => 'Red',
                 'price' => '1550',
             ],
@@ -59,12 +65,12 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_last()
+    public function testLast()
     {
         self::assertSame(
             [
-                'id'    => 89,
-                'mark'  => 'Nissan',
+                'id' => 89,
+                'mark' => 'Nissan',
                 'color' => 'Red',
                 'price' => '1500',
             ],
@@ -72,7 +78,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_get()
+    public function testGet()
     {
         self::assertSame(
             ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
@@ -80,7 +86,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_select()
+    public function testSelect()
     {
         self::assertSame(
             [5, 14, 22, 31, 45, 52, 67, 71, 89],
@@ -96,7 +102,7 @@ class QueryTest extends TestCase
                 iterator_to_array(
                     $this->table()->find()->select(
                         function ($row) {
-                            return ['ID' => \strval(10 * $row['id'])];
+                            return ['ID' => strval(10 * $row['id'])];
                         }
                     )
                 )
@@ -118,7 +124,7 @@ class QueryTest extends TestCase
                 iterator_to_array(
                     $this->table()->find()->select(
                         function ($row) {
-                            return ['ID' => \strval(10 * $row['id'])];
+                            return ['ID' => strval(10 * $row['id'])];
                         }
                     )->addSelect('mark')
                 )
@@ -126,7 +132,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_sorts()
+    public function testSorts()
     {
         self::assertSame(
             [['id' => 14], ['id' => 22], ['id' => 52], ['id' => 89], ['id' => 5], ['id' => 67], ['id' => 71], ['id' => 45], ['id' => 31]],
@@ -154,7 +160,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_group()
+    public function testGroup()
     {
         self::assertSame(
             [['sum' => 4150, 'count' => 3], ['sum' => 5200, 'count' => 3], ['sum' => 4950, 'count' => 3]],
@@ -164,7 +170,8 @@ class QueryTest extends TestCase
                     ['sum' => 0, 'count' => 0],
                     function ($group, $row) {
                         $group['sum'] += $row['price'];
-                        $group['count']++;
+                        ++$group['count'];
+
                         return $group;
                     }
                 )
@@ -178,7 +185,8 @@ class QueryTest extends TestCase
                     ['sum' => 0, 'count' => 0],
                     function ($group, $row) {
                         $group['sum'] += $row['price'];
-                        $group['count']++;
+                        ++$group['count'];
+
                         return $group;
                     },
                     function ($group) {
@@ -199,6 +207,7 @@ class QueryTest extends TestCase
                     ['ids' => []],
                     function ($group, $row) {
                         $group['ids'][] = $row['id'];
+
                         return $group;
                     }
                 )
@@ -206,7 +215,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_forced_chaining()
+    public function testForcedChaining()
     {
         $filtered = $this->table()->find($this->expr()->lte('price', 1500));
         $sorted = (new Query($filtered))->sort('mark');
@@ -219,7 +228,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_implemented_chaining()
+    public function testImplementedChaining()
     {
         $final = $this->table()->find($this->expr()->lte('price', 1500))
             ->chain()->addSort('mark')
@@ -232,26 +241,26 @@ class QueryTest extends TestCase
         );
     }
 
-    public function test_from_method_identical_as_constructor()
+    public function testFromMethodIdenticalAsConstructor()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
 
-        $query1 = new Query(new \ArrayIterator($data));
-        $query2 = (new Query())->from(new \ArrayIterator($data));
+        $query1 = new Query(new ArrayIterator($data));
+        $query2 = (new Query())->from(new ArrayIterator($data));
 
         self::assertSame(iterator_to_array($query1), iterator_to_array($query2));
     }
 
-    public function test_standar_select_from()
+    public function testStandarSelectFrom()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('vehicle');
-        $query = new Query(new \ArrayIterator($data));
+        $query = new Query(new ArrayIterator($data));
 
         self::assertSame(
             [
                 4 => [
-                    'id'    => 45,
-                    'mark'  => 'Citroen',
+                    'id' => 45,
+                    'mark' => 'Citroen',
                     'color' => 'Yellow',
                     'price' => '1800',
                 ],

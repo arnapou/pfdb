@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -24,21 +26,21 @@ class TableTest extends TestCase
 {
     use ExprHelperTrait;
 
-    public function test_exception_on_delete()
+    public function testExceptionOnDelete()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $this->expectException(ValueNotFoundException::class);
         $table->delete('42');
     }
 
-    public function test_exception_on_update()
+    public function testExceptionOnUpdate()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $this->expectException(ValueNotFoundException::class);
         $table->update(['id' => 42]);
     }
 
-    public function test_exception_on_insert()
+    public function testExceptionOnInsert()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $table->insert(['id' => 42]);
@@ -46,7 +48,7 @@ class TableTest extends TestCase
         $table->insert(['id' => 42]);
     }
 
-    public function test_exception_on_flush()
+    public function testExceptionOnFlush()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $table->setReadonly(true);
@@ -55,37 +57,37 @@ class TableTest extends TestCase
         $table->flush();
     }
 
-    public function test_exception_on_load()
+    public function testExceptionOnLoad()
     {
         $this->expectException(PrimaryKeyNotFoundException::class);
         $table = new Table(new ArrayStorage(['test' => [['name' => 'Joe']]]), 'test', 'id');
     }
 
-    public function test_load_with_no_pk()
+    public function testLoadWithNoPk()
     {
         $table = new Table(new ArrayStorage(), 'test', null);
         self::assertCount(0, $table);
     }
 
-    public function test_flush_no_change()
+    public function testFlushNoChange()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertFalse($table->flush());
     }
 
-    public function test_primary_key()
+    public function testPrimaryKey()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertSame('id', $table->getPrimaryKey());
     }
 
-    public function test_get_data()
+    public function testGetData()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertSame([], $table->getData());
     }
 
-    public function test_insert()
+    public function testInsert()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -102,7 +104,7 @@ class TableTest extends TestCase
         self::assertSame(42, $table->getLastInsertedKey());
     }
 
-    public function test_delete()
+    public function testDelete()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -112,7 +114,7 @@ class TableTest extends TestCase
         self::assertCount(0, $table);
     }
 
-    public function test_update()
+    public function testUpdate()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -121,7 +123,7 @@ class TableTest extends TestCase
         self::assertSame('Lea', $table->get(42)['name']);
     }
 
-    public function test_upsert()
+    public function testUpsert()
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -135,7 +137,7 @@ class TableTest extends TestCase
         self::assertSame(43, $table->getLastInsertedKey());
     }
 
-    public function test_update_multiple()
+    public function testUpdateMultiple()
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 
@@ -146,6 +148,7 @@ class TableTest extends TestCase
             $this->expr()->lte('price', 150),
             function ($row, $key) {
                 $row['price'] /= 10;
+
                 return $row;
             }
         );
@@ -160,7 +163,7 @@ class TableTest extends TestCase
         );
     }
 
-    public function test_delete_multiple()
+    public function testDeleteMultiple()
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 
@@ -179,7 +182,7 @@ class TableTest extends TestCase
         );
     }
 
-    public function test_clear()
+    public function testClear()
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 

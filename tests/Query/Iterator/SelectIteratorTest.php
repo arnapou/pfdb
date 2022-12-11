@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Arnapou PFDB package.
  *
@@ -14,14 +16,15 @@ namespace Arnapou\PFDB\Tests\Query\Iterator;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Iterator\SelectIterator;
 use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 
 class SelectIteratorTest extends TestCase
 {
-    public function test_select_all_fields()
+    public function testSelectAllFields()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
-        $select = new SelectIterator(new \ArrayIterator($data), ['*']);
+        $select = new SelectIterator(new ArrayIterator($data), ['*']);
 
         self::assertSame(
             ['id' => 1, 'name' => 'Red'],
@@ -29,10 +32,10 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function test_no_select_fields()
+    public function testNoSelectFields()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
-        $select = new SelectIterator(new \ArrayIterator($data), []);
+        $select = new SelectIterator(new ArrayIterator($data), []);
 
         self::assertSame(
             ['id' => 1, 'name' => 'Red'],
@@ -40,10 +43,10 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function test_basic_fields()
+    public function testBasicFields()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
-        $select = new SelectIterator(new \ArrayIterator($data), ['name']);
+        $select = new SelectIterator(new ArrayIterator($data), ['name']);
 
         self::assertSame(
             ['name' => 'Red'],
@@ -51,10 +54,10 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function test_select_interface_fields()
+    public function testSelectInterfaceFields()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
-        $select = new SelectIterator(new \ArrayIterator($data), [new Field('id')]);
+        $select = new SelectIterator(new ArrayIterator($data), [new Field('id')]);
 
         self::assertSame(
             ['id' => 1],
@@ -62,11 +65,12 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function test_callback_fields()
+    public function testCallbackFields()
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(
-            new \ArrayIterator($data), [
+            new ArrayIterator($data),
+            [
             function ($row, $key) {
                 return ['id:color' => $row['id'] . ':' . $row['name']];
             },

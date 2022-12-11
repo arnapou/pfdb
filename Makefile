@@ -10,7 +10,7 @@ analysis: ## static analysis
 	vendor/bin/phpstan
 
 test: ## phpunit
-	vendor/bin/phpunit
+	vendor/bin/phpunit --testdox --colors=always
 
 cs: ## code style
 	PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --using-cache=no
