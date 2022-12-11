@@ -43,7 +43,7 @@ return (new PhpCsFixer\Config())
             '@PHP80Migration' => true,
             '@PHP81Migration' => true,
             '@PHP82Migration' => true,
-            'declare_strict_types' => false,
+            'declare_strict_types' => true,
             'concat_space' => ['spacing' => 'one'],
             'ordered_imports' => ['sort_algorithm' => 'alpha'],
             'native_function_invocation' => ['include' => ['@compiler_optimized']],
