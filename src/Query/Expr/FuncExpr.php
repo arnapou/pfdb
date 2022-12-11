@@ -11,6 +11,8 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+use Closure;
+
 /**
  * Evaluate the expression with a custom callable.
  *
@@ -24,7 +26,7 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 class FuncExpr implements ExprInterface
 {
-    private readonly \Closure $callable;
+    private readonly Closure $callable;
 
     public function __construct(callable $callable)
     {

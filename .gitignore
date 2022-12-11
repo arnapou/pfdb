@@ -1,12 +1,7 @@
 .idea
-.phpunit.result.cache
-phpunit*.phar
-composer.lock
-composer.phar
-composer-setup.php
-demo/coverage
-vendor
 .php_cs.cache
 .php-cs-fixer.cache
-githubhook.log
-
+.phpunit.result.cache
+composer.lock
+vendor
+demo/coverage

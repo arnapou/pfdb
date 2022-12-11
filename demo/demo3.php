@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the Arnapou PFDB package.
+ * This file is part of the Arnapou Weather package.
  *
  * (c) Arnaud Buathier <arnaud@arnapou.net>
  *
@@ -11,68 +13,78 @@
 
 use Arnapou\PFDB\DatabaseReadonly;
 use Arnapou\PFDB\Storage\PhpFileStorage;
+use Arnapou\PFDB\Table;
 
-include __DIR__ . '/functions.php';
-include __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/src/bootstrap.php';
 
-$storage  = new PhpFileStorage(__DIR__ . '/database');
-$database = new DatabaseReadonly($storage);
+(new Page(__FILE__))(
+    static function () {
+        $storage = new PhpFileStorage(__DIR__ . '/database');
+        $database = new DatabaseReadonly($storage);
 
-$colors   = $database->getTable('color');
-$marks    = $database->getTable('mark');
-$vehicles = $database->getTable('vehicle_linked');
+        /** @var Table $colors */
+        $colors = $database->getTable('color');
+        /** @var Table $marks */
+        $marks = $database->getTable('mark');
+        /** @var Table $vehicles */
+        $vehicles = $database->getTable('vehicle_linked');
 
-print_table('Colors', $colors);
-print_table('Marks', $marks);
-print_table('Vehicles', $vehicles);
+        showTable('Colors', $colors);
+        showTable('Marks', $marks);
+        showTable('Vehicles', $vehicles);
 
-print_table('All vehicles with corresponding names', function () use ($colors, $marks, $vehicles) {
-    return $vehicles->find()
-        ->select(
-            'id',
-            $vehicles->fields()->parent(
-                'color_id',  // field name
-                $colors,     // foreign table
-                'name'       // foreign name
-            ),
-            $vehicles->fields()->parent(
-                'mark_id',
-                $marks
-            ),
-            'price'
+        showTable(
+            'All vehicles with corresponding names',
+            static fn () => $vehicles->find()
+                ->select(
+                    'id',
+                    $vehicles->fields()->parent(
+                        'color_id',  // field name
+                        $colors,     // foreign table
+                        'name'       // foreign name
+                    ),
+                    $vehicles->fields()->parent(
+                        'mark_id',
+                        $marks
+                    ),
+                    'price'
+                )
         );
-});
 
-print_table('Filter on color name without displaying it', function () use ($colors, $marks, $vehicles) {
-    return $vehicles->find(
-        $vehicles->expr()->eq(
-            $vehicles->fields()->parent(
-                'color_id',  // field name
-                $colors,     // foreign table
-                'name'       // foreign name
-            ),
-            'Red'
-        )
-    );
-});
+        showTable(
+            'Filter on color name without displaying it',
+            static fn () => $vehicles->find(
+                $vehicles->expr()->eq(
+                    $vehicles->fields()->parent(
+                        'color_id',  // field name
+                        $colors,     // foreign table
+                        'name'       // foreign name
+                    ),
+                    'Red'
+                )
+            )
+        );
 
-print_table('Multiple filters (color + mark)', function () use ($colors, $marks, $vehicles) {
-    return $vehicles->find(
-        $vehicles->expr()->eq(
-            $vehicles->fields()->parent(
-                'color_id',  // field name
-                $colors,     // foreign table
-                'name'       // foreign name
-            ),
-            'Red'
-        ),
-        $vehicles->expr()->contains(
-            $vehicles->fields()->parent(
-                'mark_id',  // field name
-                $marks,     // foreign table
-                'name'       // foreign name
-            ),
-            'o'
-        )
-    );
-});
+        showTable(
+            'Multiple filters (color + mark)',
+            static fn () => $vehicles->find(
+                $vehicles->expr()->eq(
+                    $vehicles->fields()->parent(
+                        'color_id',  // field name
+                        $colors,     // foreign table
+                        'name'       // foreign name
+                    ),
+                    'Red'
+                ),
+                $vehicles->expr()->contains(
+                    $vehicles->fields()->parent(
+                        'mark_id',   // field name
+                        $marks,      // foreign table
+                        'name'       // foreign name
+                    ),
+                    'o'
+                )
+            )
+        );
+    }
+);

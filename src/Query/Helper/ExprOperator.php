@@ -32,6 +32,7 @@ enum ExprOperator: string
     case CONTAINS = '*';
     case IN = 'in';
     case NIN = 'not in';
+
     /**
      * Warranty to return a valid ExprOperator either it is a string or a valid enum.
      */

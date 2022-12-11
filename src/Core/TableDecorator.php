@@ -13,11 +13,15 @@ namespace Arnapou\PFDB\Core;
 
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * Utility abstract class to facilitate the creation of custom Table based on others.
+ *
+ * @template-implements IteratorAggregate<int|string, array>
  */
-class TableDecorator implements \IteratorAggregate, TableInterface
+class TableDecorator implements IteratorAggregate, TableInterface
 {
     public function __construct(protected TableInterface $table)
     {
@@ -131,7 +135,10 @@ class TableDecorator implements \IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function getIterator(): \Traversable
+    /**
+     * @return Traversable<int|string, array>
+     */
+    public function getIterator(): Traversable
     {
         return $this->table;
     }

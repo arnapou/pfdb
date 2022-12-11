@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the Arnapou PFDB package.
+ * This file is part of the Arnapou Weather package.
  *
  * (c) Arnaud Buathier <arnaud@arnapou.net>
  *
@@ -11,70 +13,90 @@
 
 use Arnapou\PFDB\DatabaseReadonly;
 use Arnapou\PFDB\Storage\PhpFileStorage;
+use Arnapou\PFDB\Table;
 
-include __DIR__ . '/functions.php';
-include __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/src/bootstrap.php';
 
-$storage  = new PhpFileStorage(__DIR__ . '/database');
-$database = new DatabaseReadonly($storage);
+(new Page(__FILE__))(
+    static function () {
+        $storage = new PhpFileStorage(__DIR__ . '/database');
+        $database = new DatabaseReadonly($storage);
 
-$table = $database->getTable('vehicle');
+        /** @var Table $table */
+        $table = $database->getTable('vehicle');
 
-print_table('Full Table', $table);
+        showTable('Full Table', $table);
 
-print_table('Update (price > 1500 => price / 10)', function () use ($table) {
-    return $table->updateMultiple(
-        $table->expr()->gt('price', 1500),
-        function ($row) {
-            $row['price'] /= 10;
-            return $row;
-        }
-    );
-});
+        showTable(
+            'Update (price > 1500 => price / 10)',
+            static fn () => $table->updateMultiple(
+                expr()->gt('price', 1500),
+                function ($row) {
+                    $row['price'] /= 10;
 
-print_table('Delete (price < 180 or color = "brown")', function () use ($table) {
-    return $table->deleteMultiple(
-        $table->expr()->or(
-            $table->expr()->lt('price', 180),
-            $table->expr()->eq('color', 'brown', false)
-        )
-    );
-});
+                    return $row;
+                }
+            )
+        );
 
-print_table('Update an existing element', function () use ($table) {
-    return $table->update([
-        'id'    => 45,
-        'price' => '2000',
-    ]);
-});
+        showTable(
+            'Delete (price < 180 or color = "brown")',
+            static fn () => $table->deleteMultiple(
+                expr()->or(
+                    expr()->lt('price', 180),
+                    expr()->eq('color', 'brown', false)
+                )
+            )
+        );
 
-print_table('Update the same element but with its key', function () use ($table) {
-    return $table->update(['price' => '2100'], 45);
-});
+        showTable(
+            'Update an existing element',
+            static fn () => $table->update(
+                [
+                    'id' => 45,
+                    'price' => '2000',
+                ]
+            )
+        );
 
-print_table('Insert an element', function () use ($table) {
-    return $table->insert([
-        'mark'  => 'BMW',
-        'price' => '3000',
-        'color' => 'Green',
-    ]);
-});
+        showTable(
+            'Update the same element but with its key',
+            static fn () => $table->update(['price' => '2100'], 45)
+        );
 
-print_table('Upsert an element', function () use ($table) {
-    return $table->upsert([
-        'mark'  => 'BMW',
-        'price' => '3100',
-        'color' => 'Red',
-    ]);
-});
+        showTable(
+            'Insert an element',
+            static fn () => $table->insert(
+                [
+                    'mark' => 'BMW',
+                    'price' => '3000',
+                    'color' => 'Green',
+                ]
+            )
+        );
 
-print_table('Upsert the same element', function () use ($table) {
-    return $table->upsert(
-        ['color' => 'Yellow'],
-        $table->getLastInsertedKey()
-    );
-});
+        showTable(
+            'Upsert an element',
+            static fn () => $table->upsert(
+                [
+                    'mark' => 'BMW',
+                    'price' => '3100',
+                    'color' => 'Red',
+                ]
+            )
+        );
 
-print_table('Delete one element', function () use ($table) {
-    return $table->delete(31);
-});
+        showTable(
+            'Upsert the same element',
+            static fn () => $table->upsert(
+                ['color' => 'Yellow'],
+                $table->getLastInsertedKey()
+            )
+        );
+
+        showTable(
+            'Delete one element',
+            static fn () => $table->delete(31)
+        );
+    }
+);

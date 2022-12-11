@@ -11,40 +11,52 @@
 
 namespace Arnapou\PFDB\Query\Iterator;
 
+use Arnapou\PFDB\Core\Assert;
 use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 
-class SelectIterator implements \Iterator
+use function is_callable;
+
+use Iterator;
+use Stringable;
+
+/**
+ * @template-implements Iterator<array>
+ */
+class SelectIterator implements Iterator
 {
     /**
      * SelectIterator constructor.
      *
-     * @param array<FieldSelectInterface|string|\Stringable|callable> $fields
+     * @param array<FieldSelectInterface|string|Stringable|callable> $fields
      */
-    public function __construct(private readonly \Iterator $iterator, private readonly array $fields)
+    public function __construct(private readonly Iterator $iterator, private readonly array $fields)
     {
     }
 
-    public function current(): mixed
+    public function current(): array
     {
-        $row = $this->iterator->current();
+        $row = Assert::isArray($this->iterator->current());
         $key = $this->iterator->key();
         if (!$this->fields) {
-            return $row;
+            return Assert::isArray($row);
         }
+
+        $toMerge = [];
         $data = [];
         foreach ($this->fields as $field) {
             if ('*' === $field) {
-                $data = array_merge($data, $row);
+                $toMerge[] = $row;
             } elseif ($field instanceof FieldSelectInterface) {
-                $data = array_merge($data, $field->select($row, $key));
-            } elseif (\is_callable($field)) {
-                $data = array_merge($data, (array) $field($row, $key));
+                $toMerge[] = $field->select(Assert::isArray($row), Assert::isIntStringNull($key));
+            } elseif (is_callable($field)) {
+                $toMerge[] = (array) $field($row, $key);
             } else {
-                $data[(string) $field] = $row[(string) $field] ?? null;
+                $str = Assert::isString($field);
+                $data[$str] = $row[$str] ?? null;
             }
         }
 
-        return $data;
+        return array_merge(array_merge(...$toMerge), $data);
     }
 
     public function next(): void

@@ -16,6 +16,7 @@ use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\InvalidTableClassException;
 use Arnapou\PFDB\Storage\StorageInterface;
 use Arnapou\PFDB\Table;
+use TypeError;
 
 /**
  * All the children classes of this abstract work with an AbstractTable class.
@@ -63,7 +64,7 @@ abstract class AbstractTableFactory implements TableFactoryInterface
 
         $table = new $class($storage, $name, $primaryKey);
         if (!$table instanceof TableInterface) {
-            throw new \TypeError('The table is not a valid TableInterface object');
+            throw new TypeError('The table is not a valid TableInterface object');
         }
 
         return $table;

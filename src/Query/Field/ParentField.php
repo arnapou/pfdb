@@ -16,6 +16,9 @@ use Arnapou\PFDB\Exception\InvalidCallableException;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 use Arnapou\PFDB\Table;
+use Closure;
+
+use function is_array;
 
 /**
  * Complex "parent" field which returns
@@ -45,9 +48,9 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
     private readonly string $selectAlias;
     private bool $selectAll = true;
     private bool $selectArray = false;
-    private readonly \Closure $name;
-    private readonly ?\Closure $parentField;
-    private readonly ?\Closure $parentRow;
+    private readonly Closure $name;
+    private readonly ?Closure $parentField;
+    private readonly ?Closure $parentRow;
 
     /**
      * @param string|FieldValueInterface|callable      $name        current table foreign key
@@ -101,7 +104,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->selectArray;
     }
 
-    public function name(): \Closure
+    public function name(): Closure
     {
         return $this->name;
     }
@@ -111,7 +114,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->selectAlias;
     }
 
-    public function getParentField(): ?\Closure
+    public function getParentField(): ?Closure
     {
         return $this->parentField;
     }
@@ -175,7 +178,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 
         if ($this->selectArray) {
             $value = ($this->parentField)($parentRow, $value);
-            if (!\is_array($value)) {
+            if (!is_array($value)) {
                 throw new InvalidCallableException('The specified callable for the parent field should return an array :(');
             }
 

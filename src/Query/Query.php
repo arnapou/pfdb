@@ -21,23 +21,42 @@ use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Iterator\GroupIterator;
 use Arnapou\PFDB\Query\Iterator\SelectIterator;
 use Arnapou\PFDB\Query\Iterator\SortIterator;
+use ArrayIterator;
+use CallbackFilterIterator;
 
-class Query implements \IteratorAggregate, \Countable
+use function count;
+
+use Countable;
+
+use function is_callable;
+
+use Iterator;
+use IteratorAggregate;
+use IteratorIterator;
+use LimitIterator;
+use SeekableIterator;
+use Stringable;
+use Traversable;
+
+/**
+ * @template-implements IteratorAggregate<int|string, array>
+ */
+class Query implements IteratorAggregate, Countable
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
     /**
-     * @var array<FieldSelectInterface|string|\Stringable|callable>
+     * @var array<FieldSelectInterface|string|Stringable|callable>
      */
     private array $select = [];
-    private ?\Iterator $from = null;
+    private ?Iterator $from = null;
     private NestedExprInterface $where;
     private array $group = [];
     private array $limit = [0, PHP_INT_MAX];
     private array $sorts = [];
 
-    public function __construct(?\Traversable $from = null)
+    public function __construct(?Traversable $from = null)
     {
         $this->where = new AndExpr();
         if ($from) {
@@ -50,7 +69,7 @@ class Query implements \IteratorAggregate, \Countable
      */
     public function where(ExprInterface ...$exprs): self
     {
-        if (1 === \count($exprs) && $exprs[0] instanceof NestedExprInterface) {
+        if (1 === count($exprs) && $exprs[0] instanceof NestedExprInterface) {
             $this->where = $exprs[0];
         } else {
             $this->where->clear();
@@ -75,7 +94,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function select(FieldSelectInterface|string|\Stringable|callable ...$fields): self
+    public function select(FieldSelectInterface|string|Stringable|callable ...$fields): self
     {
         if (empty($fields)) {
             $this->select = [];
@@ -89,7 +108,7 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function addSelect(FieldSelectInterface|string|\Stringable|callable ...$fields): self
+    public function addSelect(FieldSelectInterface|string|Stringable|callable ...$fields): self
     {
         foreach ($fields as $field) {
             $this->select[] = $field;
@@ -101,12 +120,12 @@ class Query implements \IteratorAggregate, \Countable
     /**
      * @return $this
      */
-    public function from(\Traversable $iterator): self
+    public function from(Traversable $iterator): self
     {
-        if ($iterator instanceof \Iterator) {
+        if ($iterator instanceof Iterator) {
             $this->from = $iterator;
         } else {
-            $this->from = new \IteratorIterator($iterator);
+            $this->from = new IteratorIterator($iterator);
         }
 
         return $this;
@@ -149,7 +168,7 @@ class Query implements \IteratorAggregate, \Countable
      */
     public function addSort(string|callable $field, string $order = 'ASC'): self
     {
-        if (\is_callable($field)) {
+        if (is_callable($field)) {
             $this->sorts[] = $field;
         } else {
             $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];
@@ -158,7 +177,7 @@ class Query implements \IteratorAggregate, \Countable
         return $this;
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
         if (null === $this->from) {
             throw new NotDefinedFromIteratorException('You must set a from iterator.');
@@ -166,16 +185,16 @@ class Query implements \IteratorAggregate, \Countable
 
         $iterator = $this->where->isEmpty()
             ? $this->from
-            : new \CallbackFilterIterator($this->from, $this->where);
+            : new CallbackFilterIterator($this->from, $this->where);
         if ($this->group) {
-            $iterator = new \IteratorIterator(new GroupIterator($iterator, ...$this->group));
+            $iterator = new IteratorIterator(new GroupIterator($iterator, ...$this->group));
         }
         if ($this->sorts) {
-            $iterator = new \IteratorIterator(new SortIterator($iterator, $this->sorts));
+            $iterator = new IteratorIterator(new SortIterator($iterator, $this->sorts));
         }
         if ($this->limit !== [0, PHP_INT_MAX]) {
-            $iterator = new \LimitIterator(
-                $iterator instanceof \SeekableIterator ? new \IteratorIterator($iterator) : $iterator,
+            $iterator = new LimitIterator(
+                $iterator instanceof SeekableIterator ? new IteratorIterator($iterator) : $iterator,
                 $this->limit[0],
                 $this->limit[1]
             );
@@ -190,7 +209,7 @@ class Query implements \IteratorAggregate, \Countable
     public function chain(bool $cut = true): self
     {
         if ($cut) {
-            return new self(new \ArrayIterator(iterator_to_array($this)));
+            return new self(new ArrayIterator(iterator_to_array($this)));
         }
 
         return new self($this);

@@ -11,6 +11,8 @@
 
 namespace Arnapou\PFDB\Storage;
 
+use function array_key_exists;
+
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Lock\Store\FlockStore;
@@ -33,7 +35,7 @@ class LockedStorage implements StorageInterface
 
     private function lock(string $name): void
     {
-        if (!\array_key_exists($name, $this->locks)) {
+        if (!array_key_exists($name, $this->locks)) {
             $lock = $this->lockFactory->createLock($this->lockNamePrefix . $name);
             $lock->acquire(true);
             $this->locks[$name] = $lock;

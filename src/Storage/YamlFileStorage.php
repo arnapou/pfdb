@@ -11,6 +11,7 @@
 
 namespace Arnapou\PFDB\Storage;
 
+use Arnapou\PFDB\Core\Assert;
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -30,7 +31,7 @@ class YamlFileStorage extends AbstractFileStorage
     {
         $filename = $this->getFilename($name);
         if (is_file($filename)) {
-            return Yaml::parseFile($filename, $this->parseFlags);
+            return Assert::isArray(Yaml::parseFile($filename, $this->parseFlags));
         }
 
         return [];

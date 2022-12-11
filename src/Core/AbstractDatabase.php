@@ -18,14 +18,14 @@ use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Storage\StorageInterface;
 
+use function array_key_exists;
+
 abstract class AbstractDatabase implements DatabaseInterface
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /**
-     * @var TableInterface[]
-     */
+    /** @var array<string, TableInterface> */
     private array $tables = [];
 
     public function __construct(
@@ -36,7 +36,7 @@ abstract class AbstractDatabase implements DatabaseInterface
 
     public function getTable(string $name, ?string $primaryKey = null): TableInterface
     {
-        if (!\array_key_exists($name, $this->tables)) {
+        if (!array_key_exists($name, $this->tables)) {
             $this->tables[$name] = $this->tableFactory->create($this->storage, $name);
             ksort($this->tables);
         }
@@ -67,7 +67,7 @@ abstract class AbstractDatabase implements DatabaseInterface
             throw new ReadonlyException();
         }
         $this->storage->delete($table->getName());
-        if (\array_key_exists($table->getName(), $this->tables)) {
+        if (array_key_exists($table->getName(), $this->tables)) {
             unset($this->tables[$table->getName()]);
         }
 

@@ -14,11 +14,14 @@ namespace Arnapou\PFDB\Core;
 use Arnapou\PFDB\Query\Expr\ExprInterface;
 use Arnapou\PFDB\Query\Query;
 use Countable;
+use Traversable;
 
 /**
  * Generic Table Interface.
+ *
+ * @template-extends Traversable<array-key, array>
  */
-interface TableInterface extends \Traversable, Countable
+interface TableInterface extends Traversable, Countable
 {
     /**
      * Whether the table is readonly by itself or whether it is the storage which is readonly.

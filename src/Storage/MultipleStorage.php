@@ -13,6 +13,8 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\PFDB\Exception\StorageException;
 
+use function in_array;
+
 class MultipleStorage implements StorageInterface
 {
     /**
@@ -35,7 +37,7 @@ class MultipleStorage implements StorageInterface
     public function findChild(string $name): ?StorageInterface
     {
         foreach ($this->storages as $storage) {
-            if (\in_array($name, $storage->tableNames(), true)) {
+            if (in_array($name, $storage->tableNames(), true)) {
                 return $storage;
             }
         }

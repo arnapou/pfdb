@@ -14,6 +14,7 @@ namespace Arnapou\PFDB\Factory;
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Storage\StorageInterface;
 use Arnapou\PFDB\Table;
+use Closure;
 
 /**
  * Allow to build a different key for each based on the table name.
@@ -24,7 +25,7 @@ use Arnapou\PFDB\Table;
  */
 class DynamicPKTableFactory extends AbstractTableFactory
 {
-    private \Closure $pkFactory;
+    private Closure $pkFactory;
 
     public function __construct(?callable $pkFactory = null)
     {
@@ -35,7 +36,7 @@ class DynamicPKTableFactory extends AbstractTableFactory
             : static fn (string $name): string => "id$name";
     }
 
-    public function getPkFactory(): \Closure
+    public function getPkFactory(): Closure
     {
         return $this->pkFactory;
     }

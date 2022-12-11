@@ -11,11 +11,21 @@
 
 namespace Arnapou\PFDB\Query\Expr;
 
+use Arnapou\PFDB\Core\Assert;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
 use Arnapou\PFDB\Query\Helper\ExprOperator;
 use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
+use Closure;
+
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_scalar;
+use function is_string;
 
 class ComparisonExpr implements ExprInterface
 {
@@ -23,8 +33,8 @@ class ComparisonExpr implements ExprInterface
 
     private bool $not = false;
     private readonly ExprOperator $operator;
-    private readonly \Closure $field;
-    private readonly \Closure $value;
+    private readonly Closure $field;
+    private readonly Closure $value;
 
     public function __construct(
         string|int|float|bool|null|FieldValueInterface|callable $field,
@@ -46,15 +56,15 @@ class ComparisonExpr implements ExprInterface
             throw new InvalidFieldException('The field value is not a scalar.');
         }
 
-        if (\in_array($this->operator, [ExprOperator::IN, ExprOperator::NIN], true)) {
-            if (!\is_array($value) && !\is_string($value) && !\is_int($value)
-                && !\is_float($value) && !\is_bool($value)) {
+        if (in_array($this->operator, [ExprOperator::IN, ExprOperator::NIN], true)) {
+            if (!is_array($value) && !is_string($value) && !is_int($value)
+                && !is_float($value) && !is_bool($value)) {
                 throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should be an array');
             }
 
             $bool = $this->evaluateIn($value, $field);
         } else {
-            if (\is_array($value)) {
+            if (is_array($value)) {
                 throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should NOT be an array');
             }
 
@@ -66,13 +76,13 @@ class ComparisonExpr implements ExprInterface
 
     private function evaluateOther(string|int|float|bool|null $value, mixed $field): bool
     {
-        if (!$this->caseSensitive && !\in_array(
+        if (!$this->caseSensitive && !in_array(
             $this->operator,
             [ExprOperator::LIKE, ExprOperator::NLIKE, ExprOperator::MATCH, ExprOperator::NMATCH],
             true
         )) {
-            $field = strtolower((string) $field);
-            $value = strtolower((string) $value);
+            $field = strtolower(Assert::isString($field));
+            $value = strtolower(Assert::isString($value));
         }
 
         return match ($this->operator) {
@@ -84,11 +94,11 @@ class ComparisonExpr implements ExprInterface
             ExprOperator::GTE => $field >= $value,
             ExprOperator::LT => $field < $value,
             ExprOperator::LTE => $field <= $value,
-            ExprOperator::CONTAINS => '' === $value || str_contains((string) $field, (string) $value),
-            ExprOperator::BEGINS => '' === $value || str_starts_with((string) $field, (string) $value),
-            ExprOperator::ENDS => '' === $value || str_ends_with((string) $field, (string) $value),
-            ExprOperator::LIKE, ExprOperator::MATCH => (bool) preg_match((string) $value, (string) $field),
-            ExprOperator::NLIKE, ExprOperator::NMATCH => !(bool) preg_match((string) $value, (string) $field),
+            ExprOperator::CONTAINS => '' === $value || str_contains(Assert::isString($field), (string) $value),
+            ExprOperator::BEGINS => '' === $value || str_starts_with(Assert::isString($field), (string) $value),
+            ExprOperator::ENDS => '' === $value || str_ends_with(Assert::isString($field), (string) $value),
+            ExprOperator::LIKE, ExprOperator::MATCH => (bool) preg_match((string) $value, Assert::isString($field)),
+            ExprOperator::NLIKE, ExprOperator::NMATCH => !(bool) preg_match((string) $value, Assert::isString($field)),
             default => false,
         };
     }
@@ -98,18 +108,18 @@ class ComparisonExpr implements ExprInterface
         $value = (array) $value;
 
         if (!$this->caseSensitive) {
-            $field = strtolower((string) $field);
+            $field = strtolower(Assert::isString($field));
             $value = array_map('strtolower', $value);
         }
 
         return match ($this->operator) {
-            ExprOperator::IN => \in_array($field, $value),
-            ExprOperator::NIN => !\in_array($field, $value),
+            ExprOperator::IN => in_array($field, $value),
+            ExprOperator::NIN => !in_array($field, $value),
             default => false
         };
     }
 
-    public function getField(): \Closure
+    public function getField(): Closure
     {
         return $this->field;
     }
@@ -119,7 +129,7 @@ class ComparisonExpr implements ExprInterface
         return $this->operator;
     }
 
-    public function getValue(): \Closure
+    public function getValue(): Closure
     {
         return $this->value;
     }

@@ -23,19 +23,33 @@ use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\StorageInterface;
 
+use function array_key_exists;
+
+use ArrayIterator;
+use Closure;
+
+use function count;
+
+use IteratorAggregate;
+use Throwable;
+use Traversable;
+
 /**
  * Main table class you can extend at your needs.
+ *
+ * @template-implements IteratorAggregate<int|string, array>
  */
-abstract class AbstractTable implements \IteratorAggregate, TableInterface
+abstract class AbstractTable implements IteratorAggregate, TableInterface
 {
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
+    /** @var array<int|string, array> */
     private array $data = [];
     private bool $changed = false;
     private bool $readonly = false;
     private string|int|null $lastInsertedKey = null;
-    private \Closure $primaryKeyGenerator;
+    private Closure $primaryKeyGenerator;
 
     /**
      * This constructor if final to be sure that it will be always constructed with these 3 arguments.
@@ -59,7 +73,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
      *
      * It is simple and "auto-increments" the key as an integer.
      */
-    protected function getDefaultPrimaryKeyGenerator(): \Closure
+    protected function getDefaultPrimaryKeyGenerator(): Closure
     {
         return function (): int {
             $maxKey = -1;
@@ -70,7 +84,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             }
             do {
                 ++$maxKey;
-            } while (\array_key_exists($maxKey, $this->data));
+            } while (array_key_exists($maxKey, $this->data));
 
             return $maxKey;
         };
@@ -88,7 +102,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         if ($this->primaryKey) {
             $this->data = [];
             foreach ($rows as $row) {
-                if (!\array_key_exists($this->primaryKey, $row)) {
+                if (!array_key_exists($this->primaryKey, $row)) {
                     throw new PrimaryKeyNotFoundException();
                 }
                 $this->data[$row[$this->primaryKey]] = $row;
@@ -140,7 +154,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     protected function retrieveKeyFromRow(array $value): int|string
     {
-        if (!$this->primaryKey || !\array_key_exists($this->primaryKey, $value)) {
+        if (!$this->primaryKey || !array_key_exists($this->primaryKey, $value)) {
             throw new PrimaryKeyNotFoundException();
         }
 
@@ -166,14 +180,17 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
         return $this->data[$key] ?? null;
     }
 
-    public function getIterator(): \Traversable
+    /**
+     * @return Traversable<int|string, array>
+     */
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->data);
+        return new ArrayIterator($this->data);
     }
 
     public function count(): int
     {
-        return \count($this->data);
+        return count($this->data);
     }
 
     public function getName(): string
@@ -193,7 +210,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
 
     public function delete(null|int|string $key): self
     {
-        if (null === $key || !\array_key_exists($key, $this->data)) {
+        if (null === $key || !array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
         unset($this->data[$key]);
@@ -205,7 +222,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     public function update(array $row, null|int|string $key = null): self
     {
         $key ??= $this->retrieveKeyFromRow($row);
-        if (!\array_key_exists($key, $this->data)) {
+        if (!array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
         $this->data[$key] = array_merge($this->data[$key], $row);
@@ -218,7 +235,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
     {
         try {
             $key ??= $this->retrieveKeyFromRow($row);
-            if (\array_key_exists($key, $this->data)) {
+            if (array_key_exists($key, $this->data)) {
                 throw new PrimaryKeyAlreadyExistsException();
             }
         } catch (PrimaryKeyNotFoundException) {
@@ -243,7 +260,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             $key = null;
         }
 
-        if (null !== $key && \array_key_exists($key, $this->data)) {
+        if (null !== $key && array_key_exists($key, $this->data)) {
             return $this->update($row, $key);
         }
 
@@ -258,7 +275,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             foreach ($rows as $row) {
                 $this->insert($row);
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple insert failed, data restored', 0, $exception);
@@ -277,7 +294,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
                     $this->data[$key] = $function($row, $key);
                 }
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple update failed, data restored', 0, $exception);
@@ -300,7 +317,7 @@ abstract class AbstractTable implements \IteratorAggregate, TableInterface
             foreach ($keysToDelete as $key) {
                 unset($this->data[$key]);
             }
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->data = $bkupData;
             $this->changed = $bkupChanged;
             throw new MultipleActionException('Multiple delete failed, data restored', 0, $exception);

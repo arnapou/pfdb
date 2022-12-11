@@ -11,11 +11,14 @@
 
 namespace Arnapou\PFDB\Exception;
 
-use Exception;
+use TypeError;
 
-/**
- * generic PFDB exception.
- */
-class PFDBException extends Exception
+final class Expected extends TypeError
 {
+    public function __construct(string $type, mixed $value)
+    {
+        parent::__construct(
+            "Expected $type, got a " . get_debug_type($value)
+        );
+    }
 }

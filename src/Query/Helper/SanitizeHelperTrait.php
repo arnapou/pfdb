@@ -15,12 +15,17 @@ use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
 use Arnapou\PFDB\Query\Field\Value;
+use Closure;
+
+use function is_array;
+use function is_callable;
+use function is_string;
 
 trait SanitizeHelperTrait
 {
-    private function sanitizeField(string|int|float|bool|null|array|FieldValueInterface|callable $field): \Closure
+    private function sanitizeField(string|int|float|bool|null|array|FieldValueInterface|callable $field): Closure
     {
-        if (\is_string($field)) {
+        if (is_string($field)) {
             return [new Field($field), 'value'](...);
         }
 
@@ -28,7 +33,7 @@ trait SanitizeHelperTrait
             return [$field, 'value'](...);
         }
 
-        if (\is_callable($field)) {
+        if (is_callable($field)) {
             return $field(...);
         }
 
@@ -39,13 +44,13 @@ trait SanitizeHelperTrait
         string|int|float|bool|null|array|FieldValueInterface|callable $value,
         ExprOperator $operator,
         bool $caseSensitive
-    ): \Closure {
-        if (ExprOperator::IN === $operator && !\is_array($value)) {
+    ): Closure {
+        if (ExprOperator::IN === $operator && !is_array($value)) {
             throw new InvalidValueException('Value for operator "' . $operator->value . '" should be an array');
         }
 
         if (ExprOperator::LIKE === $operator || ExprOperator::NLIKE === $operator) {
-            if (!\is_string($value)) {
+            if (!is_string($value)) {
                 throw new InvalidValueException('Value for operator "' . $operator->value . '" should be a string');
             }
 
@@ -53,7 +58,7 @@ trait SanitizeHelperTrait
         }
 
         if (ExprOperator::MATCH === $operator || ExprOperator::NMATCH === $operator) {
-            if (!\is_string($value)) {
+            if (!is_string($value)) {
                 throw new InvalidValueException('Value for operator "' . $operator->value . '" should be a string');
             }
 
@@ -64,14 +69,14 @@ trait SanitizeHelperTrait
             return [$value, 'value'](...);
         }
 
-        if (\is_callable($value)) {
+        if (is_callable($value)) {
             return $value(...);
         }
 
         return [new Value($value), 'value'](...);
     }
 
-    private function sanitizeValueLike(string $value, bool $caseSensitive): \Closure
+    private function sanitizeValueLike(string $value, bool $caseSensitive): Closure
     {
         $value = '/^' . preg_quote($value, '/') . '$/' . ($caseSensitive ? '' : 'i');
         $value = str_replace(['_', '%'], ['.', '.*'], $value);
@@ -79,7 +84,7 @@ trait SanitizeHelperTrait
         return [new Value($value), 'value'](...);
     }
 
-    private function sanitizeValueMatch(string $value, bool $caseSensitive): \Closure
+    private function sanitizeValueMatch(string $value, bool $caseSensitive): Closure
     {
         $delim = '/' === $value[0] ? '\\/' : preg_quote($value[0], '/');
         if (!preg_match('/^' . $delim . '.+' . $delim . '[imsxeADSUXJu]*$/', $value)) {
