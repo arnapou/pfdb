@@ -66,7 +66,7 @@ class Page
                     <h1>PFDB demo</h1>
                     <nav>
                         $menu
-                        <a href="https://gitlab.com/arnapou/pfdb"><i class="gitlab-icon"></i> GitLab</a>
+                        <a href="https://gitlab.com/arnapou/pfdb">GitLab</a>
                     </nav>
                 </header>
                 <main>
