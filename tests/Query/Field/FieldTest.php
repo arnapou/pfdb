@@ -18,13 +18,13 @@ use PHPUnit\Framework\TestCase;
 
 class FieldTest extends TestCase
 {
-    public function testName()
+    public function testName(): void
     {
         $field = new Field('name');
         self::assertSame('name', $field->name());
     }
 
-    public function testSelect()
+    public function testSelect(): void
     {
         $field = new Field('name');
 

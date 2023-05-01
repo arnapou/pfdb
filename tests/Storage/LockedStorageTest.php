@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class LockedStorageTest extends TestCase
 {
-    public function testMisc()
+    public function testMisc(): void
     {
         $storage = new LockedStorage(new ArrayStorage(['tata' => []]));
 

@@ -1,6 +1,9 @@
 Introduction
 ============
 
+![pipeline](https://gitlab.com/arnapou/pfdb/badges/master/pipeline.svg)
+![coverage](https://gitlab.com/arnapou/pfdb/badges/master/coverage.svg?job=coverage)
+
 What it is :
 
 * Pure POO

@@ -18,13 +18,13 @@ use PHPUnit\Framework\TestCase;
 
 class KeyFieldTest extends TestCase
 {
-    public function testName()
+    public function testName(): void
     {
         $field = new KeyField(':key');
         self::assertSame(':key', $field->name());
     }
 
-    public function testValue()
+    public function testValue(): void
     {
         $field = new KeyField(':key');
 

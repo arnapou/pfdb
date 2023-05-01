@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class DatabaseReadonlyTest extends TestCase
 {
-    public function testMisc()
+    public function testMisc(): void
     {
         $database = new DatabaseReadonly(new ArrayStorage());
         self::assertInstanceOf(ReadonlyStorage::class, $database->getStorage());

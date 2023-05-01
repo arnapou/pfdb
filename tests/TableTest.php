@@ -26,21 +26,21 @@ class TableTest extends TestCase
 {
     use ExprHelperTrait;
 
-    public function testExceptionOnDelete()
+    public function testExceptionOnDelete(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $this->expectException(ValueNotFoundException::class);
         $table->delete('42');
     }
 
-    public function testExceptionOnUpdate()
+    public function testExceptionOnUpdate(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $this->expectException(ValueNotFoundException::class);
         $table->update(['id' => 42]);
     }
 
-    public function testExceptionOnInsert()
+    public function testExceptionOnInsert(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $table->insert(['id' => 42]);
@@ -48,7 +48,7 @@ class TableTest extends TestCase
         $table->insert(['id' => 42]);
     }
 
-    public function testExceptionOnFlush()
+    public function testExceptionOnFlush(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         $table->setReadonly(true);
@@ -57,37 +57,37 @@ class TableTest extends TestCase
         $table->flush();
     }
 
-    public function testExceptionOnLoad()
+    public function testExceptionOnLoad(): void
     {
         $this->expectException(PrimaryKeyNotFoundException::class);
         $table = new Table(new ArrayStorage(['test' => [['name' => 'Joe']]]), 'test', 'id');
     }
 
-    public function testLoadWithNoPk()
+    public function testLoadWithNoPk(): void
     {
         $table = new Table(new ArrayStorage(), 'test', null);
         self::assertCount(0, $table);
     }
 
-    public function testFlushNoChange()
+    public function testFlushNoChange(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertFalse($table->flush());
     }
 
-    public function testPrimaryKey()
+    public function testPrimaryKey(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertSame('id', $table->getPrimaryKey());
     }
 
-    public function testGetData()
+    public function testGetData(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
         self::assertSame([], $table->getData());
     }
 
-    public function testInsert()
+    public function testInsert(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -104,7 +104,7 @@ class TableTest extends TestCase
         self::assertSame(42, $table->getLastInsertedKey());
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -114,7 +114,7 @@ class TableTest extends TestCase
         self::assertCount(0, $table);
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -123,7 +123,7 @@ class TableTest extends TestCase
         self::assertSame('Lea', $table->get(42)['name']);
     }
 
-    public function testUpsert()
+    public function testUpsert(): void
     {
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
@@ -137,7 +137,7 @@ class TableTest extends TestCase
         self::assertSame(43, $table->getLastInsertedKey());
     }
 
-    public function testUpdateMultiple()
+    public function testUpdateMultiple(): void
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 
@@ -163,7 +163,7 @@ class TableTest extends TestCase
         );
     }
 
-    public function testDeleteMultiple()
+    public function testDeleteMultiple(): void
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 
@@ -182,7 +182,7 @@ class TableTest extends TestCase
         );
     }
 
-    public function testClear()
+    public function testClear(): void
     {
         $table = new Table(new ArrayStorage(), 'test', null);
 

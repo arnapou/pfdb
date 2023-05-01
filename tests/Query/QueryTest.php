@@ -41,18 +41,18 @@ class QueryTest extends TestCase
         return $this->tables["_$pk"];
     }
 
-    public function testCount()
+    public function testCount(): void
     {
         self::assertCount(9, $this->table());
         self::assertCount(2, $this->table()->find($this->expr()->eq('color', 'Brown')));
     }
 
-    public function testLimit()
+    public function testLimit(): void
     {
         self::assertCount(1, $this->table()->find()->limit(0, 1));
     }
 
-    public function testFirst()
+    public function testFirst(): void
     {
         self::assertSame(
             [
@@ -65,7 +65,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testLast()
+    public function testLast(): void
     {
         self::assertSame(
             [
@@ -78,7 +78,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         self::assertSame(
             ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
@@ -86,7 +86,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testSelect()
+    public function testSelect(): void
     {
         self::assertSame(
             [5, 14, 22, 31, 45, 52, 67, 71, 89],
@@ -132,7 +132,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testSorts()
+    public function testSorts(): void
     {
         self::assertSame(
             [['id' => 14], ['id' => 22], ['id' => 52], ['id' => 89], ['id' => 5], ['id' => 67], ['id' => 71], ['id' => 45], ['id' => 31]],
@@ -160,7 +160,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testGroup()
+    public function testGroup(): void
     {
         self::assertSame(
             [['sum' => 4150, 'count' => 3], ['sum' => 5200, 'count' => 3], ['sum' => 4950, 'count' => 3]],
@@ -215,7 +215,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testForcedChaining()
+    public function testForcedChaining(): void
     {
         $filtered = $this->table()->find($this->expr()->lte('price', 1500));
         $sorted = (new Query($filtered))->sort('mark');
@@ -228,7 +228,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testImplementedChaining()
+    public function testImplementedChaining(): void
     {
         $final = $this->table()->find($this->expr()->lte('price', 1500))
             ->chain()->addSort('mark')
@@ -241,7 +241,7 @@ class QueryTest extends TestCase
         );
     }
 
-    public function testFromMethodIdenticalAsConstructor()
+    public function testFromMethodIdenticalAsConstructor(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
 
@@ -251,7 +251,7 @@ class QueryTest extends TestCase
         self::assertSame(iterator_to_array($query1), iterator_to_array($query2));
     }
 
-    public function testStandarSelectFrom()
+    public function testStandarSelectFrom(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('vehicle');
         $query = new Query(new ArrayIterator($data));

@@ -28,33 +28,33 @@ class ComparisonExprTest extends TestCase
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    public function testConstructorExceptionOperator()
+    public function testConstructorExceptionOperator(): void
     {
         $this->expectException(InvalidOperatorException::class);
         $expr = new ComparisonExpr('field', '(unknown)', 42);
         $expr(['field' => 42], null);
     }
 
-    public function testContainsEmptyShouldNotRaiseAnException()
+    public function testContainsEmptyShouldNotRaiseAnException(): void
     {
         $expr = new ComparisonExpr('field', '*', '');
         $expr(['field' => 42], null);
         self::assertTrue(true);
     }
 
-    public function testSwapFieldAndValue()
+    public function testSwapFieldAndValue(): void
     {
         $expr = new ComparisonExpr(42, '=', new Field('field'));
         self::assertTrue($expr(['field' => 42], null));
     }
 
-    public function testRegexpNonCaseSensitive()
+    public function testRegexpNonCaseSensitive(): void
     {
         $expr = new ComparisonExpr('field', 'regexp', '/^[a-z]+$/', false);
         self::assertTrue($expr(['field' => 'ABCDEF'], null));
     }
 
-    public function testGetField()
+    public function testGetField(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         self::assertIsCallable($expr->getField());
@@ -64,7 +64,7 @@ class ComparisonExprTest extends TestCase
         self::assertSame(42, call_user_func($expr->getField(), ['we dont care the value']));
     }
 
-    public function testGetValue()
+    public function testGetValue(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         self::assertIsCallable($expr->getValue());
@@ -77,7 +77,7 @@ class ComparisonExprTest extends TestCase
         self::assertSame(42, call_user_func($expr->getValue(), ['field' => 66], null));
     }
 
-    public function testIsCaseSensitive()
+    public function testIsCaseSensitive(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
         self::assertSame(false, $expr->isCaseSensitive());

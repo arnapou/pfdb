@@ -33,7 +33,7 @@ class ParentFieldTest extends TestCase
         return new Table($storage, 'color', 'id');
     }
 
-    public function testGetters()
+    public function testGetters(): void
     {
         $foreignTable = self::foreignTable();
         $field = new ParentField('fkid', $foreignTable, 'name');
@@ -58,7 +58,7 @@ class ParentFieldTest extends TestCase
         self::assertNull($field->getParentField());
     }
 
-    public function testParentFieldIsAString()
+    public function testParentFieldIsAString(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
 
@@ -66,7 +66,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color' => 'Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testParentFieldIsNull()
+    public function testParentFieldIsNull(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), null);
 
@@ -74,7 +74,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color_id' => 2, 'color_name' => 'Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testParentFieldIsACallable()
+    public function testParentFieldIsACallable(): void
     {
         $field = new ParentField(
             'fkid',
@@ -88,7 +88,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color' => '2:Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testSelectAlias()
+    public function testSelectAlias(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
         self::assertSame(self::foreignTable()->getName(), $field->getSelectAlias());
@@ -97,14 +97,14 @@ class ParentFieldTest extends TestCase
         self::assertSame('foo_bar', $field->getSelectAlias());
     }
 
-    public function testInconsistentNoParentFieldAndNoSelectAll()
+    public function testInconsistentNoParentFieldAndNoSelectAll(): void
     {
         $field = new ParentField('fkid', self::foreignTable());
         $this->expectException(InvalidFieldException::class);
         $field->selectAll(false);
     }
 
-    public function testUnknownForeignKey()
+    public function testUnknownForeignKey(): void
     {
         $field = new ParentField('unknown_fkid', self::foreignTable(), 'name');
         self::assertSame(null, $field->value(['toy' => 'balloon', 'fkid' => 2]));
@@ -115,7 +115,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color' => null], $field->select(['toy' => 'balloon', 'fkid' => 99]));
     }
 
-    public function testSelectAllAndNotSelectArray()
+    public function testSelectAllAndNotSelectArray(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
         $field->selectAll(true)->selectArray(false);
@@ -123,7 +123,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color_id' => 2, 'color_name' => 'Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testSelectAllAndSelectArray()
+    public function testSelectAllAndSelectArray(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
         $field->selectAll(true)->selectArray(true);
@@ -131,7 +131,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color' => ['id' => 2, 'name' => 'Green']], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testNotSelectAllAndNotSelectArray()
+    public function testNotSelectAllAndNotSelectArray(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
         $field->selectAll(false)->selectArray(false);
@@ -139,7 +139,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['color' => 'Green'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testNotSelectAllAndSelectArray()
+    public function testNotSelectAllAndSelectArray(): void
     {
         $field = new ParentField(
             'fkid',
@@ -153,7 +153,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['row' => ['id' => 2, 'name' => 'Green'], 'key' => 2], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testNotSelectAllAndSelectArrayRaisesExceptionIfParentFieldIsNotASpecificCallable()
+    public function testNotSelectAllAndSelectArrayRaisesExceptionIfParentFieldIsNotASpecificCallable(): void
     {
         $field = new ParentField('fkid', self::foreignTable(), 'name');
         $field->selectAll(false)->selectArray(true);
@@ -162,7 +162,7 @@ class ParentFieldTest extends TestCase
         self::assertSame(['row' => ['id' => 2, 'name' => 'Green'], 'key' => 2], $field->select(['toy' => 'balloon', 'fkid' => 2]));
     }
 
-    public function testParentRowInValueMethod()
+    public function testParentRowInValueMethod(): void
     {
         $field = new ParentField(
             'fkid',
@@ -191,7 +191,7 @@ class ParentFieldTest extends TestCase
         self::assertSame('The color is Blue', $field->value(['toy' => 'balloon', '10times_fkid' => 20]));
     }
 
-    public function testParentRowInSelectMethod()
+    public function testParentRowInSelectMethod(): void
     {
         $field = new ParentField(
             'fkid',
