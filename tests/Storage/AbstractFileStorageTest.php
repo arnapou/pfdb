@@ -20,37 +20,37 @@ use PHPUnit\Framework\TestCase;
 
 class AbstractFileStorageTest extends TestCase
 {
-    public function testDirectoryNotExists()
+    public function testDirectoryNotExists(): void
     {
         $this->expectException(DirectoryNotFoundException::class);
         new PhpFileStorage('/does/not/exists/or/very/not/lucky');
     }
 
-    public function testInvalidTablename()
+    public function testInvalidTablename(): void
     {
         $this->expectException(InvalidTableNameException::class);
         PhpFileStorageTest::pfdbStorage()->load('bad:characters@');
     }
 
-    public function testInvalidPrefixTablename()
+    public function testInvalidPrefixTablename(): void
     {
         $this->expectException(InvalidTableNameException::class);
         new PhpFileStorage(sys_get_temp_dir(), 'bad:characters@');
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $storage = new PhpFileStorage(__DIR__ . DIRECTORY_SEPARATOR);
 
         self::assertSame(__DIR__, $storage->getPath());
     }
 
-    public function testTablenames()
+    public function testTablenames(): void
     {
         self::assertSame(['vehicle'], YamlFileStorageTest::pfdbStorage()->tableNames());
     }
 
-    public function testReadonlyFolder()
+    public function testReadonlyFolder(): void
     {
         $dir = sys_get_temp_dir() . '/test_' . md5(uniqid('', true) . mt_rand(0, PHP_INT_MAX));
         if (!is_dir($dir)) {

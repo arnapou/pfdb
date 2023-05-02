@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectIteratorTest extends TestCase
 {
-    public function testSelectAllFields()
+    public function testSelectAllFields(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new ArrayIterator($data), ['*']);
@@ -32,7 +32,7 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function testNoSelectFields()
+    public function testNoSelectFields(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new ArrayIterator($data), []);
@@ -43,7 +43,7 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function testBasicFields()
+    public function testBasicFields(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new ArrayIterator($data), ['name']);
@@ -54,7 +54,7 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function testSelectInterfaceFields()
+    public function testSelectInterfaceFields(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(new ArrayIterator($data), [new Field('id')]);
@@ -65,7 +65,7 @@ class SelectIteratorTest extends TestCase
         );
     }
 
-    public function testCallbackFields()
+    public function testCallbackFields(): void
     {
         $data = PhpFileStorageTest::pfdbStorage()->load('color');
         $select = new SelectIterator(

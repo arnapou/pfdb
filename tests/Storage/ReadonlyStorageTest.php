@@ -51,21 +51,21 @@ class ReadonlyStorageTest extends TestCase
         };
     }
 
-    public function testExceptionOnSave()
+    public function testExceptionOnSave(): void
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
         $this->expectException(ReadonlyException::class);
         $storage->save('we_dont_care', []);
     }
 
-    public function testExceptionOnDelete()
+    public function testExceptionOnDelete(): void
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
         $this->expectException(ReadonlyException::class);
         $storage->delete('we_dont_care');
     }
 
-    public function testForCoverage()
+    public function testForCoverage(): void
     {
         $storage = new ReadonlyStorage(self::fakeStorage(), false);
 

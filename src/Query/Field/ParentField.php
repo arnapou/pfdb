@@ -175,7 +175,11 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         }
 
         if (null === $this->parentField) {
+            // @codeCoverageIgnoreStart
+            // Theoretically not reachable because of logic inside selectAll().
+            // This exists for static analysis purpose only.
             return [$this->selectAlias => null];
+            // @codeCoverageIgnoreEnd
         }
 
         if ($this->selectArray) {

@@ -1,5 +1,23 @@
+PFDB - Php File Database
+====================
+
+![pipeline](https://gitlab.com/arnapou/pfdb/badges/main/pipeline.svg)
+![coverage](https://gitlab.com/arnapou/pfdb/badges/main/coverage.svg?job=coverage)
+
+This library allow you to query flat file "databases".
+
+Installation
+--------------------
+
+```bash
+composer require arnapou/json-parser
+```
+
+packagist 👉️ [arnapou/json-parser](https://packagist.org/packages/arnapou/json-parser)<br>
+demo 👉️ [pfdb.arnapou.net](https://pfdb.arnapou.net/)
+
 Introduction
-============
+--------------------
 
 What it is :
 
@@ -26,16 +44,15 @@ Implemented files formats :
 * YAML
 * PHP
 
-_Note that is is really easy to make your own implementation_
+_Note that it is really easy to make your own implementation_
 
 
 There is not a lot of documentation because I did this project for me and I guess a few examples and reading the code should be enough for developers.
 Examples are the best documentation you will find.
 
-A few examples : https://pfdb.arnapou.net/
 
 Conditioning
-========
+--------------------
 ```php
 $storage = new \Arnapou\PFDB\Storage\PhpFileStorage($somePath);
 $database = new \Arnapou\PFDB\Database($storage);
@@ -57,7 +74,7 @@ foreach($iterator as $key => $row) {
 ```
     
 Extending Expressions
-=================
+--------------------
 Class :
 
 ```php
@@ -98,7 +115,7 @@ foreach($table->find($expr) as $key => $row) {
 ```
 
 Use PFDB Iterator out of storage context
-========================================
+--------------------
 
 if you just want to select, filter, sort, limit, group, order any iterator 
 
@@ -120,19 +137,20 @@ foreach($query as $key => $row) {
 ```
 
 Build your own storage
-======================
+--------------------
 You want to use CSV file instead of php dumped array ?
 
 Easy : extends or implements your own storage and use it to load/store/delete data.
 
 Look at the existing storages and write your own.
 
-### Changelog versions techniques
+Changelog versions
+--------------------
 
-| Date       | Tag, Branche | Php | 
-|------------|--------------|-----|
-| 11/12/2022 | 5.x, master  | 8.2 |
-| 30/01/2022 | 4.x          | 8.1 |
-| 15/05/2021 | 3.x          | 8.0 |
-| 27/02/2019 | 2.x          | 7.2 |
-| 07/11/2013 | 1.x          | 5.4 |
+| Start      | Tag, Branch | Php | 
+|------------|-------------|-----|
+| 11/12/2022 | 5.x, main   | 8.2 |
+| 30/01/2022 | 4.x         | 8.1 |
+| 15/05/2021 | 3.x         | 8.0 |
+| 27/02/2019 | 2.x         | 7.2 |
+| 07/11/2013 | 1.x         | 5.4 |

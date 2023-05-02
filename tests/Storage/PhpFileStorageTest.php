@@ -48,7 +48,7 @@ class PhpFileStorageTest extends TestCase
         return $storage;
     }
 
-    public function testCount()
+    public function testCount(): void
     {
         $storage = self::pfdbStorage();
 
@@ -56,28 +56,28 @@ class PhpFileStorageTest extends TestCase
         self::assertSame(0, count($storage->load('not_exists')));
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         $storage = $this->fileStorage(false);
         $storage->save(self::TMP_NAME, []);
         self::assertTrue(true);
     }
 
-    public function testSaveReadonlyRaisesException()
+    public function testSaveReadonlyRaisesException(): void
     {
         $storage = $this->fileStorage(true);
         $this->expectException(ReadonlyException::class);
         $storage->save(self::TMP_NAME, []);
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $storage = $this->fileStorage(false);
         $storage->delete(self::TMP_NAME);
         self::assertTrue(true);
     }
 
-    public function testDeleteReadonlyRaisesException()
+    public function testDeleteReadonlyRaisesException(): void
     {
         $storage = $this->fileStorage(true);
         $this->expectException(ReadonlyException::class);

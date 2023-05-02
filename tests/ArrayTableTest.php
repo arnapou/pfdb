@@ -17,11 +17,13 @@ use Arnapou\PFDB\ArrayTable;
 use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Table;
+use Error;
 use PHPUnit\Framework\TestCase;
 
 class ArrayTableTest extends TestCase
 {
     use ExprHelperTrait;
+
     public const DATA = [
         ['id' => 1, 'name' => 'Red'],
         ['id' => 2, 'name' => 'Green'],
@@ -30,7 +32,7 @@ class ArrayTableTest extends TestCase
         ['id' => 5, 'name' => 'Brown'],
     ];
 
-    public function testGetters()
+    public function testGetters(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -49,7 +51,7 @@ class ArrayTableTest extends TestCase
         self::assertCount(0, $table);
     }
 
-    public function testDelete()
+    public function testDelete(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -62,7 +64,7 @@ class ArrayTableTest extends TestCase
         self::assertCount(1, $table);
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -80,7 +82,7 @@ class ArrayTableTest extends TestCase
         self::assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
     }
 
-    public function testInsert()
+    public function testInsert(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -96,7 +98,7 @@ class ArrayTableTest extends TestCase
         self::assertSame(['Purple', 'White'], array_column(iterator_to_array($table->find($this->expr()->gt('id', 20))), 'name'));
     }
 
-    public function testInsertMultipleWithExceptionShouldNotChangeData()
+    public function testInsertMultipleWithExceptionShouldNotChangeData(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -109,7 +111,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function testUpdateMultipleWithExceptionShouldNotChangeData()
+    public function testUpdateMultipleWithExceptionShouldNotChangeData(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -118,9 +120,7 @@ class ArrayTableTest extends TestCase
             $table->updateMultiple(
                 $this->expr()->bool(true),
                 function ($row, $key) {
-                    $row['name'] .= $row['not_existsing_field_will_cause_error'];
-
-                    return $row;
+                    throw new Error('Test error');
                 }
             );
             $this->fail('a MultipleActionException should have been raised for the multiple update');
@@ -129,7 +129,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function testDeleteMultipleWithExceptionShouldNotChangeData()
+    public function testDeleteMultipleWithExceptionShouldNotChangeData(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 
@@ -138,7 +138,7 @@ class ArrayTableTest extends TestCase
             $table->deleteMultiple(
                 $this->expr()->func(
                     function ($row, $key) {
-                        return 42 == $row['not_existsing_field_will_cause_error'];
+                        throw new Error('Test error');
                     }
                 )
             );
@@ -148,7 +148,7 @@ class ArrayTableTest extends TestCase
         }
     }
 
-    public function testUpsert()
+    public function testUpsert(): void
     {
         $table = new ArrayTable(self::DATA, 'id');
 

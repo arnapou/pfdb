@@ -36,7 +36,7 @@ class CachedFileStorageTest extends TestCase
         return $storage;
     }
 
-    public function testGetters()
+    public function testGetters(): void
     {
         $storage = $this->fileStorage();
 
@@ -46,7 +46,7 @@ class CachedFileStorageTest extends TestCase
         self::assertIsArray($storage->tableNames());
     }
 
-    public function testSaveAndDelete()
+    public function testSaveAndDelete(): void
     {
         $storage = $this->fileStorage();
         $storage->save(self::TMP_NAME, ArrayTableTest::DATA);
@@ -62,7 +62,7 @@ class CachedFileStorageTest extends TestCase
         self::assertFalse(is_file($storage->innerStorage()->getFilename(self::TMP_NAME)));
     }
 
-    public function testSourceNotExistsWithRemainingCacheReturnEmpty()
+    public function testSourceNotExistsWithRemainingCacheReturnEmpty(): void
     {
         $storage = $this->fileStorage();
         $storage->cacheStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
@@ -70,14 +70,14 @@ class CachedFileStorageTest extends TestCase
         self::assertCount(0, $storage->load(self::TMP_NAME));
     }
 
-    public function testSourceExistsWithCacheNotPresent()
+    public function testSourceExistsWithCacheNotPresent(): void
     {
         $storage = $this->fileStorage();
         $storage->innerStorage()->save(self::TMP_NAME, ArrayTableTest::DATA);
         self::assertCount(5, $storage->load(self::TMP_NAME));
     }
 
-    public function testCacheLoadedInsteadOfSource()
+    public function testCacheLoadedInsteadOfSource(): void
     {
         $storage = $this->fileStorage();
         $DATA = ArrayTableTest::DATA;

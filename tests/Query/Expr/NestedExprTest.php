@@ -23,7 +23,7 @@ class NestedExprTest extends TestCase
 {
     use ExprHelperTrait;
 
-    public function testAnd()
+    public function testAnd(): void
     {
         $expr = $this->expr()->and(
             $this->expr()->eq('name', 'Joe'),
@@ -35,7 +35,7 @@ class NestedExprTest extends TestCase
         self::assertFalse(call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
     }
 
-    public function testOr()
+    public function testOr(): void
     {
         $expr = $this->expr()->or(
             $this->expr()->eq('name', 'Joe'),
@@ -48,7 +48,7 @@ class NestedExprTest extends TestCase
         self::assertFalse(call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
-    public function testNot()
+    public function testNot(): void
     {
         $expr = $this->expr()->not(
             $this->expr()->or(
@@ -63,7 +63,7 @@ class NestedExprTest extends TestCase
         self::assertTrue(call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
-    public function testChildrenCount()
+    public function testChildrenCount(): void
     {
         self::assertCount(
             3,

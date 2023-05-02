@@ -32,14 +32,14 @@ class DatabaseTest extends TestCase
         return $db;
     }
 
-    public function testTables()
+    public function testTables(): void
     {
         $db = self::pfdbDatabase();
 
         self::assertCount(4, $db->getTables());
     }
 
-    public function testDropException()
+    public function testDropException(): void
     {
         $db = self::pfdbDatabase();
         $table = $db->getTable('vehicle');

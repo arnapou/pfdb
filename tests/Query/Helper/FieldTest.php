@@ -23,17 +23,17 @@ class FieldTest extends TestCase
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    public function testNormalField()
+    public function testNormalField(): void
     {
         self::assertSame('test', $this->fields()->normal('test')->name());
     }
 
-    public function testKeyField()
+    public function testKeyField(): void
     {
         self::assertSame('test', $this->fields()->key('test')->name());
     }
 
-    public function testParentField()
+    public function testParentField(): void
     {
         self::assertIsCallable($this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name());
     }

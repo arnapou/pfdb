@@ -1,7 +1,8 @@
 {
     "name": "arnapou/pfdb",
-    "description": "Arnapou pfdb",
+    "description": "Library - Flat file storage with query features.",
     "license": "MIT",
+    "type": "library",
     "authors": [
         {
             "name": "Arnaud Buathier",
@@ -11,19 +12,20 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "5.x-dev"
+            "dev-main": "5.x-dev"
         }
     },
     "require": {
-        "php": ">=8.2",
+        "php": "^8.2 || ^8.3",
         "symfony/yaml": "^5.4",
         "symfony/lock": "^5.4"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": ">=3.13",
-        "phpstan/phpstan": ">=1.9",
-        "phpunit/phpunit": ">=9.5",
-        "vimeo/psalm": ">=5.1"
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.0",
+        "phpunit/php-code-coverage": "^10.0",
+        "vimeo/psalm": "^5.7"
     },
     "autoload": {
         "psr-4": {

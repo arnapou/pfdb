@@ -18,13 +18,13 @@ use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\InvalidTableClassException;
 use Arnapou\PFDB\Storage\StorageInterface;
 use Arnapou\PFDB\Table;
-use TypeError;
 
 /**
  * All the children classes of this abstract work with an AbstractTable class.
  */
 abstract class AbstractTableFactory implements TableFactoryInterface
 {
+    /** @var class-string<AbstractTable> */
     private string $tableClass;
 
     public function __construct()
@@ -32,29 +32,26 @@ abstract class AbstractTableFactory implements TableFactoryInterface
         $this->tableClass = Table::class;
     }
 
+    /**
+     * @return class-string<AbstractTable>
+     */
     public function getTableClass(): string
     {
         return $this->tableClass;
     }
 
+    /**
+     * @param class-string $tableClass
+     */
     public function setTableClass(string $tableClass): self
     {
-        $this->checkTableClass($tableClass);
+        if (!is_subclass_of($tableClass, AbstractTable::class)) {
+            throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
+        }
+
         $this->tableClass = $tableClass;
 
         return $this;
-    }
-
-    public function isTableClassValid(string $tableClass): bool
-    {
-        return is_subclass_of($tableClass, AbstractTable::class);
-    }
-
-    public function checkTableClass(string $tableClass): void
-    {
-        if (!$this->isTableClassValid($tableClass)) {
-            throw new InvalidTableClassException('This factory works with classes child of built-in AbstractTable');
-        }
     }
 
     protected function createInstance(
@@ -62,13 +59,8 @@ abstract class AbstractTableFactory implements TableFactoryInterface
         string $name,
         ?string $primaryKey
     ): TableInterface {
-        $this->checkTableClass($class = $this->getTableClass());
+        $tableClass = $this->getTableClass();
 
-        $table = new $class($storage, $name, $primaryKey);
-        if (!$table instanceof TableInterface) {
-            throw new TypeError('The table is not a valid TableInterface object');
-        }
-
-        return $table;
+        return new $tableClass($storage, $name, $primaryKey);
     }
 }

@@ -61,7 +61,10 @@ class ComparisonExpr implements ExprInterface
         if (in_array($this->operator, [ExprOperator::IN, ExprOperator::NIN], true)) {
             if (!is_array($value) && !is_string($value) && !is_int($value)
                 && !is_float($value) && !is_bool($value)) {
+                // @codeCoverageIgnoreStart
+                // Theoretically not reachable because of sanitizer in constructor.
                 throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should be an array');
+                // @codeCoverageIgnoreEnd
             }
 
             $bool = $this->evaluateIn($value, $field);

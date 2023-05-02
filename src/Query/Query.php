@@ -208,9 +208,9 @@ class Query implements IteratorAggregate, Countable
         return $iterator;
     }
 
-    public function chain(bool $cut = true): self
+    public function chain(bool $detach = true): self
     {
-        if ($cut) {
+        if ($detach) {
             return new self(new ArrayIterator(iterator_to_array($this)));
         }
 
