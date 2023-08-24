@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Query\Iterator;
 
-use Arnapou\PFDB\Core\Assert;
+use Arnapou\Ensure\Enforce;
+use Arnapou\Ensure\Ensure;
 
 use function array_key_exists;
 
@@ -54,7 +55,7 @@ class GroupIterator implements IteratorAggregate
     {
         $grouped = [];
         foreach ($this->iterator as $key => $row) {
-            $groupKey = $this->getGroupKey(Assert::isArray($row), Assert::isString($key));
+            $groupKey = $this->getGroupKey(Ensure::array($row), Enforce::string($key));
             $value = array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
             $grouped[$groupKey] = ($this->reduce)($value, $row, $key);
         }

@@ -77,17 +77,17 @@ interface TableInterface extends Traversable, Countable
     /**
      * Update one row based on a key.
      */
-    public function update(array $row, null|int|string $key = null): self;
+    public function update(array $row, int|string $key = null): self;
 
     /**
      * Insert one row based on a key.
      */
-    public function insert(array $row, null|int|string $key = null): self;
+    public function insert(array $row, int|string $key = null): self;
 
     /**
      * Upsert one row based on a key.
      */
-    public function upsert(array $row, null|int|string $key = null): self;
+    public function upsert(array $row, int|string $key = null): self;
 
     /**
      * Insert multiple rows selected with an expression.

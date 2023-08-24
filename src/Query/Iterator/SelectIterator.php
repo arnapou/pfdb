@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Query\Iterator;
 
-use Arnapou\PFDB\Core\Assert;
+use Arnapou\Ensure\Enforce;
+use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\Query\Field\FieldSelectInterface;
 
 use function is_callable;
@@ -37,10 +38,10 @@ class SelectIterator implements Iterator
 
     public function current(): array
     {
-        $row = Assert::isArray($this->iterator->current());
+        $row = Ensure::array($this->iterator->current());
         $key = $this->iterator->key();
         if (!$this->fields) {
-            return Assert::isArray($row);
+            return Ensure::array($row);
         }
 
         $toMerge = [];
@@ -49,11 +50,11 @@ class SelectIterator implements Iterator
             if ('*' === $field) {
                 $toMerge[] = $row;
             } elseif ($field instanceof FieldSelectInterface) {
-                $toMerge[] = $field->select(Assert::isArray($row), Assert::isIntStringNull($key));
+                $toMerge[] = $field->select(Ensure::array($row), Ensure::nullableArrayKey($key));
             } elseif (is_callable($field)) {
                 $toMerge[] = (array) $field($row, $key);
             } else {
-                $str = Assert::isString($field);
+                $str = Enforce::string($field);
                 $data[$str] = $row[$str] ?? null;
             }
         }

@@ -35,7 +35,7 @@ class FuncExpr implements ExprInterface
         $this->callable = $callable(...);
     }
 
-    public function __invoke(array $row, null|int|string $key = null): bool
+    public function __invoke(array $row, int|string $key = null): bool
     {
         return (bool) ($this->callable)($row, $key);
     }

@@ -83,21 +83,21 @@ class TableDecorator implements IteratorAggregate, TableInterface
         return $this->table->getLastInsertedKey();
     }
 
-    public function update(array $row, null|int|string $key = null): self
+    public function update(array $row, int|string $key = null): self
     {
         $this->table->update($row, $key);
 
         return $this;
     }
 
-    public function insert(array $row, null|int|string $key = null): self
+    public function insert(array $row, int|string $key = null): self
     {
         $this->table->insert($row, $key);
 
         return $this;
     }
 
-    public function upsert(array $row, null|int|string $key = null): self
+    public function upsert(array $row, int|string $key = null): self
     {
         $this->table->upsert($row, $key);
 

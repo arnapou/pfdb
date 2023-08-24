@@ -29,7 +29,7 @@ class LockedStorage implements StorageInterface
 
     public function __construct(
         private readonly StorageInterface $storage,
-        ?LockFactory $lockFactory = null,
+        LockFactory $lockFactory = null,
         private readonly string $lockNamePrefix = 'pfdb.'
     ) {
         $this->lockFactory = $lockFactory ?: new LockFactory(new FlockStore());

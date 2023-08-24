@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Query\Expr;
 
-use Arnapou\PFDB\Core\Assert;
+use Arnapou\Ensure\Enforce;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
@@ -49,7 +49,7 @@ class ComparisonExpr implements ExprInterface
         $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
-    public function __invoke(array $row, null|int|string $key = null): bool
+    public function __invoke(array $row, int|string $key = null): bool
     {
         $field = ($this->field)($row, $key);
         $value = ($this->value)($row, $key);
@@ -86,8 +86,8 @@ class ComparisonExpr implements ExprInterface
             [ExprOperator::LIKE, ExprOperator::NLIKE, ExprOperator::MATCH, ExprOperator::NMATCH],
             true
         )) {
-            $field = strtolower(Assert::isString($field));
-            $value = strtolower(Assert::isString($value));
+            $field = strtolower(Enforce::string($field));
+            $value = strtolower(Enforce::string($value));
         }
 
         return match ($this->operator) {
@@ -99,11 +99,11 @@ class ComparisonExpr implements ExprInterface
             ExprOperator::GTE => $field >= $value,
             ExprOperator::LT => $field < $value,
             ExprOperator::LTE => $field <= $value,
-            ExprOperator::CONTAINS => '' === $value || str_contains(Assert::isString($field), (string) $value),
-            ExprOperator::BEGINS => '' === $value || str_starts_with(Assert::isString($field), (string) $value),
-            ExprOperator::ENDS => '' === $value || str_ends_with(Assert::isString($field), (string) $value),
-            ExprOperator::LIKE, ExprOperator::MATCH => (bool) preg_match((string) $value, Assert::isString($field)),
-            ExprOperator::NLIKE, ExprOperator::NMATCH => !(bool) preg_match((string) $value, Assert::isString($field)),
+            ExprOperator::CONTAINS => '' === $value || str_contains(Enforce::string($field), (string) $value),
+            ExprOperator::BEGINS => '' === $value || str_starts_with(Enforce::string($field), (string) $value),
+            ExprOperator::ENDS => '' === $value || str_ends_with(Enforce::string($field), (string) $value),
+            ExprOperator::LIKE, ExprOperator::MATCH => (bool) preg_match(Enforce::nonEmptyString($value), Enforce::string($field)),
+            ExprOperator::NLIKE, ExprOperator::NMATCH => !preg_match(Enforce::nonEmptyString($value), Enforce::string($field)),
             default => false,
         };
     }
@@ -113,7 +113,7 @@ class ComparisonExpr implements ExprInterface
         $value = (array) $value;
 
         if (!$this->caseSensitive) {
-            $field = strtolower(Assert::isString($field));
+            $field = strtolower(Enforce::string($field));
             $value = array_map('strtolower', $value);
         }
 

@@ -22,7 +22,7 @@ class Value implements FieldValueInterface
     {
     }
 
-    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
+    public function value(array $row, string|int $key = null): string|int|float|bool|null|array
     {
         return $this->value;
     }

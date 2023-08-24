@@ -221,7 +221,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function update(array $row, null|int|string $key = null): self
+    public function update(array $row, int|string $key = null): self
     {
         $key ??= $this->retrieveKeyFromRow($row);
         if (!array_key_exists($key, $this->data)) {
@@ -233,7 +233,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function insert(array $row, null|int|string $key = null): self
+    public function insert(array $row, int|string $key = null): self
     {
         try {
             $key ??= $this->retrieveKeyFromRow($row);
@@ -254,7 +254,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this;
     }
 
-    public function upsert(array $row, null|int|string $key = null): self
+    public function upsert(array $row, int|string $key = null): self
     {
         try {
             $key ??= $this->retrieveKeyFromRow($row);

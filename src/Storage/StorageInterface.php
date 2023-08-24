@@ -16,7 +16,7 @@ namespace Arnapou\PFDB\Storage;
 interface StorageInterface
 {
     /**
-     * Used by Table object when it is instanciated.
+     * Used by Table object when it is instantiated.
      */
     public function load(string $name): array;
 

@@ -68,9 +68,9 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
     public function __construct(
         string|FieldValueInterface|callable $name,
         private readonly TableInterface $parentTable,
-        string|FieldValueInterface|callable|null $parentField = null,
-        ?string $selectAlias = null,
-        ?callable $parentRow = null
+        string|FieldValueInterface|callable $parentField = null,
+        string $selectAlias = null,
+        callable $parentRow = null
     ) {
         $this->name = $this->sanitizeField($name);
         $this->parentField = null === $parentField ? null : $this->sanitizeField($parentField);
@@ -126,7 +126,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return $this->parentTable;
     }
 
-    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array
+    public function value(array $row, string|int $key = null): string|int|float|bool|null|array
     {
         if ($this->parentField) {
             $value = ($this->name)($row, $key);
@@ -145,7 +145,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         return null;
     }
 
-    public function select(array $row, string|int|null $key = null): array
+    public function select(array $row, string|int $key = null): array
     {
         $value = ($this->name)($row, $key);
 

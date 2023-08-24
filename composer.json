@@ -18,14 +18,15 @@
     "require": {
         "php": "~8.2.0",
         "symfony/yaml": "^5.4",
-        "symfony/lock": "^5.4"
+        "symfony/lock": "^5.4",
+        "arnapou/ensure": "^1.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.14",
+        "friendsofphp/php-cs-fixer": "^3.23",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.0",
-        "phpunit/php-code-coverage": "^10.0",
-        "vimeo/psalm": "^5.7"
+        "phpunit/phpunit": "^10.3",
+        "phpunit/php-code-coverage": "^10.1",
+        "vimeo/psalm": "^5.15"
     },
     "autoload": {
         "psr-4": {

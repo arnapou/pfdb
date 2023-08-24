@@ -31,7 +31,7 @@ class QueryTest extends TestCase
     /** @var Table[] */
     protected $tables = [];
 
-    protected function table(?string $pk = null): Table
+    protected function table(string $pk = null): Table
     {
         if (!isset($this->table["_$pk"])) {
             $this->tables["_$pk"] = DatabaseTest::pfdbDatabase()->getTable('vehicle', $pk);

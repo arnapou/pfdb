@@ -18,5 +18,5 @@ namespace Arnapou\PFDB\Query\Field;
  */
 interface FieldValueInterface
 {
-    public function value(array $row, string|int|null $key = null): string|int|float|bool|null|array;
+    public function value(array $row, string|int $key = null): string|int|float|bool|null|array;
 }
