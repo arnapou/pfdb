@@ -19,9 +19,7 @@ use function in_array;
 
 class MultipleStorage implements StorageInterface
 {
-    /**
-     * @var StorageInterface[]
-     */
+    /** @var StorageInterface[] */
     private array $storages;
 
     public function __construct(StorageInterface ...$storages)

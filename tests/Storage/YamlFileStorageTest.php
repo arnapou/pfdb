@@ -48,15 +48,6 @@ class YamlFileStorageTest extends TestCase
         return $storage;
     }
 
-    public function testGetterAndSetters(): void
-    {
-        $storage = self::pfdbStorage();
-        self::assertSame(100, $storage->setParseFlags(100)->getParseFlags());
-        self::assertSame(200, $storage->setDumpFlags(200)->getDumpFlags());
-        self::assertSame(300, $storage->setDumpIndent(300)->getDumpIndent());
-        self::assertSame(400, $storage->setDumpInline(400)->getDumpInline());
-    }
-
     public function testCount(): void
     {
         $storage = self::pfdbStorage();

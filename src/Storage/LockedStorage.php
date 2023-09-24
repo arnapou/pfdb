@@ -13,34 +13,34 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Storage;
 
-use function array_key_exists;
+use Arnapou\PFDB\Exception\StorageException;
+use Arnapou\PFDB\Lock\Decorator\WaitingLocker;
+use Arnapou\PFDB\Lock\FileLocker;
+use Arnapou\PFDB\Lock\Locker;
 
-use Symfony\Component\Lock\LockFactory;
-use Symfony\Component\Lock\LockInterface;
-use Symfony\Component\Lock\Store\FlockStore;
+use function array_key_exists;
 
 class LockedStorage implements StorageInterface
 {
-    private readonly LockFactory $lockFactory;
-    /**
-     * @var array<string, LockInterface>
-     */
-    private array $locks = [];
+    /** @var array<string, true> */
+    private array $locked = [];
 
     public function __construct(
         private readonly StorageInterface $storage,
-        LockFactory $lockFactory = null,
-        private readonly string $lockNamePrefix = 'pfdb.'
+        private readonly Locker $locker = new FileLocker(),
     ) {
-        $this->lockFactory = $lockFactory ?: new LockFactory(new FlockStore());
     }
 
     private function lock(string $name): void
     {
-        if (!array_key_exists($name, $this->locks)) {
-            $lock = $this->lockFactory->createLock($this->lockNamePrefix . $name);
-            $lock->acquire(true);
-            $this->locks[$name] = $lock;
+        if (!array_key_exists($name, $this->locked)) {
+            $waitingLocker = new WaitingLocker($this->locker, 20);
+
+            if (!$waitingLocker->acquire($name)) {
+                throw new StorageException('Unable to lock the file within 20 seconds.');
+            }
+
+            $this->locked[$name] = true;
         }
     }
 
@@ -51,10 +51,10 @@ class LockedStorage implements StorageInterface
 
     public function releaseLocks(): void
     {
-        foreach ($this->locks as $lock) {
-            $lock->release();
+        foreach ($this->locked as $name => $value) {
+            $this->locker->release($name);
         }
-        $this->locks = [];
+        $this->locked = [];
     }
 
     public function load(string $name): array

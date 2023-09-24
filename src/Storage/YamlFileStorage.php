@@ -15,15 +15,14 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\Exception\ReadonlyException;
+
+use function function_exists;
+
+use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlFileStorage extends AbstractFileStorage
 {
-    private int $dumpInline = 2;
-    private int $dumpIndent = 2;
-    private int $dumpFlags = Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK;
-    private int $parseFlags = 0;
-
     protected function getExtension(): string
     {
         return 'yaml';
@@ -33,10 +32,30 @@ class YamlFileStorage extends AbstractFileStorage
     {
         $filename = $this->getFilename($name);
         if (is_file($filename)) {
-            return Ensure::array(Yaml::parseFile($filename, $this->parseFlags));
+            return $this->yamlParse($filename);
         }
 
         return [];
+    }
+
+    protected function yamlParse(string $filename): array
+    {
+        return Ensure::array(
+            match (true) {
+                function_exists('yaml_parse_file') => yaml_parse_file($filename),
+                class_exists(Yaml::class) => Yaml::parseFile($filename),
+                default => throw new RuntimeException('You need the yaml extension or symfony/yaml to use this YamlFileStorage'),
+            }
+        );
+    }
+
+    protected function yamlDump(array $data): string
+    {
+        return match (true) {
+            function_exists('yaml_emit') => yaml_emit($data),
+            class_exists(Yaml::class) => Yaml::dump($data, indent: 2, flags: Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK),
+            default => throw new RuntimeException('You need the yaml extension or symfony/yaml to use this YamlFileStorage'),
+        };
     }
 
     public function save(string $name, array $data): void
@@ -44,58 +63,6 @@ class YamlFileStorage extends AbstractFileStorage
         if ($this->isReadonly($name)) {
             throw new ReadonlyException();
         }
-        file_put_contents(
-            $this->getFilename($name),
-            Yaml::dump($data, $this->dumpInline, $this->dumpIndent, $this->dumpFlags),
-            LOCK_EX
-        );
-    }
-
-    public function getDumpInline(): int
-    {
-        return $this->dumpInline;
-    }
-
-    public function setDumpInline(int $inline): self
-    {
-        $this->dumpInline = $inline;
-
-        return $this;
-    }
-
-    public function getDumpIndent(): int
-    {
-        return $this->dumpIndent;
-    }
-
-    public function setDumpIndent(int $indent): self
-    {
-        $this->dumpIndent = $indent;
-
-        return $this;
-    }
-
-    public function getDumpFlags(): int
-    {
-        return $this->dumpFlags;
-    }
-
-    public function setDumpFlags(int $flags): self
-    {
-        $this->dumpFlags = $flags;
-
-        return $this;
-    }
-
-    public function getParseFlags(): int
-    {
-        return $this->parseFlags;
-    }
-
-    public function setParseFlags(int $flags): self
-    {
-        $this->parseFlags = $flags;
-
-        return $this;
+        file_put_contents($this->getFilename($name), $this->yamlDump($data), LOCK_EX);
     }
 }

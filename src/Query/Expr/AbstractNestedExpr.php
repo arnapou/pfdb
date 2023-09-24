@@ -18,9 +18,7 @@ namespace Arnapou\PFDB\Query\Expr;
  */
 abstract class AbstractNestedExpr implements NestedExprInterface
 {
-    /**
-     * @var ExprInterface[]
-     */
+    /** @var ExprInterface[] */
     protected array $exprs = [];
 
     public function __construct(ExprInterface ...$exprs)

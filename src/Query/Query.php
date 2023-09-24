@@ -48,9 +48,7 @@ class Query implements IteratorAggregate, Countable
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /**
-     * @var array<FieldSelectInterface|string|Stringable|callable>
-     */
+    /** @var array<FieldSelectInterface|string|Stringable|callable> */
     private array $select = [];
     private ?Iterator $from = null;
     private NestedExprInterface $where;
