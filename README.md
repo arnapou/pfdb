@@ -10,10 +10,10 @@ Installation
 --------------------
 
 ```bash
-composer require arnapou/json-parser
+composer require arnapou/pfdb
 ```
 
-packagist 👉️ [arnapou/json-parser](https://packagist.org/packages/arnapou/json-parser)<br>
+packagist 👉️ [arnapou/pfdb](https://packagist.org/packages/arnapou/pfdb)<br>
 demo 👉️ [pfdb.arnapou.net](https://pfdb.arnapou.net/)
 
 Introduction
