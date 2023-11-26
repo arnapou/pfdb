@@ -3,7 +3,7 @@ stages:
   - quality
 
 code-style: &quality
-  image: 'registry.gitlab.com/arnapou/docker/php:8.2-dev'
+  image: 'registry.gitlab.com/arnapou/docker/php:8.3-dev'
   stage: quality
   only:
     - main

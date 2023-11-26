@@ -28,7 +28,7 @@ use Arnapou\PFDB\Storage\ArrayStorage;
  */
 final class ArrayTable extends TableDecorator
 {
-    final public const NAME = 'array';
+    final public const string NAME = 'array';
 
     public function __construct(
         array $data,
