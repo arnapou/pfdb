@@ -28,7 +28,6 @@
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.4",
         "phpunit/php-code-coverage": "^10.1",
-        "vimeo/psalm": "^5.16",
         "symfony/yaml": "^5.4",
         "ext-redis": "*",
         "ext-yaml": "*"

@@ -6,7 +6,6 @@ help:
 all: install cs sa test coverage ## code style + analysis + test
 
 sa: ## static analysis
-	vendor/bin/psalm --no-cache
 	vendor/bin/phpstan
 
 test: ## phpunit
@@ -27,3 +26,6 @@ install: ## composer install
 
 update: ## composer update
 	composer update --no-interaction --no-progress --optimize-autoloader
+
+build: ## build docker image
+	docker build -t registry.gitlab.com/arnapou/pfdb:latest .

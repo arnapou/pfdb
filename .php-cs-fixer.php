@@ -55,8 +55,6 @@ return (new PhpCsFixer\Config())
             'global_namespace_import' => ['import_classes' => true, 'import_functions' => true, 'import_constants' => true],
             'header_comment' => ['location' => 'after_declare_strict', 'header' => $header],
             'phpdoc_line_span' => ['const' => 'single', 'method' => 'multi', 'property' => 'single'],
-            // 👇 override @Symfony - fait péter les phpdoc @psalm
-            'phpdoc_to_comment' => false,
         ]
     )
     ->setFinder($finder);

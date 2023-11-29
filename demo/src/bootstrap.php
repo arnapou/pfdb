@@ -14,7 +14,7 @@ declare(strict_types=1);
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Query\Helper\ExprHelper;
 
-include __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 require __DIR__ . '/Page.php';
 require __DIR__ . '/Parsedown.php';
 require __DIR__ . '/Response.php';
