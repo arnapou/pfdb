@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+
+  app:
+    user: 1000:1000
+    volumes:
+      - ./:/app
+
+  # Use the container below for development tools (composer, ...)
+  # docker exec -it -u www-data pfdb-dev bash
+  dev:
+    container_name: pfdb-dev
+    image: registry.gitlab.com/arnapou/docker/php:8.3-dev
+    user: 1000:1000
+    volumes:
+      - ./:/app
