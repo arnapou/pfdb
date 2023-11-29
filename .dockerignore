@@ -6,7 +6,7 @@
 .php-cs-fixer.*
 .php_cs.cache
 .phpunit*.cache
-compose.override.yaml
+compose.override.*yaml
 compose.yaml
 doc
 Dockerfile
