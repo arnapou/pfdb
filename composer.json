@@ -17,16 +17,17 @@
     },
     "require": {
         "php": "~8.3.0",
-        "arnapou/ensure": "^2.0"
+        "arnapou/ensure": "^2.0",
+        "arnapou/lock": "^1.0"
     },
     "suggest": {
         "ext-yaml": "If you need YAML file storage. Alternative: symfony/yaml.",
         "symfony/yaml": "If you need YAML file storage. Alternative: ext-yaml."
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.40",
+        "friendsofphp/php-cs-fixer": "^3.46",
         "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.4",
+        "phpunit/phpunit": "^10.5",
         "phpunit/php-code-coverage": "^10.1",
         "symfony/yaml": "^5.4",
         "ext-redis": "*",

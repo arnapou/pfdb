@@ -35,7 +35,7 @@ What it is _not_ :
 When to use : 
 
 * You absolutely want flat files
-* More read than write (even if you can use lock strategy thanks to `symfony/lock`)
+* More read than write (even if you can use a lock strategy)
 * Lightweight data
 * Simple files like configs or small data (less than a few thousands items)
 

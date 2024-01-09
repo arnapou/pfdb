@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Storage;
 
+use Arnapou\Lock\Adapter\FileLocker;
+use Arnapou\Lock\Decorator\WaitingLocker;
+use Arnapou\Lock\Locker;
 use Arnapou\PFDB\Exception\StorageException;
-use Arnapou\PFDB\Lock\Decorator\WaitingLocker;
-use Arnapou\PFDB\Lock\FileLocker;
-use Arnapou\PFDB\Lock\Locker;
 
 use function array_key_exists;
 
