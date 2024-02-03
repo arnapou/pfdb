@@ -29,7 +29,7 @@ class DynamicPKTableFactory extends AbstractTableFactory
 {
     private Closure $pkFactory;
 
-    public function __construct(callable $pkFactory = null)
+    public function __construct(?callable $pkFactory = null)
     {
         parent::__construct();
 

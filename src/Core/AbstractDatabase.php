@@ -36,7 +36,7 @@ abstract class AbstractDatabase implements DatabaseInterface
     ) {
     }
 
-    public function getTable(string $name, string $primaryKey = null): TableInterface
+    public function getTable(string $name, ?string $primaryKey = null): TableInterface
     {
         if (!array_key_exists($name, $this->tables)) {
             $this->tables[$name] = $this->tableFactory->create($this->storage, $name);

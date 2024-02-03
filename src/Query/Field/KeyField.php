@@ -22,7 +22,7 @@ class KeyField implements FieldValueInterface, FieldSelectInterface
 {
     private readonly string $name;
 
-    public function __construct(string $name = null)
+    public function __construct(?string $name = null)
     {
         $this->name = $name ?? ':key';
     }
@@ -32,12 +32,12 @@ class KeyField implements FieldValueInterface, FieldSelectInterface
         return $this->name;
     }
 
-    public function value(array $row, string|int $key = null): string|int|float|bool|null|array
+    public function value(array $row, string|int|null $key = null): string|int|float|bool|array|null
     {
         return $key;
     }
 
-    public function select(array $row, string|int $key = null): array
+    public function select(array $row, string|int|null $key = null): array
     {
         return [$this->name => $key];
     }

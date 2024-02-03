@@ -25,7 +25,7 @@ use function is_string;
 
 trait SanitizeHelperTrait
 {
-    private function sanitizeField(string|int|float|bool|null|array|FieldValueInterface|callable $field): Closure
+    private function sanitizeField(string|int|float|bool|array|FieldValueInterface|callable|null $field): Closure
     {
         if (is_string($field)) {
             return [new Field($field), 'value'](...);
@@ -43,7 +43,7 @@ trait SanitizeHelperTrait
     }
 
     private function sanitizeValue(
-        string|int|float|bool|null|array|FieldValueInterface|callable $value,
+        string|int|float|bool|array|FieldValueInterface|callable|null $value,
         ExprOperator $operator,
         bool $caseSensitive
     ): Closure {

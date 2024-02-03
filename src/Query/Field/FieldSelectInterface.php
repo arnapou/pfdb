@@ -27,5 +27,5 @@ interface FieldSelectInterface
      *
      * @return array<string, string|int|float|bool|array|null>
      */
-    public function select(array $row, string|int $key = null): array;
+    public function select(array $row, string|int|null $key = null): array;
 }

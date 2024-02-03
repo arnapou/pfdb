@@ -42,7 +42,7 @@ class ExprHelper
     public function comparison(
         string|FieldValueInterface|callable $field,
         string $operator,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, $operator, $value, $caseSensitive);
@@ -50,7 +50,7 @@ class ExprHelper
 
     public function eq(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true,
         bool $strict = true
     ): ComparisonExpr {
@@ -59,7 +59,7 @@ class ExprHelper
 
     public function neq(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true,
         bool $strict = true
     ): ComparisonExpr {
@@ -68,7 +68,7 @@ class ExprHelper
 
     public function gt(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, ExprOperator::GT, $value, $caseSensitive);
@@ -76,7 +76,7 @@ class ExprHelper
 
     public function gte(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, ExprOperator::GTE, $value, $caseSensitive);
@@ -84,7 +84,7 @@ class ExprHelper
 
     public function lt(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, ExprOperator::LT, $value, $caseSensitive);
@@ -92,7 +92,7 @@ class ExprHelper
 
     public function lte(
         string|FieldValueInterface|callable $field,
-        string|int|float|bool|null|FieldValueInterface|callable $value,
+        string|int|float|bool|FieldValueInterface|callable|null $value,
         bool $caseSensitive = true
     ): ComparisonExpr {
         return new ComparisonExpr($field, ExprOperator::LTE, $value, $caseSensitive);

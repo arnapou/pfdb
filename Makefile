@@ -22,10 +22,10 @@ cs: ## code style
 	PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --using-cache=no
 
 install: ## composer install
-	composer install --no-interaction --no-progress --optimize-autoloader --quiet
+	composer install --no-interaction --no-progress --optimize-autoloader --prefer-dist --quiet
 
 update: ## composer update
-	composer update --no-interaction --no-progress --optimize-autoloader
+	composer update --no-interaction --no-progress --optimize-autoloader --prefer-dist
 
 build: ## build docker image
 	docker build -t registry.gitlab.com/arnapou/pfdb:latest .

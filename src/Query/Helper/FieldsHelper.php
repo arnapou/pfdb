@@ -27,12 +27,12 @@ class FieldsHelper
         return new Field($name);
     }
 
-    public function value(string|int|float|bool|null|array $value): Value
+    public function value(string|int|float|bool|array|null $value): Value
     {
         return new Value($value);
     }
 
-    public function key(string $name = null): KeyField
+    public function key(?string $name = null): KeyField
     {
         return new KeyField($name);
     }
@@ -40,9 +40,9 @@ class FieldsHelper
     public function parent(
         string $name,
         TableInterface $table,
-        string|FieldValueInterface|callable $parentField = null,
-        string $selectAlias = null,
-        callable $parentRow = null
+        string|FieldValueInterface|callable|null $parentField = null,
+        ?string $selectAlias = null,
+        ?callable $parentRow = null
     ): ParentField {
         return new ParentField($name, $table, $parentField, $selectAlias, $parentRow);
     }

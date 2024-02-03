@@ -39,9 +39,9 @@ class ComparisonExpr implements ExprInterface
     private readonly Closure $value;
 
     public function __construct(
-        string|int|float|bool|null|FieldValueInterface|callable $field,
+        string|int|float|bool|FieldValueInterface|callable|null $field,
         string|ExprOperator $operator,
-        string|int|float|bool|null|array|FieldValueInterface|callable $value,
+        string|int|float|bool|array|FieldValueInterface|callable|null $value,
         private readonly bool $caseSensitive = true
     ) {
         $this->operator = ExprOperator::sanitize($operator, $this->not);
@@ -49,7 +49,7 @@ class ComparisonExpr implements ExprInterface
         $this->value = $this->sanitizeValue($value, $this->operator, $this->caseSensitive);
     }
 
-    public function __invoke(array $row, int|string $key = null): bool
+    public function __invoke(array $row, int|string|null $key = null): bool
     {
         $field = ($this->field)($row, $key);
         $value = ($this->value)($row, $key);

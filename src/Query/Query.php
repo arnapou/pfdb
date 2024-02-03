@@ -56,7 +56,7 @@ class Query implements IteratorAggregate, Countable
     private array $limit = [0, PHP_INT_MAX];
     private array $sorts = [];
 
-    public function __construct(Traversable $from = null)
+    public function __construct(?Traversable $from = null)
     {
         $this->where = new AndExpr();
         if ($from) {
@@ -134,7 +134,7 @@ class Query implements IteratorAggregate, Countable
     /**
      * @return $this
      */
-    public function group(array|string $fields, array $initial, callable $reduce, callable $onfinish = null): self
+    public function group(array|string $fields, array $initial, callable $reduce, ?callable $onfinish = null): self
     {
         $this->group = [$fields, $initial, $reduce, $onfinish];
 

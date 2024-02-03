@@ -22,7 +22,7 @@ class BoolExpr implements ExprInterface
     {
     }
 
-    public function __invoke(array $row, int|string $key = null): bool
+    public function __invoke(array $row, int|string|null $key = null): bool
     {
         return $this->bool;
     }
