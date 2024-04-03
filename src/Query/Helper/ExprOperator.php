@@ -46,7 +46,7 @@ enum ExprOperator: string
 
         [$operator, $not] = self::sanitizeString($operator);
 
-        if ($enum = self::tryFrom($operator)) {
+        if (null !== ($enum = self::tryFrom($operator))) {
             return $enum;
         }
 

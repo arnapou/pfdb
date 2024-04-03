@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Arnapou Weather package.
+ * This file is part of the Arnapou PFDB package.
  *
  * (c) Arnaud Buathier <arnaud@arnapou.net>
  *
@@ -31,7 +31,9 @@ class Page
         }
     }
 
-    /** @return Generator<string,string> */
+    /**
+     * @return Generator<string,string>
+     */
     public function menu(): Generator
     {
         yield from self::LIST;

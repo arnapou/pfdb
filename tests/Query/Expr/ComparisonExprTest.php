@@ -21,9 +21,6 @@ use Arnapou\PFDB\Query\Field\Field;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\ExprOperator;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
-
-use function call_user_func;
-
 use PHPUnit\Framework\TestCase;
 
 class ComparisonExprTest extends TestCase
@@ -70,7 +67,7 @@ class ComparisonExprTest extends TestCase
     {
         $expr = new ComparisonExpr('field', '*', '');
         $expr(['field' => 42], null);
-        self::assertTrue(true);
+        $this->expectNotToPerformAssertions();
     }
 
     public function testSwapFieldAndValue(): void
@@ -88,29 +85,27 @@ class ComparisonExprTest extends TestCase
     public function testGetField(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        self::assertIsCallable($expr->getField());
-        self::assertSame(66, call_user_func($expr->getField(), ['field' => 66], null));
+        self::assertSame(66, \call_user_func($expr->getField(), ['field' => 66], null));
 
         $expr = new ComparisonExpr(42, '=', new Field('field'), false);
-        self::assertSame(42, call_user_func($expr->getField(), ['we dont care the value']));
+        self::assertSame(42, \call_user_func($expr->getField(), ['we dont care the value']));
     }
 
     public function testGetValue(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        self::assertIsCallable($expr->getValue());
-        self::assertSame(42, call_user_func($expr->getValue(), ['we dont care the value']));
+        self::assertSame(42, \call_user_func($expr->getValue(), ['we dont care the value']));
 
         $expr = new ComparisonExpr(42, '=', new Field('field'), false);
-        self::assertSame(66, call_user_func($expr->getValue(), ['field' => 66], null));
+        self::assertSame(66, \call_user_func($expr->getValue(), ['field' => 66], null));
 
         $expr = new ComparisonExpr('field', '=', $this->fields()->value(42), false);
-        self::assertSame(42, call_user_func($expr->getValue(), ['field' => 66], null));
+        self::assertSame(42, \call_user_func($expr->getValue(), ['field' => 66], null));
     }
 
     public function testIsCaseSensitive(): void
     {
         $expr = new ComparisonExpr('field', '=', 42, false);
-        self::assertSame(false, $expr->isCaseSensitive());
+        self::assertFalse($expr->isCaseSensitive());
     }
 }

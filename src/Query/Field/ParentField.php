@@ -20,8 +20,6 @@ use Arnapou\PFDB\Query\Helper\SanitizeHelperTrait;
 use Arnapou\PFDB\Table;
 use Closure;
 
-use function is_array;
-
 /**
  * Complex "parent" field which returns
  * - value : the parent matching field
@@ -74,7 +72,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
     ) {
         $this->name = $this->sanitizeField($name);
         $this->parentField = null === $parentField ? null : $this->sanitizeField($parentField);
-        $this->selectAlias = $selectAlias ?: $parentTable->getName();
+        $this->selectAlias = (null === $selectAlias || '' === $selectAlias) ? $parentTable->getName() : $selectAlias;
         $this->selectAll = null === $parentField;
         $this->parentRow = null === $parentRow ? null : $parentRow(...);
     }
@@ -128,7 +126,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 
     public function value(array $row, string|int|null $key = null): string|int|float|bool|array|null
     {
-        if ($this->parentField) {
+        if (null !== $this->parentField) {
             $value = ($this->name)($row, $key);
             if (null !== $value) {
                 $parentRow = null === $this->parentRow
@@ -167,8 +165,8 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
             }
 
             $values = [];
-            foreach ($parentRow as $k => $value) {
-                $values[$this->selectAlias . '_' . $k] = $value;
+            foreach ($parentRow as $k => $v) {
+                $values[$this->selectAlias . '_' . $k] = $v;
             }
 
             return $values;
@@ -184,7 +182,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
 
         if ($this->selectArray) {
             $value = ($this->parentField)($parentRow, $value);
-            if (!is_array($value)) {
+            if (!\is_array($value)) {
                 throw new InvalidCallableException('The specified callable for the parent field should return an array :(');
             }
 

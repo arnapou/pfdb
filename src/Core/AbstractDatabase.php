@@ -13,14 +13,13 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Core;
 
+use Arnapou\Ensure\Enforce;
 use Arnapou\PFDB\Exception\ReadonlyException;
 use Arnapou\PFDB\Factory\StaticPKTableFactory;
 use Arnapou\PFDB\Factory\TableFactoryInterface;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Storage\StorageInterface;
-
-use function array_key_exists;
 
 abstract class AbstractDatabase implements DatabaseInterface
 {
@@ -38,7 +37,7 @@ abstract class AbstractDatabase implements DatabaseInterface
 
     public function getTable(string $name, ?string $primaryKey = null): TableInterface
     {
-        if (!array_key_exists($name, $this->tables)) {
+        if (!\array_key_exists($name, $this->tables)) {
             $this->tables[$name] = $this->tableFactory->create($this->storage, $name);
             ksort($this->tables);
         }
@@ -60,7 +59,7 @@ abstract class AbstractDatabase implements DatabaseInterface
         $names = $this->storage->tableNames();
         sort($names);
 
-        return $names;
+        return Enforce::arrayOfString($names);
     }
 
     public function dropTable(TableInterface $table): self
@@ -69,7 +68,7 @@ abstract class AbstractDatabase implements DatabaseInterface
             throw new ReadonlyException();
         }
         $this->storage->delete($table->getName());
-        if (array_key_exists($table->getName(), $this->tables)) {
+        if (\array_key_exists($table->getName(), $this->tables)) {
             unset($this->tables[$table->getName()]);
         }
 

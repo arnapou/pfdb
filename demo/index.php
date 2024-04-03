@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Arnapou Weather package.
+ * This file is part of the Arnapou PFDB package.
  *
  * (c) Arnaud Buathier <arnaud@arnapou.net>
  *

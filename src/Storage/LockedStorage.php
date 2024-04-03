@@ -18,8 +18,6 @@ use Arnapou\Lock\Decorator\WaitingLocker;
 use Arnapou\Lock\Locker;
 use Arnapou\PFDB\Exception\StorageException;
 
-use function array_key_exists;
-
 class LockedStorage implements StorageInterface
 {
     /** @var array<string, true> */
@@ -33,7 +31,7 @@ class LockedStorage implements StorageInterface
 
     private function lock(string $name): void
     {
-        if (!array_key_exists($name, $this->locked)) {
+        if (!\array_key_exists($name, $this->locked)) {
             $waitingLocker = new WaitingLocker($this->locker, 20);
 
             if (!$waitingLocker->acquire($name)) {

@@ -13,25 +13,23 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Tests\Query;
 
+use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\NotDefinedFromIteratorException;
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Query;
-use Arnapou\PFDB\Table;
 use Arnapou\PFDB\Tests\DatabaseTest;
 use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
 use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 
-use function strval;
-
 class QueryTest extends TestCase
 {
     use ExprHelperTrait;
 
-    /** @var Table[] */
-    protected $tables = [];
+    /** @var TableInterface[] */
+    protected array $tables = [];
 
-    protected function table(?string $pk = null): Table
+    protected function table(?string $pk = null): TableInterface
     {
         if (!isset($this->table["_$pk"])) {
             $this->tables["_$pk"] = DatabaseTest::pfdbDatabase()->getTable('vehicle', $pk);
@@ -101,7 +99,7 @@ class QueryTest extends TestCase
                 iterator_to_array(
                     $this->table()->find()->select(
                         function ($row) {
-                            return ['ID' => strval(10 * $row['id'])];
+                            return ['ID' => \strval(10 * $row['id'])];
                         }
                     )
                 )
@@ -123,7 +121,7 @@ class QueryTest extends TestCase
                 iterator_to_array(
                     $this->table()->find()->select(
                         function ($row) {
-                            return ['ID' => strval(10 * $row['id'])];
+                            return ['ID' => \strval(10 * $row['id'])];
                         }
                     )->addSelect('mark')
                 )
@@ -295,6 +293,7 @@ class QueryTest extends TestCase
 
         self::assertTrue($iterated);
         self::assertCount(2, $chain);
+        /** @phpstan-ignore-next-line The call to count may re-iterate the iterator */
         self::assertTrue($iterated);
     }
 
@@ -312,6 +311,7 @@ class QueryTest extends TestCase
 
         self::assertFalse($iterated);
         self::assertCount(2, $chain);
+        /** @phpstan-ignore-next-line The call to count may re-iterate the iterator */
         self::assertTrue($iterated);
     }
 }

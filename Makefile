@@ -3,19 +3,16 @@
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: install cs sa test coverage ## code style + analysis + test
+all: install cs sa test ## code style + analysis + test
 
 sa: ## static analysis
 	vendor/bin/phpstan
 
-test: ## phpunit
-	vendor/bin/phpunit --testdox --colors=always
-
-coverage: ## phpunit coverage
+test: ## phpunit with coverage
 ifdef CI_JOB_NAME
-	vendor/bin/phpunit --colors=never --coverage-text
+	vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
 else
-	vendor/bin/phpunit --colors=always --coverage-text --coverage-html tests/coverage
+	vendor/bin/phpunit --testdox --coverage-text --coverage-html tests/coverage --colors=always
 endif
 
 cs: ## code style
@@ -26,6 +23,3 @@ install: ## composer install
 
 update: ## composer update
 	composer update --no-interaction --no-progress --optimize-autoloader --prefer-dist
-
-build: ## build docker image
-	docker build -t registry.gitlab.com/arnapou/pfdb:latest .

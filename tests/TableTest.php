@@ -120,7 +120,7 @@ class TableTest extends TestCase
 
         $table->insert(['name' => 'Joe'], 42);
         $table->update(['name' => 'Lea'], 42);
-        self::assertSame('Lea', $table->get(42)['name']);
+        self::assertSame('Lea', $table->get(42)['name'] ?? null);
     }
 
     public function testUpsert(): void
@@ -128,7 +128,7 @@ class TableTest extends TestCase
         $table = new Table(new ArrayStorage(), 'test', 'id');
 
         $table->upsert(['name' => 'Joe'], 42);
-        self::assertSame('Joe', $table->get(42)['name']);
+        self::assertSame('Joe', $table->get(42)['name'] ?? null);
 
         $table->upsert(['name' => 'Lea'], 42);
         self::assertSame('Lea', $table->get(42)['name']);

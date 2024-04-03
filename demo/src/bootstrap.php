@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Arnapou Weather package.
+ * This file is part of the Arnapou PFDB package.
  *
  * (c) Arnaud Buathier <arnaud@arnapou.net>
  *
@@ -75,14 +75,15 @@ function sortkeys(mixed $a, mixed $b): int
 function getFunctionSourceCode(Closure $func): string
 {
     $reflection = new ReflectionFunction($func);
-    if (empty($filename = $reflection->getFileName())) {
+    $filename = $reflection->getFileName();
+    if (false === $filename || '' === $filename) {
         return '';
     }
-    $start = $reflection->getStartLine() - 1;
-    $end = $reflection->getEndLine() - 1;
+    $start = (int) $reflection->getStartLine() - 1;
+    $end = (int) $reflection->getEndLine() - 1;
 
-    /** @var array<string> $lines */
-    $lines = \array_slice(file($filename) ?: [], $start, $end - $start);
+    $lines = file($filename);
+    $lines = \array_slice(\is_array($lines) ? $lines : [], $start, $end - $start);
 
     $firstLine = (string) preg_replace('!(static)\s+fn\s.*?=>\s*!', '', $lines[0] ?? '');
     $indent = \strlen($firstLine) - \strlen(ltrim($firstLine));

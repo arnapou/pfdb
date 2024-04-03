@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class DynamicPKTableFactoryTest extends TestCase
 {
-    public function testNoCallable()
+    public function testNoCallable(): void
     {
         $factory = new DynamicPKTableFactory();
 
@@ -28,7 +28,7 @@ class DynamicPKTableFactoryTest extends TestCase
         self::assertSame('table', $table->getName());
     }
 
-    public function testWithCallable()
+    public function testWithCallable(): void
     {
         $pkFactory = function ($name) {
             return $name . '_pk';

@@ -26,12 +26,14 @@ test:
   <<: *quality
   script:
     - sudo -Eu www-data make test
-
-coverage:
-  <<: *quality
-  script:
-    - sudo -Eu www-data make coverage
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  artifacts:
+    when: always
+    reports:
+      junit: phpunit-report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: phpunit-coverage.xml
 
 build:
   image: docker:24

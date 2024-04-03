@@ -15,8 +15,6 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\PFDB\Exception\StorageException;
 
-use function in_array;
-
 class MultipleStorage implements StorageInterface
 {
     /** @var StorageInterface[] */
@@ -37,7 +35,7 @@ class MultipleStorage implements StorageInterface
     public function findChild(string $name): ?StorageInterface
     {
         foreach ($this->storages as $storage) {
-            if (in_array($name, $storage->tableNames(), true)) {
+            if (\in_array($name, $storage->tableNames(), true)) {
                 return $storage;
             }
         }
@@ -49,12 +47,12 @@ class MultipleStorage implements StorageInterface
     {
         $storage = $this->findChild($name);
 
-        return $storage ? $storage->load($name) : [];
+        return null === $storage ? [] : $storage->load($name);
     }
 
     public function save(string $name, array $data): void
     {
-        if ($storage = $this->findChild($name)) {
+        if (null !== ($storage = $this->findChild($name))) {
             $storage->save($name, $data);
         } elseif (isset($this->storages[0])) {
             $this->storages[0]->save($name, $data);
@@ -67,12 +65,12 @@ class MultipleStorage implements StorageInterface
     {
         $storage = $this->findChild($name);
 
-        return $storage && $storage->isReadonly($name);
+        return null !== $storage && $storage->isReadonly($name);
     }
 
     public function delete(string $name): void
     {
-        if ($storage = $this->findChild($name)) {
+        if (null !== ($storage = $this->findChild($name))) {
             $storage->delete($name);
             unset($this->storages[$name]);
         } else {

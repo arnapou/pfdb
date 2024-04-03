@@ -148,6 +148,9 @@ class ExprHelper
         return new ComparisonExpr($field, ExprOperator::NMATCH, $regexp);
     }
 
+    /**
+     * @param array<mixed> $value
+     */
     public function in(
         string|FieldValueInterface|callable $field,
         array $value,
@@ -156,6 +159,9 @@ class ExprHelper
         return new ComparisonExpr($field, ExprOperator::IN, $value, $caseSensitive);
     }
 
+    /**
+     * @param array<mixed> $value
+     */
     public function notin(
         string|FieldValueInterface|callable $field,
         array $value,

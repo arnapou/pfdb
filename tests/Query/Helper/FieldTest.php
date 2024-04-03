@@ -35,6 +35,8 @@ class FieldTest extends TestCase
 
     public function testParentField(): void
     {
-        self::assertIsCallable($this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name());
+        // we just want to test the chain which must not break.
+        $this->fields()->parent('fkid', ParentFieldTest::foreignTable(), null)->name();
+        $this->expectNotToPerformAssertions();
     }
 }

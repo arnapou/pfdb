@@ -25,13 +25,7 @@ use Arnapou\PFDB\Query\Iterator\SelectIterator;
 use Arnapou\PFDB\Query\Iterator\SortIterator;
 use ArrayIterator;
 use CallbackFilterIterator;
-
-use function count;
-
 use Countable;
-
-use function is_callable;
-
 use Iterator;
 use IteratorAggregate;
 use IteratorIterator;
@@ -41,7 +35,9 @@ use Stringable;
 use Traversable;
 
 /**
- * @template-implements IteratorAggregate<int|string, array>
+ * @phpstan-import-type _Sorts from SortIterator
+ *
+ * @template-implements IteratorAggregate<array-key, array<mixed>>
  */
 class Query implements IteratorAggregate, Countable
 {
@@ -52,14 +48,20 @@ class Query implements IteratorAggregate, Countable
     private array $select = [];
     private ?Iterator $from = null;
     private NestedExprInterface $where;
+    /** @var array{}|array{array<string|callable>|string, array<mixed>, callable, ?callable} */
     private array $group = [];
+    /** @var array{int, int} */
     private array $limit = [0, PHP_INT_MAX];
+    /** @var _Sorts */
     private array $sorts = [];
 
+    /**
+     * @param Traversable<array-key, array<mixed>>|null $from
+     */
     public function __construct(?Traversable $from = null)
     {
         $this->where = new AndExpr();
-        if ($from) {
+        if (null !== $from) {
             $this->from($from);
         }
     }
@@ -69,7 +71,7 @@ class Query implements IteratorAggregate, Countable
      */
     public function where(ExprInterface ...$exprs): self
     {
-        if (1 === count($exprs) && $exprs[0] instanceof NestedExprInterface) {
+        if (1 === \count($exprs) && $exprs[0] instanceof NestedExprInterface) {
             $this->where = $exprs[0];
         } else {
             $this->where->clear();
@@ -96,7 +98,7 @@ class Query implements IteratorAggregate, Countable
      */
     public function select(FieldSelectInterface|string|Stringable|callable ...$fields): self
     {
-        if (empty($fields)) {
+        if ([] === $fields) {
             $this->select = [];
         } else {
             $this->select = $fields;
@@ -118,6 +120,8 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * @param Traversable<array-key, array<mixed>> $iterator
+     *
      * @return $this
      */
     public function from(Traversable $iterator): self
@@ -132,6 +136,9 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * @param array<string|callable>|string $fields
+     * @param array<mixed>                  $initial
+     *
      * @return $this
      */
     public function group(array|string $fields, array $initial, callable $reduce, ?callable $onfinish = null): self
@@ -152,7 +159,7 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * @param array ...$sorts
+     * @param callable|string|array{string, string} ...$sorts
      *
      * @return $this
      */
@@ -168,10 +175,10 @@ class Query implements IteratorAggregate, Countable
      */
     public function addSort(string|callable $field, string $order = 'ASC'): self
     {
-        if (is_callable($field)) {
+        if (\is_callable($field)) {
             $this->sorts[] = $field;
         } else {
-            $this->sorts[] = [$field, strtoupper($order ?: 'ASC')];
+            $this->sorts[] = [$field, strtoupper('' === $order ? 'ASC' : $order)];
         }
 
         return $this;
@@ -186,10 +193,10 @@ class Query implements IteratorAggregate, Countable
         $iterator = $this->where->isEmpty()
             ? $this->from
             : new CallbackFilterIterator($this->from, $this->where);
-        if ($this->group) {
+        if ([] !== $this->group) {
             $iterator = new IteratorIterator(new GroupIterator($iterator, ...$this->group));
         }
-        if ($this->sorts) {
+        if ([] !== $this->sorts) {
             $iterator = new IteratorIterator(new SortIterator($iterator, $this->sorts));
         }
         if ($this->limit !== [0, PHP_INT_MAX]) {
@@ -199,7 +206,7 @@ class Query implements IteratorAggregate, Countable
                 $this->limit[1]
             );
         }
-        if ($this->select) {
+        if ([] !== $this->select) {
             $iterator = new SelectIterator($iterator, $this->select);
         }
 
@@ -215,6 +222,9 @@ class Query implements IteratorAggregate, Countable
         return new self($this);
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function first(): ?array
     {
         $first = null;
@@ -226,6 +236,9 @@ class Query implements IteratorAggregate, Countable
         return $first;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function last(): ?array
     {
         $last = null;

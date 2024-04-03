@@ -11,12 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Query\Expr;
+namespace Arnapou\PFDB\Tests;
 
-interface ExprInterface
+class TestUtils
 {
-    /**
-     * @param array<mixed> $row
-     */
-    public function __invoke(array $row, int|string|null $key = null): bool;
+    public static function inGitlabCI(): bool
+    {
+        $env = getenv('CI_JOB_NAME');
+
+        return \is_string($env) && '' !== $env;
+    }
 }

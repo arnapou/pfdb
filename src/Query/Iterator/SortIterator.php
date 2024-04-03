@@ -15,38 +15,43 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 use ArrayIterator;
 use Closure;
-
-use function is_array;
-use function is_callable;
-
 use Iterator;
 use IteratorAggregate;
 use Traversable;
 
 /**
+ * @phpstan-type _Sorts array<callable|string|array{string, string}>
+ *
  * @template-implements IteratorAggregate<array>
  */
 class SortIterator implements IteratorAggregate
 {
+    /** @var array<callable> */
     private readonly array $sorts;
 
+    /**
+     * @param _Sorts $sorts
+     */
     public function __construct(private readonly Iterator $iterator, array $sorts)
     {
         $this->sorts = $this->sanitizeOrderings($sorts);
     }
 
+    /**
+     * @return Traversable<array-key, mixed>
+     */
     public function getIterator(): Traversable
     {
         $rows = iterator_to_array($this->iterator);
         uasort(
             $rows,
             function (mixed $row1, mixed $row2): int {
-                if (!is_array($row1) || !is_array($row2)) {
+                if (!\is_array($row1) || !\is_array($row2)) {
                     return 0;
                 }
 
                 foreach ($this->sorts as $callable) {
-                    if ($result = (int) $callable($row1, $row2)) {
+                    if (0 !== ($result = (int) $callable($row1, $row2))) {
                         return $result;
                     }
                 }
@@ -58,16 +63,22 @@ class SortIterator implements IteratorAggregate
         return new ArrayIterator($rows);
     }
 
+    /**
+     * @param _Sorts $sorts
+     *
+     * @return array<callable>
+     */
     private function sanitizeOrderings(array $sorts): array
     {
         $sanitized = [];
         foreach ($sorts as $sort) {
             $sort = (array) $sort;
             $field = $sort[0];
-            if (is_callable($field)) {
+            if (\is_callable($field)) {
                 $sanitized[] = $field;
             } else {
-                $sanitized[] = $this->createCallable($field, ($sort[1] ?? 'ASC') ?: 'ASC');
+                $way = $sort[1] ?? 'ASC';
+                $sanitized[] = $this->createCallable($field, '' === $way ? 'ASC' : $way);
             }
         }
 

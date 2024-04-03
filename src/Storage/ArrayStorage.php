@@ -15,6 +15,9 @@ namespace Arnapou\PFDB\Storage;
 
 class ArrayStorage implements StorageInterface
 {
+    /**
+     * @param array<string, array<array<mixed>>> $tables
+     */
     public function __construct(private array $tables = [])
     {
     }

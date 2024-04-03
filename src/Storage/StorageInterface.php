@@ -17,11 +17,15 @@ interface StorageInterface
 {
     /**
      * Used by Table object when it is instantiated.
+     *
+     * @return array<array<mixed>>
      */
     public function load(string $name): array;
 
     /**
      * Used by Table object when the flush is triggered.
+     *
+     * @param array<array<mixed>> $data
      */
     public function save(string $name, array $data): void;
 
@@ -40,6 +44,8 @@ interface StorageInterface
 
     /**
      * Use by Database object, no need to implement if you directly use Table objects.
+     *
+     * @return array<mixed>
      */
     public function tableNames(): array;
 }

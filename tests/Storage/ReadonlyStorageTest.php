@@ -71,7 +71,6 @@ class ReadonlyStorageTest extends TestCase
 
         self::assertSame(['any'], $storage->tableNames());
         self::assertTrue($storage->isReadonly('we_dont_care'));
-        self::assertInstanceOf(StorageInterface::class, $storage->innerStorage());
 
         $storage = new ReadonlyStorage(new ArrayStorage());
         self::assertFalse($storage->isReadonly('we_dont_care'));

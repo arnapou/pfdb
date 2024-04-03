@@ -30,6 +30,9 @@ final class ArrayTable extends TableDecorator
 {
     final public const string NAME = 'array';
 
+    /**
+     * @param array<array<mixed>> $data
+     */
     public function __construct(
         array $data,
         ?string $primaryKey

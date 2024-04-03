@@ -21,7 +21,7 @@ use Traversable;
 /**
  * Generic Table Interface.
  *
- * @template-extends Traversable<array-key, array>
+ * @template-extends Traversable<array-key, array<mixed>>
  */
 interface TableInterface extends Traversable, Countable
 {
@@ -46,6 +46,8 @@ interface TableInterface extends Traversable, Countable
 
     /**
      * Get a row based on it's key.
+     *
+     * @return array<mixed>|null
      */
     public function get(int|string $key): ?array;
 
@@ -61,6 +63,8 @@ interface TableInterface extends Traversable, Countable
 
     /**
      * Return all data as raw array.
+     *
+     * @return array<mixed>
      */
     public function getData(): array;
 
@@ -76,21 +80,29 @@ interface TableInterface extends Traversable, Countable
 
     /**
      * Update one row based on a key.
+     *
+     * @param array<mixed> $row
      */
     public function update(array $row, int|string|null $key = null): self;
 
     /**
      * Insert one row based on a key.
+     *
+     * @param array<mixed> $row
      */
     public function insert(array $row, int|string|null $key = null): self;
 
     /**
      * Upsert one row based on a key.
+     *
+     * @param array<mixed> $row
      */
     public function upsert(array $row, int|string|null $key = null): self;
 
     /**
      * Insert multiple rows selected with an expression.
+     *
+     * @param array<array<mixed>> $rows
      */
     public function insertMultiple(array $rows): self;
 

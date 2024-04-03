@@ -14,14 +14,13 @@ declare(strict_types=1);
 namespace Arnapou\PFDB\Tests\Storage;
 
 use Arnapou\PFDB\Storage\CachedFileStorage;
-use Arnapou\PFDB\Storage\PhpFileStorage;
 use Arnapou\PFDB\Storage\YamlFileStorage;
 use Arnapou\PFDB\Tests\ArrayTableTest;
 use PHPUnit\Framework\TestCase;
 
 class CachedFileStorageTest extends TestCase
 {
-    public const TMP_NAME = 'test_table_cached';
+    public const string TMP_NAME = 'test_table_cached';
 
     private function fileStorage(): CachedFileStorage
     {
@@ -41,9 +40,7 @@ class CachedFileStorageTest extends TestCase
         $storage = $this->fileStorage();
 
         self::assertFalse($storage->isReadonly(self::TMP_NAME));
-        self::assertInstanceOf(PhpFileStorage::class, $storage->cacheStorage());
         self::assertInstanceOf(YamlFileStorage::class, $storage->innerStorage());
-        self::assertIsArray($storage->tableNames());
     }
 
     public function testSaveAndDelete(): void

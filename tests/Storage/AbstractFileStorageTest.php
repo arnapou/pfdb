@@ -16,6 +16,7 @@ namespace Arnapou\PFDB\Tests\Storage;
 use Arnapou\PFDB\Exception\DirectoryNotFoundException;
 use Arnapou\PFDB\Exception\InvalidTableNameException;
 use Arnapou\PFDB\Storage\PhpFileStorage;
+use Arnapou\PFDB\Tests\TestUtils;
 use PHPUnit\Framework\TestCase;
 
 class AbstractFileStorageTest extends TestCase
@@ -67,6 +68,6 @@ class AbstractFileStorageTest extends TestCase
 
     private function mkdirFailed(string $dir): bool
     {
-        return getenv('CI_JOB_NAME') || !mkdir($dir, 0, true);
+        return TestUtils::inGitlabCI() || !mkdir($dir, 0, true);
     }
 }

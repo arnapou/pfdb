@@ -14,9 +14,6 @@ declare(strict_types=1);
 namespace Arnapou\PFDB\Tests\Query;
 
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
-
-use function call_user_func;
-
 use PHPUnit\Framework\TestCase;
 
 class NestedExprTest extends TestCase
@@ -30,9 +27,9 @@ class NestedExprTest extends TestCase
             $this->expr()->gt('age', 20)
         );
 
-        self::assertTrue(call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        self::assertFalse(call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        self::assertFalse(call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
     }
 
     public function testOr(): void
@@ -42,10 +39,10 @@ class NestedExprTest extends TestCase
             $this->expr()->gt('age', 20)
         );
 
-        self::assertTrue(call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        self::assertTrue(call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        self::assertTrue(call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
-        self::assertFalse(call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
     public function testNot(): void
@@ -57,10 +54,10 @@ class NestedExprTest extends TestCase
             )
         );
 
-        self::assertFalse(call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
-        self::assertFalse(call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
-        self::assertFalse(call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
-        self::assertTrue(call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 20]));
+        self::assertFalse(\call_user_func($expr, ['name' => 'Helen', 'age' => 22]));
+        self::assertTrue(\call_user_func($expr, ['name' => 'Helen', 'age' => 20]));
     }
 
     public function testChildrenCount(): void

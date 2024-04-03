@@ -138,7 +138,7 @@ class TableDecorator implements IteratorAggregate, TableInterface
     }
 
     /**
-     * @return Traversable<int|string, array>
+     * @return Traversable<int|string, array<mixed>>
      */
     public function getIterator(): Traversable
     {

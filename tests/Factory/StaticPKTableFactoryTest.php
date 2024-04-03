@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class StaticPKTableFactoryTest extends TestCase
 {
-    public function testGettersAndSetters()
+    public function testGettersAndSetters(): void
     {
         $factory = new StaticPKTableFactory('id');
 
@@ -32,7 +32,7 @@ class StaticPKTableFactoryTest extends TestCase
         self::assertSame(Table::class, $factory->setTableClass(Table::class)->getTableClass());
     }
 
-    public function testSetTableException()
+    public function testSetTableException(): void
     {
         $factory = new StaticPKTableFactory();
 

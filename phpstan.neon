@@ -1,16 +1,11 @@
 parameters:
-	level: 9
+	level: max
 	paths:
 		- demo
 		- src
+		- tests
 	bootstrapFiles:
 		- vendor/autoload.php
 	ignoreErrors:
-		- '#Property .* type has no value type specified in iterable type array.#'
-		- '#Method .* has parameter .* with no value type specified in iterable type array#'
-		- '#Method .* has parameter .* with no value type specified in iterable type Traversable#'
-		- '#Method .* return type has no value type specified in iterable type array#'
-		- path: src/Query/Iterator/SortIterator.php
-		  message: '#Method .+::getIterator\(\) should return Traversable<mixed, array> but returns ArrayIterator<\(int\|string\), mixed>.#'
 		- path: demo/src/Parsedown.php
 		  message: '#.*#'

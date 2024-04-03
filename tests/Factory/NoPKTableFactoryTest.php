@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class NoPKTableFactoryTest extends TestCase
 {
-    public function testBasic()
+    public function testBasic(): void
     {
         $factory = new NoPKTableFactory();
 

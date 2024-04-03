@@ -16,9 +16,6 @@ namespace Arnapou\PFDB\Query\Iterator;
 use Arnapou\Ensure\Enforce;
 use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\Query\Field\FieldSelectInterface;
-
-use function is_callable;
-
 use Iterator;
 use Stringable;
 
@@ -36,11 +33,14 @@ class SelectIterator implements Iterator
     {
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function current(): array
     {
         $row = Ensure::array($this->iterator->current());
         $key = $this->iterator->key();
-        if (!$this->fields) {
+        if ([] === $this->fields) {
             return Ensure::array($row);
         }
 
@@ -50,8 +50,9 @@ class SelectIterator implements Iterator
             if ('*' === $field) {
                 $toMerge[] = $row;
             } elseif ($field instanceof FieldSelectInterface) {
+                /** @phpstan-ignore-next-line Ensure::array returns an array<mixed> */
                 $toMerge[] = $field->select(Ensure::array($row), Ensure::nullableArrayKey($key));
-            } elseif (is_callable($field)) {
+            } elseif (\is_callable($field)) {
                 $toMerge[] = (array) $field($row, $key);
             } else {
                 $str = Enforce::string($field);

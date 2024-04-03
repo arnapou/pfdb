@@ -18,10 +18,18 @@ namespace Arnapou\PFDB\Query\Field;
  */
 class Value implements FieldValueInterface
 {
+    /**
+     * @param string|int|float|bool|array<mixed>|null $value
+     */
     public function __construct(private readonly string|int|float|bool|array|null $value)
     {
     }
 
+    /**
+     * @param array<mixed> $row
+     *
+     * @return string|int|float|bool|array<mixed>|null
+     */
     public function value(array $row, string|int|null $key = null): string|int|float|bool|array|null
     {
         return $this->value;

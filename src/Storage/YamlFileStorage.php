@@ -15,9 +15,6 @@ namespace Arnapou\PFDB\Storage;
 
 use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\Exception\ReadonlyException;
-
-use function function_exists;
-
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -38,21 +35,28 @@ class YamlFileStorage extends AbstractFileStorage
         return [];
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     protected function yamlParse(string $filename): array
     {
+        /** @phpstan-ignore-next-line Yes, this is an array of arrays... */
         return Ensure::array(
             match (true) {
-                function_exists('yaml_parse_file') => yaml_parse_file($filename),
+                \function_exists('yaml_parse_file') => yaml_parse_file($filename),
                 class_exists(Yaml::class) => Yaml::parseFile($filename),
                 default => throw new RuntimeException('You need the yaml extension or symfony/yaml to use this YamlFileStorage'),
             }
         );
     }
 
+    /**
+     * @param array<array<mixed>> $data
+     */
     protected function yamlDump(array $data): string
     {
         return match (true) {
-            function_exists('yaml_emit') => yaml_emit($data),
+            \function_exists('yaml_emit') => yaml_emit($data),
             class_exists(Yaml::class) => Yaml::dump($data, indent: 2, flags: Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK),
             default => throw new RuntimeException('You need the yaml extension or symfony/yaml to use this YamlFileStorage'),
         };

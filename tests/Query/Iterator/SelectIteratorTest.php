@@ -71,10 +71,10 @@ class SelectIteratorTest extends TestCase
         $select = new SelectIterator(
             new ArrayIterator($data),
             [
-            function ($row, $key) {
-                return ['id:color' => $row['id'] . ':' . $row['name']];
-            },
-        ]
+                function ($row, $key) {
+                    return ['id:color' => $row['id'] . ':' . $row['name']];
+                },
+            ]
         );
 
         self::assertSame(

@@ -33,7 +33,7 @@ class DynamicPKTableFactory extends AbstractTableFactory
     {
         parent::__construct();
 
-        $this->pkFactory = $pkFactory
+        $this->pkFactory = null !== $pkFactory
             ? $pkFactory(...)
             : static fn (string $name): string => "id$name";
     }

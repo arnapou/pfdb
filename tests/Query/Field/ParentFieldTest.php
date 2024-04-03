@@ -20,9 +20,6 @@ use Arnapou\PFDB\Query\Field\ParentField;
 use Arnapou\PFDB\Storage\ReadonlyStorage;
 use Arnapou\PFDB\Table;
 use Arnapou\PFDB\Tests\Storage\PhpFileStorageTest;
-
-use function call_user_func;
-
 use PHPUnit\Framework\TestCase;
 
 class ParentFieldTest extends TestCase
@@ -54,13 +51,12 @@ class ParentFieldTest extends TestCase
         $foreignTable = self::foreignTable();
         $field = new ParentField('fkid', $foreignTable, 'name');
 
-        self::assertIsCallable($field->name());
-        self::assertSame(42, call_user_func($field->name(), ['fkid' => 42]));
-        self::assertNull(call_user_func($field->name(), ['xxx' => 42]));
+        self::assertSame(42, \call_user_func($field->name(), ['fkid' => 42]));
+        self::assertNull(\call_user_func($field->name(), ['xxx' => 42]));
 
         self::assertIsCallable($field->getParentField());
-        self::assertSame(42, call_user_func($field->getParentField(), ['name' => 42]));
-        self::assertNull(call_user_func($field->getParentField(), ['xxx' => 42]));
+        self::assertSame(42, \call_user_func($field->getParentField(), ['name' => 42]));
+        self::assertNull(\call_user_func($field->getParentField(), ['xxx' => 42]));
 
         self::assertSame($foreignTable, $field->getParentTable());
         self::assertSame($foreignTable->getName(), $field->getSelectAlias());
@@ -123,11 +119,11 @@ class ParentFieldTest extends TestCase
     public function testUnknownForeignKey(): void
     {
         $field = new ParentField('unknown_fkid', self::foreignTable(), 'name');
-        self::assertSame(null, $field->value(['toy' => 'balloon', 'fkid' => 2]));
+        self::assertNull($field->value(['toy' => 'balloon', 'fkid' => 2]));
         self::assertSame(['color' => null], $field->select(['toy' => 'balloon', 'fkid' => 2]));
 
         $field = new ParentField('fkid', self::foreignTable(), 'name');
-        self::assertSame(null, $field->value(['toy' => 'balloon', 'fkid' => 99]));
+        self::assertNull($field->value(['toy' => 'balloon', 'fkid' => 99]));
         self::assertSame(['color' => null], $field->select(['toy' => 'balloon', 'fkid' => 99]));
     }
 

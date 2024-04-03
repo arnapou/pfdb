@@ -15,14 +15,8 @@ namespace Arnapou\PFDB\Query\Iterator;
 
 use Arnapou\Ensure\Enforce;
 use Arnapou\Ensure\Ensure;
-
-use function array_key_exists;
-
 use ArrayIterator;
 use Closure;
-
-use function is_callable;
-
 use Iterator;
 use IteratorAggregate;
 use Traversable;
@@ -32,12 +26,14 @@ use Traversable;
  */
 class GroupIterator implements IteratorAggregate
 {
+    /** @var array<string|callable> */
     private readonly array $fields;
     private readonly Closure $reduce;
     private ?Closure $onfinish = null;
 
     /**
-     * GroupIterator constructor.
+     * @param array<string|callable>|string $fields
+     * @param array<mixed>                  $initial
      */
     public function __construct(
         private readonly Iterator $iterator,
@@ -48,29 +44,35 @@ class GroupIterator implements IteratorAggregate
     ) {
         $this->fields = (array) $fields;
         $this->reduce = $reduce(...);
-        $this->onfinish = $onfinish ? $onfinish(...) : null;
+        $this->onfinish = null === $onfinish ? null : $onfinish(...);
     }
 
+    /**
+     * @return Traversable<array-key, mixed>
+     */
     public function getIterator(): Traversable
     {
         $grouped = [];
         foreach ($this->iterator as $key => $row) {
             $groupKey = $this->getGroupKey(Ensure::array($row), Enforce::string($key));
-            $value = array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
+            $value = \array_key_exists($groupKey, $grouped) ? $grouped[$groupKey] : $this->initial;
             $grouped[$groupKey] = ($this->reduce)($value, $row, $key);
         }
-        if ($this->onfinish) {
+        if (null !== $this->onfinish) {
             $grouped = array_map($this->onfinish, $grouped);
         }
 
         return new ArrayIterator(array_values($grouped));
     }
 
+    /**
+     * @param array<mixed> $row
+     */
     private function getGroupKey(array $row, string $key): string
     {
         $keys = [];
         foreach ($this->fields as $field) {
-            if (is_callable($field)) {
+            if (\is_callable($field)) {
                 $keys[] = $field($row, $key);
             } else {
                 $keys[] = $row[$field] ?? '';

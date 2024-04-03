@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Core;
 
+use Arnapou\Ensure\Enforce;
 use Arnapou\PFDB\ArrayTable;
 use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Exception\PrimaryKeyAlreadyExistsException;
@@ -24,14 +25,8 @@ use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use Arnapou\PFDB\Query\Helper\FieldsHelperTrait;
 use Arnapou\PFDB\Query\Query;
 use Arnapou\PFDB\Storage\StorageInterface;
-
-use function array_key_exists;
-
 use ArrayIterator;
 use Closure;
-
-use function count;
-
 use IteratorAggregate;
 use Throwable;
 use Traversable;
@@ -46,7 +41,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /** @var array<int|string, array> */
+    /** @var array<int|string, array<mixed>> */
     private array $data = [];
     private bool $changed = false;
     private bool $readonly = false;
@@ -86,7 +81,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
             }
             do {
                 ++$maxKey;
-            } while (array_key_exists($maxKey, $this->data));
+            } while (\array_key_exists($maxKey, $this->data));
 
             return $maxKey;
         };
@@ -99,15 +94,20 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this;
     }
 
+    /**
+     * @param array<array<mixed>> $rows
+     *
+     * @throws PrimaryKeyNotFoundException
+     */
     protected function load(array $rows): void
     {
-        if ($this->primaryKey) {
+        if (null !== ($pk = $this->getPrimaryKey())) {
             $this->data = [];
             foreach ($rows as $row) {
-                if (!array_key_exists($this->primaryKey, $row)) {
+                if (!\array_key_exists($pk, $row)) {
                     throw new PrimaryKeyNotFoundException();
                 }
-                $this->data[$row[$this->primaryKey]] = $row;
+                $this->data[$row[$pk]] = $row;
             }
         } else {
             $this->data = $rows;
@@ -145,7 +145,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
             if ($this->isReadonly()) {
                 throw new ReadonlyException();
             }
-            $this->storage->save($this->name, $this->primaryKey ? array_values($this->data) : $this->data);
+            $this->storage->save($this->name, null !== $this->getPrimaryKey() ? array_values($this->data) : $this->data);
             $this->changed = false;
 
             return true;
@@ -154,13 +154,19 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return false;
     }
 
+    /**
+     * @param array<mixed> $value
+     *
+     * @throws PrimaryKeyNotFoundException
+     */
     protected function retrieveKeyFromRow(array $value): int|string
     {
-        if (!$this->primaryKey || !array_key_exists($this->primaryKey, $value)) {
+        $pk = $this->getPrimaryKey();
+        if (null === $pk || !\array_key_exists($pk, $value)) {
             throw new PrimaryKeyNotFoundException();
         }
 
-        return $value[$this->primaryKey];
+        return Enforce::arrayKey($value[$pk]);
     }
 
     public function clear(): self
@@ -172,9 +178,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
 
     public function find(ExprInterface ...$exprs): Query
     {
-        $query = new Query($this);
-
-        return $query->where(...$exprs);
+        return (new Query($this))->where(...$exprs);
     }
 
     public function get(int|string $key): ?array
@@ -183,7 +187,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     }
 
     /**
-     * @return Traversable<int|string, array>
+     * @return Traversable<int|string, array<mixed>>
      */
     public function getIterator(): Traversable
     {
@@ -192,7 +196,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
 
     public function count(): int
     {
-        return count($this->data);
+        return \count($this->data);
     }
 
     public function getName(): string
@@ -200,9 +204,12 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         return $this->name;
     }
 
+    /**
+     * @return non-empty-string|null
+     */
     public function getPrimaryKey(): ?string
     {
-        return $this->primaryKey;
+        return '' === $this->primaryKey ? null : $this->primaryKey;
     }
 
     public function getData(): array
@@ -212,7 +219,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
 
     public function delete(int|string|null $key): self
     {
-        if (null === $key || !array_key_exists($key, $this->data)) {
+        if (null === $key || !\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
         unset($this->data[$key]);
@@ -224,7 +231,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     public function update(array $row, int|string|null $key = null): self
     {
         $key ??= $this->retrieveKeyFromRow($row);
-        if (!array_key_exists($key, $this->data)) {
+        if (!\array_key_exists($key, $this->data)) {
             throw new ValueNotFoundException();
         }
         $this->data[$key] = array_merge($this->data[$key], $row);
@@ -237,14 +244,14 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     {
         try {
             $key ??= $this->retrieveKeyFromRow($row);
-            if (array_key_exists($key, $this->data)) {
+            if (\array_key_exists($key, $this->data)) {
                 throw new PrimaryKeyAlreadyExistsException();
             }
         } catch (PrimaryKeyNotFoundException) {
             $key = ($this->primaryKeyGenerator)();
         }
-        if ($this->primaryKey) {
-            $row[$this->primaryKey] = $key;
+        if (null !== ($pk = $this->getPrimaryKey())) {
+            $row[$pk] = $key;
         }
 
         $this->data[$key] = $row;
@@ -262,7 +269,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
             $key = null;
         }
 
-        if (null !== $key && array_key_exists($key, $this->data)) {
+        if (null !== $key && \array_key_exists($key, $this->data)) {
             return $this->update($row, $key);
         }
 

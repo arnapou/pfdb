@@ -2,7 +2,7 @@ PFDB - Php File Database
 ====================
 
 ![pipeline](https://gitlab.com/arnapou/pfdb/badges/main/pipeline.svg)
-![coverage](https://gitlab.com/arnapou/pfdb/badges/main/coverage.svg?job=coverage)
+![coverage](https://gitlab.com/arnapou/pfdb/badges/main/coverage.svg?job=test)
 
 This library allow you to query flat file "databases".
 

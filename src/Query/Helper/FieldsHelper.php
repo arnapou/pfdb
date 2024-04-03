@@ -27,6 +27,9 @@ class FieldsHelper
         return new Field($name);
     }
 
+    /**
+     * @param string|int|float|bool|array<mixed>|null $value
+     */
     public function value(string|int|float|bool|array|null $value): Value
     {
         return new Value($value);

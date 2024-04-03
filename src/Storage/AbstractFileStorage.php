@@ -17,8 +17,6 @@ use Arnapou\PFDB\Exception\DirectoryNotFoundException;
 use Arnapou\PFDB\Exception\InvalidTableNameException;
 use Arnapou\PFDB\Exception\ReadonlyException;
 
-use function strlen;
-
 abstract class AbstractFileStorage implements StorageInterface
 {
     private readonly string $path;
@@ -57,10 +55,11 @@ abstract class AbstractFileStorage implements StorageInterface
 
     public function tableNames(): array
     {
-        $files = glob($this->getPath() . '/' . $this->prefixName . '.*.' . $this->getExtension(), GLOB_NOSORT) ?: [];
+        $files = glob($this->getPath() . '/' . $this->prefixName . '.*.' . $this->getExtension(), GLOB_NOSORT);
+        $files = \is_array($files) ? $files : [];
         $names = [];
         foreach ($files as $file) {
-            $name = substr(basename($file, '.' . $this->getExtension()), strlen($this->prefixName) + 1);
+            $name = substr(basename($file, '.' . $this->getExtension()), \strlen($this->prefixName) + 1);
             if ($this->isValidTableName($name)) {
                 $names[] = $name;
             }
