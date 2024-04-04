@@ -12,7 +12,7 @@ test: ## phpunit with coverage
 ifdef CI_JOB_NAME
 	vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
 else
-	vendor/bin/phpunit --testdox --coverage-text --coverage-html tests/coverage --colors=always
+	vendor/bin/phpunit --coverage-html tests/coverage --colors=always
 endif
 
 cs: ## code style
