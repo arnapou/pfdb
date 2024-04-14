@@ -17,8 +17,8 @@
     },
     "require": {
         "php": "~8.3.0",
-        "arnapou/ensure": "^2.2",
-        "arnapou/lock": "^1.1"
+        "arnapou/ensure": "^2.3",
+        "arnapou/lock": "^1.2"
     },
     "suggest": {
         "ext-yaml": "If you need YAML file storage. Alternative: symfony/yaml.",
