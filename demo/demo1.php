@@ -31,16 +31,16 @@ require __DIR__ . '/src/bootstrap.php';
         showTable(
             'Find (price > 1500)',
             static fn () => $table->find(
-                $table->expr()->gt('price', 1500)
-            )
+                $table->expr()->gt('price', 1500),
+            ),
         );
 
         showTable(
             'Find (price > 1500 and color = "Red")',
             static fn () => $table->find(
                 $table->expr()->gt('price', 1500),
-                $table->expr()->eq('color', 'Red')
-            )
+                $table->expr()->eq('color', 'Red'),
+            ),
         );
 
         showTable(
@@ -48,9 +48,9 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->find(
                 $table->expr()->or(
                     $table->expr()->gt('price', 1500),
-                    $table->expr()->eq('color', 'Red')
-                )
-            )
+                    $table->expr()->eq('color', 'Red'),
+                ),
+            ),
         );
 
         showTable(
@@ -58,10 +58,10 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->find(
                 $table->expr()->or(
                     $table->expr()->gt('price', 1500),
-                    $table->expr()->eq('color', 'Red')
-                )
+                    $table->expr()->eq('color', 'Red'),
+                ),
             )
-                ->sort('mark', ['price', 'DESC'])
+                ->sort('mark', ['price', 'DESC']),
         );
 
         showTable(
@@ -69,11 +69,11 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->find(
                 $table->expr()->or(
                     $table->expr()->gt('price', 1500),
-                    $table->expr()->eq('color', 'Red')
-                )
+                    $table->expr()->eq('color', 'Red'),
+                ),
             )
                 ->sort('mark', ['price', 'DESC'])
-                ->limit(1, 3)
+                ->limit(1, 3),
         );
 
         showTable(
@@ -82,16 +82,16 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->find(
                 $table->expr()->or(
                     $table->expr()->gt('price', 1500),
-                    $table->expr()->eq('color', 'Red')
-                )
+                    $table->expr()->eq('color', 'Red'),
+                ),
             )
                 ->sort('mark', ['price', 'DESC'])
                 ->limit(1, 3)
                 ->chain()
                 ->where(
-                    $table->expr()->match('color', 'w')
+                    $table->expr()->match('color', 'w'),
                 )
-                ->sort('price')
+                ->sort('price'),
         );
 
         showTable(
@@ -100,30 +100,30 @@ require __DIR__ . '/src/bootstrap.php';
                 $table->expr()->or(
                     $table->expr()->and(
                         $table->expr()->gt('price', 1600),
-                        $table->expr()->eq('color', 'Red')
+                        $table->expr()->eq('color', 'Red'),
                     ),
                     $table->expr()->and(
                         $table->expr()->lt('price', 1600),
-                        $table->expr()->eq('color', 'Green')
-                    )
-                )
-            )
+                        $table->expr()->eq('color', 'Green'),
+                    ),
+                ),
+            ),
         );
 
         showTable(
             'Find (:key IN 52,31,89) sorted (price ASC)',
             static fn () => $table->find(
-                $table->expr()->in('id', [52, 31, 89])
+                $table->expr()->in('id', [52, 31, 89]),
             )
-                ->sort('price')
+                ->sort('price'),
         );
 
         showTable(
             'Find (:key IN 52,31,89) sorted (price ASC) but filtered on key',
             static fn () => $table->find(
-                $table->expr()->in(new KeyField(), [52, 31, 89])
+                $table->expr()->in(new KeyField(), [52, 31, 89]),
             )
-                ->sort('price')
+                ->sort('price'),
         );
     }
 );

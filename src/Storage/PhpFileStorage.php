@@ -40,7 +40,7 @@ class PhpFileStorage extends AbstractFileStorage
         file_put_contents(
             $this->getFilename($name),
             '<?php return ' . var_export($data, true) . ";\n",
-            LOCK_EX
+            LOCK_EX,
         );
     }
 }

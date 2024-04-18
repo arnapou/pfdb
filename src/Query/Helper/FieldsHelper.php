@@ -45,7 +45,7 @@ class FieldsHelper
         TableInterface $table,
         string|FieldValueInterface|callable|null $parentField = null,
         ?string $selectAlias = null,
-        ?callable $parentRow = null
+        ?callable $parentRow = null,
     ): ParentField {
         return new ParentField($name, $table, $parentField, $selectAlias, $parentRow);
     }

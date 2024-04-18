@@ -30,12 +30,12 @@ class FieldTest extends TestCase
 
         self::assertSame(
             ['name' => 'Joe'],
-            $field->select(['name' => 'Joe', 'age' => 20])
+            $field->select(['name' => 'Joe', 'age' => 20]),
         );
 
         self::assertSame(
             ['name' => null],
-            $field->select(['firstname' => 'Joe', 'age' => 20])
+            $field->select(['firstname' => 'Joe', 'age' => 20]),
         );
     }
 }

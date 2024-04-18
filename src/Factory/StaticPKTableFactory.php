@@ -19,7 +19,7 @@ use Arnapou\PFDB\Storage\StorageInterface;
 class StaticPKTableFactory extends AbstractTableFactory
 {
     public function __construct(
-        private ?string $defaultPrimaryKey = 'id'
+        private ?string $defaultPrimaryKey = 'id',
     ) {
         parent::__construct();
     }

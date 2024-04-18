@@ -24,7 +24,7 @@ class NestedExprTest extends TestCase
     {
         $expr = $this->expr()->and(
             $this->expr()->eq('name', 'Joe'),
-            $this->expr()->gt('age', 20)
+            $this->expr()->gt('age', 20),
         );
 
         self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
@@ -36,7 +36,7 @@ class NestedExprTest extends TestCase
     {
         $expr = $this->expr()->or(
             $this->expr()->eq('name', 'Joe'),
-            $this->expr()->gt('age', 20)
+            $this->expr()->gt('age', 20),
         );
 
         self::assertTrue(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
@@ -50,8 +50,8 @@ class NestedExprTest extends TestCase
         $expr = $this->expr()->not(
             $this->expr()->or(
                 $this->expr()->eq('name', 'Joe'),
-                $this->expr()->gt('age', 20)
-            )
+                $this->expr()->gt('age', 20),
+            ),
         );
 
         self::assertFalse(\call_user_func($expr, ['name' => 'Joe', 'age' => 22]));
@@ -67,8 +67,8 @@ class NestedExprTest extends TestCase
             $this->expr()->and(
                 $this->expr()->eq('field1', 1),
                 $this->expr()->eq('field2', 2),
-                $this->expr()->eq('field3', 3)
-            )->children()
+                $this->expr()->eq('field3', 3),
+            )->children(),
         );
     }
 }

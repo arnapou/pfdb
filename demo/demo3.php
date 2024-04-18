@@ -41,14 +41,14 @@ require __DIR__ . '/src/bootstrap.php';
                     $vehicles->fields()->parent(
                         'color_id',  // field name
                         $colors,     // foreign table
-                        'name'       // foreign name
+                        'name',      // foreign name
                     ),
                     $vehicles->fields()->parent(
                         'mark_id',
-                        $marks
+                        $marks,
                     ),
-                    'price'
-                )
+                    'price',
+                ),
         );
 
         showTable(
@@ -58,11 +58,11 @@ require __DIR__ . '/src/bootstrap.php';
                     $vehicles->fields()->parent(
                         'color_id',  // field name
                         $colors,     // foreign table
-                        'name'       // foreign name
+                        'name',      // foreign name
                     ),
-                    'Red'
-                )
-            )
+                    'Red',
+                ),
+            ),
         );
 
         showTable(
@@ -72,19 +72,19 @@ require __DIR__ . '/src/bootstrap.php';
                     $vehicles->fields()->parent(
                         'color_id',  // field name
                         $colors,     // foreign table
-                        'name'       // foreign name
+                        'name',      // foreign name
                     ),
-                    'Red'
+                    'Red',
                 ),
                 $vehicles->expr()->contains(
                     $vehicles->fields()->parent(
                         'mark_id',   // field name
                         $marks,      // foreign table
-                        'name'       // foreign name
+                        'name',      // foreign name
                     ),
-                    'o'
-                )
-            )
+                    'o',
+                ),
+            ),
         );
     }
 );

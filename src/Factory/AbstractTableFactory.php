@@ -57,7 +57,7 @@ abstract class AbstractTableFactory implements TableFactoryInterface
     protected function createInstance(
         StorageInterface $storage,
         string $name,
-        ?string $primaryKey
+        ?string $primaryKey,
     ): TableInterface {
         $tableClass = $this->getTableClass();
 

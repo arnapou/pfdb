@@ -25,8 +25,8 @@ class DatabaseTest extends TestCase
     {
         $db = new Database(
             new ReadonlyStorage(
-                PhpFileStorageTest::pfdbStorage()
-            )
+                PhpFileStorageTest::pfdbStorage(),
+            ),
         );
 
         return $db;

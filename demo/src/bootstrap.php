@@ -91,7 +91,7 @@ function getFunctionSourceCode(Closure $func): string
     $lines = array_merge([$firstLine], \array_slice($lines, 1));
     $lines = array_map(
         static fn (string $line): string => substr($line, $indent),
-        $lines
+        $lines,
     );
 
     return implode('', $lines);

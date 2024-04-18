@@ -35,14 +35,14 @@ final class ArrayTable extends TableDecorator
      */
     public function __construct(
         array $data,
-        ?string $primaryKey
+        ?string $primaryKey,
     ) {
         parent::__construct(
             new Table(
                 new ArrayStorage([self::NAME => $data]),
                 self::NAME,
-                $primaryKey
-            )
+                $primaryKey,
+            ),
         );
     }
 }

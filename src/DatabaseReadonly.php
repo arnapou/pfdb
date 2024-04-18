@@ -24,7 +24,7 @@ final class DatabaseReadonly extends AbstractDatabase
     public function __construct(
         StorageInterface $storage,
         bool $quiet = true,
-        TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
+        TableFactoryInterface $tableFactory = new StaticPKTableFactory('id'),
     ) {
         parent::__construct(new ReadonlyStorage($storage, $quiet), $tableFactory);
     }

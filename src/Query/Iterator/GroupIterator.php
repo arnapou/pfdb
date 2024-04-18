@@ -40,7 +40,7 @@ class GroupIterator implements IteratorAggregate
         array|string $fields,
         private readonly array $initial,
         callable $reduce,
-        ?callable $onfinish
+        ?callable $onfinish,
     ) {
         $this->fields = (array) $fields;
         $this->reduce = $reduce(...);

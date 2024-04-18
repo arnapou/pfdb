@@ -59,7 +59,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     final public function __construct(
         private readonly StorageInterface $storage,
         private readonly string $name,
-        private ?string $primaryKey
+        private ?string $primaryKey,
     ) {
         $this->primaryKeyGenerator = $this->getDefaultPrimaryKeyGenerator();
         $this->load($this->storage->load($this->name));

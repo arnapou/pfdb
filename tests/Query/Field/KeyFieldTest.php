@@ -30,12 +30,12 @@ class KeyFieldTest extends TestCase
 
         self::assertSame(
             666,
-            $field->value(['name' => 'Joe', 'age' => 20], 666)
+            $field->value(['name' => 'Joe', 'age' => 20], 666),
         );
 
         self::assertSame(
             [':key' => 666],
-            $field->select(['name' => 'Joe', 'age' => 20], 666)
+            $field->select(['name' => 'Joe', 'age' => 20], 666),
         );
     }
 }

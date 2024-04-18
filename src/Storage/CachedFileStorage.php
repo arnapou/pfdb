@@ -20,7 +20,7 @@ class CachedFileStorage implements StorageInterface
     public function __construct(
         private readonly AbstractFileStorage $storage,
         string $cachePath,
-        string $cachedPrefixName = 'cached'
+        string $cachedPrefixName = 'cached',
     ) {
         $this->cache = new PhpFileStorage($cachePath, $cachedPrefixName);
     }

@@ -98,7 +98,7 @@ class TableTest extends TestCase
         $table->setPrimaryKeyGenerator(
             function () {
                 return 42;
-            }
+            },
         );
         $table->insert(['name' => 'Joe']);
         self::assertSame(42, $table->getLastInsertedKey());
@@ -150,7 +150,7 @@ class TableTest extends TestCase
                 $row['price'] /= 10;
 
                 return $row;
-            }
+            },
         );
 
         self::assertSame(
@@ -159,7 +159,7 @@ class TableTest extends TestCase
                 1 => ['price' => 15],
                 2 => ['price' => 200],
             ],
-            $table->getData()
+            $table->getData(),
         );
     }
 
@@ -171,14 +171,14 @@ class TableTest extends TestCase
         $table->upsert(['price' => 150]);
         $table->upsert(['price' => 200]);
         $table->deleteMultiple(
-            $this->expr()->lte('price', 150)
+            $this->expr()->lte('price', 150),
         );
 
         self::assertSame(
             [
                 2 => ['price' => 200],
             ],
-            $table->getData()
+            $table->getData(),
         );
     }
 

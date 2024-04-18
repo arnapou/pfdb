@@ -58,7 +58,7 @@ class QueryTest extends TestCase
                 'color' => 'Red',
                 'price' => '1550',
             ],
-            $this->table()->find()->first()
+            $this->table()->find()->first(),
         );
     }
 
@@ -71,7 +71,7 @@ class QueryTest extends TestCase
                 'color' => 'Red',
                 'price' => '1500',
             ],
-            $this->table()->find()->last()
+            $this->table()->find()->last(),
         );
     }
 
@@ -79,7 +79,7 @@ class QueryTest extends TestCase
     {
         self::assertSame(
             ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
-            $this->table('id')->get(67)
+            $this->table('id')->get(67),
         );
     }
 
@@ -87,11 +87,11 @@ class QueryTest extends TestCase
     {
         self::assertSame(
             [5, 14, 22, 31, 45, 52, 67, 71, 89],
-            array_keys(iterator_to_array($this->table('id')->find()->select('id')))
+            array_keys(iterator_to_array($this->table('id')->find()->select('id'))),
         );
         self::assertSame(
             [['id' => 5], ['id' => 14], ['id' => 22], ['id' => 31], ['id' => 45], ['id' => 52], ['id' => 67], ['id' => 71], ['id' => 89]],
-            array_values(iterator_to_array($this->table()->find()->select('id')))
+            array_values(iterator_to_array($this->table()->find()->select('id'))),
         );
         self::assertSame(
             [['ID' => '50'], ['ID' => '140'], ['ID' => '220'], ['ID' => '310'], ['ID' => '450'], ['ID' => '520'], ['ID' => '670'], ['ID' => '710'], ['ID' => '890']],
@@ -100,10 +100,10 @@ class QueryTest extends TestCase
                     $this->table()->find()->select(
                         function ($row) {
                             return ['ID' => \strval(10 * $row['id'])];
-                        }
-                    )
-                )
-            )
+                        },
+                    ),
+                ),
+            ),
         );
         self::assertSame(
             [
@@ -122,10 +122,10 @@ class QueryTest extends TestCase
                     $this->table()->find()->select(
                         function ($row) {
                             return ['ID' => \strval(10 * $row['id'])];
-                        }
-                    )->addSelect('mark')
-                )
-            )
+                        },
+                    )->addSelect('mark'),
+                ),
+            ),
         );
     }
 
@@ -133,11 +133,11 @@ class QueryTest extends TestCase
     {
         self::assertSame(
             [['id' => 14], ['id' => 22], ['id' => 52], ['id' => 89], ['id' => 5], ['id' => 67], ['id' => 71], ['id' => 45], ['id' => 31]],
-            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price')))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price'))),
         );
         self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
-            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC'))),
         );
         self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 22], ['id' => 52], ['id' => 14]],
@@ -146,14 +146,14 @@ class QueryTest extends TestCase
                     $this->table()->find()->select('id')->addSort(
                         function ($row1, $row2) {
                             return -($row1['price'] <=> $row2['price']);
-                        }
-                    )
-                )
-            )
+                        },
+                    ),
+                ),
+            ),
         );
         self::assertSame(
             [['id' => 31], ['id' => 45], ['id' => 71], ['id' => 67], ['id' => 5], ['id' => 89], ['id' => 52], ['id' => 22], ['id' => 14]],
-            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')->addSort('mark')))
+            array_values(iterator_to_array($this->table()->find()->select('id')->addSort('price', 'DESC')->addSort('mark'))),
         );
     }
 
@@ -170,9 +170,9 @@ class QueryTest extends TestCase
                         ++$group['count'];
 
                         return $group;
-                    }
-                )
-            )
+                    },
+                ),
+            ),
         );
         self::assertSame(
             [['avg' => 1383.3], ['avg' => 1733.3], ['avg' => 1650.0]],
@@ -188,9 +188,9 @@ class QueryTest extends TestCase
                     },
                     function ($group) {
                         return ['avg' => round($group['sum'] / $group['count'], 1)];
-                    }
-                )
-            )
+                    },
+                ),
+            ),
         );
         self::assertSame(
             [['ids' => [5, 31, 45, 67, 71, 89]], ['ids' => [14, 22, 52]]],
@@ -206,9 +206,9 @@ class QueryTest extends TestCase
                         $group['ids'][] = $row['id'];
 
                         return $group;
-                    }
-                )
-            )
+                    },
+                ),
+            ),
         );
     }
 
@@ -221,7 +221,7 @@ class QueryTest extends TestCase
 
         self::assertSame(
             [52 => ['id' => 52], 89 => ['id' => 89]],
-            iterator_to_array($final)
+            iterator_to_array($final),
         );
     }
 
@@ -234,7 +234,7 @@ class QueryTest extends TestCase
 
         self::assertSame(
             [52 => ['id' => 52], 89 => ['id' => 89]],
-            iterator_to_array($final)
+            iterator_to_array($final),
         );
     }
 
@@ -265,10 +265,10 @@ class QueryTest extends TestCase
             iterator_to_array(
                 $query->select()->where(
                     $this->expr()->and(
-                        $this->expr()->eq('color', 'Yellow', false)
-                    )
-                )
-            )
+                        $this->expr()->eq('color', 'Yellow', false),
+                    ),
+                ),
+            ),
         );
     }
 

@@ -31,7 +31,7 @@ abstract class AbstractDatabase implements DatabaseInterface
 
     public function __construct(
         private readonly StorageInterface $storage,
-        private readonly TableFactoryInterface $tableFactory = new StaticPKTableFactory('id')
+        private readonly TableFactoryInterface $tableFactory = new StaticPKTableFactory('id'),
     ) {
     }
 

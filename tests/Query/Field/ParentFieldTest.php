@@ -37,12 +37,12 @@ class ParentFieldTest extends TestCase
             fn ($row, $key) => 'my_id',
             new ArrayTable([['id' => 'my_id']], 'id'),
             fn () => null,
-            'the_alias'
+            'the_alias',
         );
         $field->selectAll(false);
         self::assertSame(
             ['the_alias' => null],
-            $field->select(['any'], 'any')
+            $field->select(['any'], 'any'),
         );
     }
 
@@ -93,7 +93,7 @@ class ParentFieldTest extends TestCase
             self::foreignTable(),
             function ($row, $key) {
                 return $row['id'] . ':' . $row['name'];
-            }
+            },
         );
 
         self::assertSame('2:Green', $field->value(['toy' => 'balloon', 'fkid' => 2]));
@@ -158,7 +158,7 @@ class ParentFieldTest extends TestCase
             self::foreignTable(),
             function ($row, $key) {
                 return ['row' => $row, 'key' => $key];
-            }
+            },
         );
         $field->selectAll(false)->selectArray(true);
 
@@ -183,7 +183,7 @@ class ParentFieldTest extends TestCase
             null,
             function ($value) {
                 return self::foreignTable()->get($value + 1);
-            }
+            },
         );
         self::assertSame('Blue', $field->value(['toy' => 'balloon', 'fkid' => 2]));
 
@@ -198,7 +198,7 @@ class ParentFieldTest extends TestCase
             null,
             function ($value) {
                 return self::foreignTable()->get($value + 1);
-            }
+            },
         );
         self::assertSame('The color is Blue', $field->value(['toy' => 'balloon', '10times_fkid' => 20]));
     }
@@ -212,7 +212,7 @@ class ParentFieldTest extends TestCase
             null,
             function ($value) {
                 return self::foreignTable()->get($value + 1);
-            }
+            },
         );
         self::assertSame(['color' => 'Blue'], $field->select(['toy' => 'balloon', 'fkid' => 2]));
 
@@ -227,7 +227,7 @@ class ParentFieldTest extends TestCase
             null,
             function ($value) {
                 return self::foreignTable()->get($value + 1);
-            }
+            },
         );
         self::assertSame(['color' => 'The color is Blue'], $field->select(['toy' => 'balloon', '10times_fkid' => 20]));
     }

@@ -48,6 +48,7 @@ $rules = [
     'phpdoc_var_annotation_correct_order' => true,
     'global_namespace_import' => ['import_classes' => true, 'import_functions' => false, 'import_constants' => false],
     'header_comment' => ['location' => 'after_declare_strict', 'header' => $header],
+    'trailing_comma_in_multiline' => ['elements' => ['arrays', 'arguments', 'parameters']],
     'phpdoc_line_span' => ['const' => 'single', 'method' => 'multi', 'property' => 'single'],
     'phpdoc_to_comment' => false,
 ];

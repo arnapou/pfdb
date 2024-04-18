@@ -1165,7 +1165,7 @@ class Parsedown
                 ['name' => 'br'],
                 ['text' => "\n"],
             ],
-            $text
+            $text,
         );
 
         return $Inline;

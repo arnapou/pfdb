@@ -40,7 +40,7 @@ class ComparisonExpr implements ExprInterface
         string|int|float|bool|FieldValueInterface|callable|null $field,
         string|ExprOperator $operator,
         string|int|float|bool|array|FieldValueInterface|callable|null $value,
-        private readonly bool $caseSensitive = true
+        private readonly bool $caseSensitive = true,
     ) {
         $this->operator = ExprOperator::sanitize($operator, $this->not);
         $this->field = $this->sanitizeField($field);
@@ -82,7 +82,7 @@ class ComparisonExpr implements ExprInterface
         if (!$this->caseSensitive && !\in_array(
             $this->operator,
             [ExprOperator::LIKE, ExprOperator::NLIKE, ExprOperator::MATCH, ExprOperator::NMATCH],
-            true
+            true,
         )) {
             $field = strtolower(Enforce::string($field));
             $value = strtolower(Enforce::string($value));

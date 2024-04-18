@@ -28,7 +28,7 @@ class SelectIteratorTest extends TestCase
 
         self::assertSame(
             ['id' => 1, 'name' => 'Red'],
-            iterator_to_array($select)[0]
+            iterator_to_array($select)[0],
         );
     }
 
@@ -39,7 +39,7 @@ class SelectIteratorTest extends TestCase
 
         self::assertSame(
             ['id' => 1, 'name' => 'Red'],
-            iterator_to_array($select)[0]
+            iterator_to_array($select)[0],
         );
     }
 
@@ -50,7 +50,7 @@ class SelectIteratorTest extends TestCase
 
         self::assertSame(
             ['name' => 'Red'],
-            iterator_to_array($select)[0]
+            iterator_to_array($select)[0],
         );
     }
 
@@ -61,7 +61,7 @@ class SelectIteratorTest extends TestCase
 
         self::assertSame(
             ['id' => 1],
-            iterator_to_array($select)[0]
+            iterator_to_array($select)[0],
         );
     }
 
@@ -74,12 +74,12 @@ class SelectIteratorTest extends TestCase
                 function ($row, $key) {
                     return ['id:color' => $row['id'] . ':' . $row['name']];
                 },
-            ]
+            ],
         );
 
         self::assertSame(
             ['id:color' => '1:Red'],
-            iterator_to_array($select)[0]
+            iterator_to_array($select)[0],
         );
     }
 }

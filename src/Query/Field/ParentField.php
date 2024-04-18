@@ -68,7 +68,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         private readonly TableInterface $parentTable,
         string|FieldValueInterface|callable|null $parentField = null,
         ?string $selectAlias = null,
-        ?callable $parentRow = null
+        ?callable $parentRow = null,
     ) {
         $this->name = $this->sanitizeField($name);
         $this->parentField = null === $parentField ? null : $this->sanitizeField($parentField);

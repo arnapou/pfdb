@@ -77,7 +77,7 @@ class ArrayTableTest extends TestCase
                 $row['upper'] = strtoupper($row['name']);
 
                 return $row;
-            }
+            },
         );
         self::assertSame(['RED', 'GREEN', 'ORANGE', 'YELLOW', 'BROWN'], array_column($table->getData(), 'upper'));
     }
@@ -121,7 +121,7 @@ class ArrayTableTest extends TestCase
                 $this->expr()->bool(true),
                 function ($row, $key) {
                     throw new Error('Test error');
-                }
+                },
             );
             self::fail('a MultipleActionException should have been raised for the multiple update');
         } catch (MultipleActionException $exception) {
@@ -139,8 +139,8 @@ class ArrayTableTest extends TestCase
                 $this->expr()->func(
                     function ($row, $key) {
                         throw new Error('Test error');
-                    }
-                )
+                    },
+                ),
             );
             self::fail('a MultipleActionException should have been raised for the multiple delete');
         } catch (MultipleActionException $exception) {

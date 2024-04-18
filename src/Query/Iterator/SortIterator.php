@@ -57,7 +57,7 @@ class SortIterator implements IteratorAggregate
                 }
 
                 return 0;
-            }
+            },
         );
 
         return new ArrayIterator($rows);

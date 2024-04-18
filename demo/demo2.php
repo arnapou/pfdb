@@ -35,8 +35,8 @@ require __DIR__ . '/src/bootstrap.php';
                     $row['price'] /= 10;
 
                     return $row;
-                }
-            )
+                },
+            ),
         );
 
         showTable(
@@ -44,9 +44,9 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->deleteMultiple(
                 expr()->or(
                     expr()->lt('price', 180),
-                    expr()->eq('color', 'brown', false)
-                )
-            )
+                    expr()->eq('color', 'brown', false),
+                ),
+            ),
         );
 
         showTable(
@@ -55,13 +55,13 @@ require __DIR__ . '/src/bootstrap.php';
                 [
                     'id' => 45,
                     'price' => '2000',
-                ]
-            )
+                ],
+            ),
         );
 
         showTable(
             'Update the same element but with its key',
-            static fn () => $table->update(['price' => '2100'], 45)
+            static fn () => $table->update(['price' => '2100'], 45),
         );
 
         showTable(
@@ -71,8 +71,8 @@ require __DIR__ . '/src/bootstrap.php';
                     'mark' => 'BMW',
                     'price' => '3000',
                     'color' => 'Green',
-                ]
-            )
+                ],
+            ),
         );
 
         showTable(
@@ -82,21 +82,21 @@ require __DIR__ . '/src/bootstrap.php';
                     'mark' => 'BMW',
                     'price' => '3100',
                     'color' => 'Red',
-                ]
-            )
+                ],
+            ),
         );
 
         showTable(
             'Upsert the same element',
             static fn () => $table->upsert(
                 ['color' => 'Yellow'],
-                $table->getLastInsertedKey()
-            )
+                $table->getLastInsertedKey(),
+            ),
         );
 
         showTable(
             'Delete one element',
-            static fn () => $table->delete(31)
+            static fn () => $table->delete(31),
         );
     }
 );

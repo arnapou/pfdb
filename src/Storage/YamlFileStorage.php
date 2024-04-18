@@ -46,7 +46,7 @@ class YamlFileStorage extends AbstractFileStorage
                 \function_exists('yaml_parse_file') => yaml_parse_file($filename),
                 class_exists(Yaml::class) => Yaml::parseFile($filename),
                 default => throw new RuntimeException('You need the yaml extension or symfony/yaml to use this YamlFileStorage'),
-            }
+            },
         );
     }
 

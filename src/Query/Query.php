@@ -203,7 +203,7 @@ class Query implements IteratorAggregate, Countable
             $iterator = new LimitIterator(
                 $iterator instanceof SeekableIterator ? new IteratorIterator($iterator) : $iterator,
                 $this->limit[0],
-                $this->limit[1]
+                $this->limit[1],
             );
         }
         if ([] !== $this->select) {

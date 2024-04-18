@@ -47,7 +47,7 @@ trait SanitizeHelperTrait
     private function sanitizeValue(
         string|int|float|bool|array|FieldValueInterface|callable|null $value,
         ExprOperator $operator,
-        bool $caseSensitive
+        bool $caseSensitive,
     ): Closure {
         if (ExprOperator::IN === $operator && !\is_array($value)) {
             throw new InvalidValueException('Value for operator "' . $operator->value . '" should be an array');

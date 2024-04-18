@@ -51,7 +51,7 @@ class CachedFileStorageTest extends TestCase
         self::assertCount(5, $storage->load(self::TMP_NAME));
         self::assertSame(
             $storage->cacheStorage()->load(self::TMP_NAME),
-            $storage->innerStorage()->load(self::TMP_NAME)
+            $storage->innerStorage()->load(self::TMP_NAME),
         );
 
         $storage->delete(self::TMP_NAME);
