@@ -10,11 +10,6 @@
             "homepage": "https://arnapou.net/"
         }
     ],
-    "extra": {
-        "branch-alias": {
-            "dev-main": "6.x-dev"
-        }
-    },
     "require": {
         "php": "~8.3.0",
         "arnapou/ensure": "^2.3",
@@ -51,6 +46,21 @@
         "allow-plugins": {
             "phpstan/extension-installer": true
         },
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
         "sort-packages": true
+    },
+    "scripts": {
+        "cs": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix",
+        "sa": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/phpunit --coverage-html tests/coverage --colors=always",
+        "test:ci": "vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never",
+        "all": [
+            "@cs",
+            "@sa",
+            "@test"
+        ]
     }
 }

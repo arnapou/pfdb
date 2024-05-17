@@ -3,29 +3,26 @@ stages:
   - quality
   - build
 
-code-style: &quality
-  image: 'registry.gitlab.com/arnapou/docker/php:8.3-dev'
+.php:
+  image: "registry.gitlab.com/arnapou/docker/php:${PHPVER}-dev"
   stage: quality
-  only:
-    - main
-  before_script:
-    - make install
-  script:
-    - make cs
+  before_script: [ composer install --no-interaction --no-progress --quiet ]
   cache:
-    key: "$CI_COMMIT_REF_SLUG:$CI_JOB_NAME"
-    paths:
-      - vendor
+    key: "${PHPVER}:${CI_COMMIT_REF_SLUG}:${CI_JOB_NAME}"
+    paths: [vendor]
+  parallel: { matrix: [{ PHPVER: [ '8.3' ] }] }
 
-static-analysis:
-  <<: *quality
-  script:
-    - make sa
+cs:
+  extends: .php
+  script: [composer run cs]
+
+sa:
+  extends: .php
+  script: [composer run sa]
 
 test:
-  <<: *quality
-  script:
-    - sudo -Eu www-data make test
+  extends: .php
+  script: [sudo -Eu www-data composer run test:ci]
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   artifacts:
     when: always
@@ -38,12 +35,9 @@ test:
 build:
   image: docker:24
   stage: build
-  only:
-    - main
-  services:
-    - docker:24-dind
-  variables:
-    IMAGE_TAG: latest
+  rules: [{ if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH }]
+  services: [docker:24-dind]
+  variables: { IMAGE_TAG: latest }
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
