@@ -7,4 +7,3 @@ RUN composer install --no-interaction --no-progress --optimize-autoloader --no-d
 FROM registry.gitlab.com/arnapou/docker/php:8.3-frankenphp as final
 
 COPY --from=build /app /app
-RUN sed -i 's!/app/public!/app/demo!' /etc/caddy/Caddyfile

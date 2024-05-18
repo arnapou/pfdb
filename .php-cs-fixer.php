@@ -20,12 +20,8 @@ $header = <<<HEADER
     file that was distributed with this source code.
     HEADER;
 
-$excludes = [
-    'database',
-];
-
 $dirs = [
-    __DIR__ . '/demo',
+    __DIR__ . '/public',
     __DIR__ . '/src',
     __DIR__ . '/tests',
 ];
@@ -56,4 +52,4 @@ $rules = [
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules($rules)
-    ->setFinder((new PhpCsFixer\Finder())->exclude($excludes)->in($dirs));
+    ->setFinder((new PhpCsFixer\Finder())->in($dirs));

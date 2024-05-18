@@ -6,11 +6,9 @@
 /compose.override.dist.yaml   export-ignore
 /compose.yaml                 export-ignore
 /composer.lock                export-ignore
-/demo                         export-ignore
 /Dockerfile                   export-ignore
 /icon.png                     export-ignore
 /icon.svg                     export-ignore
-/Makefile                     export-ignore
 /phpstan.neon                 export-ignore
 /phpunit.xml                  export-ignore
 /tests                        export-ignore

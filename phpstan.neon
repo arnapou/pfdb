@@ -1,11 +1,11 @@
 parameters:
 	level: max
 	paths:
-		- demo
+		- public
 		- src
 		- tests
 	bootstrapFiles:
 		- vendor/autoload.php
 	ignoreErrors:
-		- path: demo/src/Parsedown.php
+		- path: public/src/Parsedown.php
 		  message: '#.*#'
