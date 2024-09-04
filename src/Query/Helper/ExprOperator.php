@@ -62,7 +62,7 @@ enum ExprOperator: string
             'match', '~', 'regex' => self::MATCH,
             '=' => self::EQ,
             '<>' => self::NEQ,
-            default => throw new InvalidOperatorException("Unknown operator '$operator'")
+            default => throw new InvalidOperatorException("Unknown operator '$operator'"),
         };
     }
 

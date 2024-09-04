@@ -23,7 +23,7 @@ class ReadonlyStorageTest extends TestCase
 {
     public static function fakeStorage(): StorageInterface
     {
-        return new class() implements StorageInterface {
+        return new class implements StorageInterface {
             public function load(string $name): array
             {
                 return [['name' => 'Joe']];

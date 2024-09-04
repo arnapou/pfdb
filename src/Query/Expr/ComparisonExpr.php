@@ -124,7 +124,7 @@ class ComparisonExpr implements ExprInterface
         return match ($this->operator) {
             ExprOperator::IN => \in_array($field, $value, true),
             ExprOperator::NIN => !\in_array($field, $value, true),
-            default => false
+            default => false,
         };
     }
 

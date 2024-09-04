@@ -1,6 +1,4 @@
 .idea
-.php-cs-fixer.cache
-.phpunit.cache
 compose.override.yaml
 phpunit-coverage.xml
 phpunit-report.xml

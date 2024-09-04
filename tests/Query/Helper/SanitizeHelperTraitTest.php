@@ -22,7 +22,7 @@ class SanitizeHelperTraitTest extends TestCase
 {
     public function testSanitizeValueForLikeShouldBeAString(): void
     {
-        $obj = new class() {
+        $obj = new class {
             use SanitizeHelperTrait {
                 sanitizeValue as public;
             }
@@ -33,7 +33,7 @@ class SanitizeHelperTraitTest extends TestCase
 
     public function testSanitizeValueForMatchShouldBeAString(): void
     {
-        $obj = new class() {
+        $obj = new class {
             use SanitizeHelperTrait {
                 sanitizeValue as public;
             }

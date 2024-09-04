@@ -1,8 +1,8 @@
 PFDB - Php File Database
 ====================
 
-![pipeline](https://gitlab.com/arnapou/pfdb/badges/main/pipeline.svg)
-![coverage](https://gitlab.com/arnapou/pfdb/badges/main/coverage.svg?job=test%3A%20%5B8.3%5D)
+![pipeline](https://gitlab.com/arnapou/lib/pfdb/badges/main/pipeline.svg)
+![coverage](https://gitlab.com/arnapou/lib/pfdb/badges/main/coverage.svg)
 
 This library allow you to query flat file "databases".
 
@@ -14,7 +14,6 @@ composer require arnapou/pfdb
 ```
 
 packagist 👉️ [arnapou/pfdb](https://packagist.org/packages/arnapou/pfdb)<br>
-demo 👉️ [pfdb.arnapou.net](https://pfdb.arnapou.net/)
 
 Introduction
 --------------------
@@ -144,14 +143,15 @@ Easy : extends or implements your own storage and use it to load/store/delete da
 
 Look at the existing storages and write your own.
 
-Changelog versions
+
+Php versions
 --------------------
 
-| Start      | Tag, Branch | Php | 
-|------------|-------------|-----|
-| 26/11/2023 | 6.x, main   | 8.3 |
-| 11/12/2022 | 5.x         | 8.2 |
-| 30/01/2022 | 4.x         | 8.1 |
-| 15/05/2021 | 3.x         | 8.0 |
-| 27/02/2019 | 2.x         | 7.2 |
-| 07/11/2013 | 1.x         | 5.4 |
+| Date       | Ref       | 8.3 | 8.2 | 8.1 | 8.0 | 7.2 | 5.4 | 
+|------------|-----------|:---:|:---:|:---:|:---:|:---:|:---:|
+| 26/11/2023 | 6.x, main |  ×  |     |     |     |     |     |
+| 11/12/2022 | 5.x       |     |  ×  |     |     |     |     |
+| 30/01/2022 | 4.x       |     |     |  ×  |     |     |     |
+| 15/05/2021 | 3.x       |     |     |     |  ×  |     |     |
+| 27/02/2019 | 2.x       |     |     |     |     |  ×  |     |
+| 07/11/2013 | 1.x       |     |     |     |     |     |  ×  |
