@@ -74,6 +74,7 @@ class ArrayTableTest extends TestCase
         $table->updateMultiple(
             $this->expr()->bool(true),
             function ($row, $key) {
+                /** @phpstan-ignore argument.type */
                 $row['upper'] = strtoupper($row['name']);
 
                 return $row;

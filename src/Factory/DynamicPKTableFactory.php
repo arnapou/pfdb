@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Factory;
 
+use Arnapou\Ensure\Enforce;
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Storage\StorageInterface;
 use Arnapou\PFDB\Table;
@@ -52,6 +53,6 @@ class DynamicPKTableFactory extends AbstractTableFactory
 
     public function create(StorageInterface $storage, string $name): TableInterface
     {
-        return $this->createInstance($storage, $name, ($this->pkFactory)($name));
+        return $this->createInstance($storage, $name, Enforce::nullableString(($this->pkFactory)($name)));
     }
 }

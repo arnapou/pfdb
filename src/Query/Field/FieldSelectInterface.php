@@ -27,7 +27,7 @@ interface FieldSelectInterface
      *
      * @param array<string|int|float|bool|array<mixed>|null> $row
      *
-     * @return array<string, string|int|float|bool|array<mixed>|null>
+     * @return array<mixed>
      */
     public function select(array $row, string|int|null $key = null): array;
 }

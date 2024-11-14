@@ -32,6 +32,7 @@ require __DIR__ . '/src/bootstrap.php';
             static fn () => $table->updateMultiple(
                 expr()->gt('price', 1500),
                 function ($row) {
+                    /** @phpstan-ignore assignOp.invalid,offsetAccess.nonOffsetAccessible */
                     $row['price'] /= 10;
 
                     return $row;

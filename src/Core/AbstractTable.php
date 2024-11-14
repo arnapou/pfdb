@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Arnapou\PFDB\Core;
 
 use Arnapou\Ensure\Enforce;
+use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\ArrayTable;
 use Arnapou\PFDB\Exception\MultipleActionException;
 use Arnapou\PFDB\Exception\PrimaryKeyAlreadyExistsException;
@@ -41,7 +42,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
     use ExprHelperTrait;
     use FieldsHelperTrait;
 
-    /** @var array<int|string, array<mixed>> */
+    /** @var array<array<mixed>> */
     private array $data = [];
     private bool $changed = false;
     private bool $readonly = false;
@@ -256,7 +257,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
 
         $this->data[$key] = $row;
         $this->changed = true;
-        $this->lastInsertedKey = $key;
+        $this->lastInsertedKey = Ensure::nullableArrayKey($key);
 
         return $this;
     }
@@ -300,7 +301,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
         try {
             foreach ($this->data as $key => $row) {
                 if ($expr($row, $key)) {
-                    $this->data[$key] = $function($row, $key);
+                    $this->data[$key] = Enforce::array($function($row, $key));
                 }
             }
         } catch (Throwable $exception) {

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Arnapou\PFDB\Query\Expr;
 
 use Arnapou\Ensure\Enforce;
+use Arnapou\Ensure\Ensure;
 use Arnapou\PFDB\Exception\InvalidFieldException;
 use Arnapou\PFDB\Exception\InvalidValueException;
 use Arnapou\PFDB\Query\Field\FieldValueInterface;
@@ -71,7 +72,7 @@ class ComparisonExpr implements ExprInterface
                 throw new InvalidValueException('Value for operator "' . $this->operator->value . '" should NOT be an array');
             }
 
-            $bool = $this->evaluateOther($value, $field);
+            $bool = $this->evaluateOther(Ensure::nullableScalar($value), $field);
         }
 
         return $this->not ? !$bool : $bool;

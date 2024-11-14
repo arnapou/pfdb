@@ -26,6 +26,12 @@ class PhpFileStorage extends AbstractFileStorage
     {
         $filename = $this->getFilename($name);
         if (is_file($filename)) {
+            /**
+             * Method PhpFileStorage::load() should return array<array<mixed>> but returns mixed.
+             * This is normal, we rely on the fact that our file is correctly formatted.
+             *
+             * @phpstan-ignore return.type
+             */
             return include $filename;
         }
 

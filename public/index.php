@@ -18,6 +18,7 @@ require __DIR__ . '/src/bootstrap.php';
         $source = file_get_contents(__DIR__ . '/../README.md');
         $Parsedown = new Parsedown();
 
+        /** @phpstan-ignore echo.nonString */
         echo $Parsedown->text($source);
     }
 );

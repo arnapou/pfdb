@@ -47,7 +47,7 @@ class Page
     public function __invoke(Closure $closure): void
     {
         ob_start();
-        $resultPage = (string) $closure();
+        $resultPage = (string) $closure(); // @phpstan-ignore cast.string
         $contentPage = ob_get_clean();
 
         $menu = $this->renderMenu();

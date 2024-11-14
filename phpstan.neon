@@ -7,5 +7,29 @@ parameters:
 	bootstrapFiles:
 		- vendor/autoload.php
 	ignoreErrors:
-		- path: public/src/Parsedown.php
-		  message: '#.*#'
+		-
+			path: public/src/Parsedown.php
+			message: '#.*#'
+		-
+			path: tests
+			identifier: offsetAccess.nonOffsetAccessible
+		-
+			path: tests
+			identifier: binaryOp.invalid
+		-
+			path: tests
+			identifier: preInc.type
+		-
+			path: tests
+			identifier: assignOp.invalid
+		-
+			message: '#^Loose comparison via "\!\=" is not allowed\.$#'
+			identifier: notEqual.notAllowed
+			count: 1
+			path: src/Query/Expr/ComparisonExpr.php
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: src/Query/Expr/ComparisonExpr.php
+

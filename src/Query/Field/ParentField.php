@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Query\Field;
 
+use Arnapou\Ensure\Enforce;
 use Arnapou\PFDB\Core\TableInterface;
 use Arnapou\PFDB\Exception\InvalidCallableException;
 use Arnapou\PFDB\Exception\InvalidFieldException;
@@ -130,13 +131,16 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
             $value = ($this->name)($row, $key);
             if (null !== $value) {
                 $parentRow = null === $this->parentRow
-                    ? $this->parentTable->get($value)
+                    ? $this->parentTable->get(Enforce::arrayKey($value))
                     : ($this->parentRow)($value, $this->parentTable);
                 if (null === $parentRow) {
                     return null;
                 }
 
-                return ($this->parentField)($parentRow, $value);
+                $value = ($this->parentField)($parentRow, $value);
+                if (null === $value || \is_string($value) || \is_int($value) || \is_float($value) || \is_bool($value) || \is_array($value)) {
+                    return $value;
+                }
             }
         }
 
@@ -152,7 +156,7 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
         }
 
         $parentRow = null === $this->parentRow
-            ? $this->parentTable->get($value)
+            ? $this->parentTable->get(Enforce::arrayKey($value))
             : ($this->parentRow)($value, $this->parentTable);
 
         if (null === $parentRow) {
@@ -165,8 +169,10 @@ class ParentField implements FieldValueInterface, FieldSelectInterface
             }
 
             $values = [];
-            foreach ($parentRow as $k => $v) {
-                $values[$this->selectAlias . '_' . $k] = $v;
+            if (is_iterable($parentRow)) {
+                foreach ($parentRow as $k => $v) {
+                    $values[$this->selectAlias . '_' . Enforce::string($k)] = $v;
+                }
             }
 
             return $values;

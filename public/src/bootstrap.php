@@ -35,8 +35,8 @@ function showTable(string $title, TableInterface|Closure $table): void
     echo '<div class="table">';
     echo "\n<table>\n";
     $first = true;
-    foreach ($rows as $key => $row) {
-        uksort($row, 'sortkeys');
+    foreach ($rows as $key => $row) { // @phpstan-ignore foreach.nonIterable
+        uksort($row, 'sortkeys'); // @phpstan-ignore argument.type
         // TH
         if ($first) {
             echo '<tr>';
@@ -49,9 +49,9 @@ function showTable(string $title, TableInterface|Closure $table): void
         }
         // TD
         echo '<tr>';
-        echo '<td>' . $key . '</td>';
+        echo '<td>' . $key . '</td>';  // @phpstan-ignore binaryOp.invalid
         foreach ($row as $field => $value) {
-            echo '<td>' . $value . '</td>';
+            echo '<td>' . $value . '</td>';  // @phpstan-ignore binaryOp.invalid
         }
         echo "</tr>\n";
     }

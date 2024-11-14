@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Arnapou\PFDB\Query\Iterator;
 
+use Arnapou\Ensure\Enforce;
 use ArrayIterator;
 use Closure;
 use Iterator;
@@ -51,7 +52,7 @@ class SortIterator implements IteratorAggregate
                 }
 
                 foreach ($this->sorts as $callable) {
-                    if (0 !== ($result = (int) $callable($row1, $row2))) {
+                    if (0 !== ($result = Enforce::int($callable($row1, $row2)))) {
                         return $result;
                     }
                 }
@@ -78,7 +79,7 @@ class SortIterator implements IteratorAggregate
                 $sanitized[] = $field;
             } else {
                 $way = $sort[1] ?? 'ASC';
-                $sanitized[] = $this->createCallable($field, '' === $way ? 'ASC' : $way);
+                $sanitized[] = $this->createCallable(Enforce::string($field), Enforce::string('' === $way ? 'ASC' : $way));
             }
         }
 

@@ -150,7 +150,9 @@ class ExprTest extends TestCase
     public function testFunc(): void
     {
         $func = function (array $row) {
-            return 'abc' == strtolower($row['test']);
+            return isset($row['test'])
+                && \is_string($row['test'])
+                && 'abc' === strtolower($row['test']);
         };
         self::assertFalse(\call_user_func($this->expr()->func($func), ['test' => 'b']));
         self::assertTrue(\call_user_func($this->expr()->func($func), ['test' => 'ABC']));
