@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": "~8.3.0",
+        "php": "~8.3.0 || ~8.4.0",
         "arnapou/ensure": "^2.3",
         "arnapou/lock": "^1.2"
     },
@@ -55,8 +55,8 @@
     "scripts": {
         "cs": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix",
         "sa": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/phpunit --coverage-html tests/coverage --colors=always",
-        "test:ci": "vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never",
+        "test": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html tests/coverage --colors=always",
+        "test:ci": "XDEBUG_MODE=coverage vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never",
         "all": [
             "@cs",
             "@sa",

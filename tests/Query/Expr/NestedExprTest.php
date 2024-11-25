@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Arnapou\PFDB\Tests\Query;
+namespace Arnapou\PFDB\Tests\Query\Expr;
 
 use Arnapou\PFDB\Query\Helper\ExprHelperTrait;
 use PHPUnit\Framework\TestCase;
