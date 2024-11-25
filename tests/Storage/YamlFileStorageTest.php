@@ -24,7 +24,7 @@ class YamlFileStorageTest extends TestCase
 
     public static function pfdbStorage(): YamlFileStorage
     {
-        return new YamlFileStorage(__DIR__ . '/../../public/database');
+        return new YamlFileStorage(__DIR__ . '/../database');
     }
 
     private function chmodFailed(string $filename): bool

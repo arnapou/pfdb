@@ -12,7 +12,6 @@ $header = <<<HEADER
     HEADER;
 
 $dirs = [
-    __DIR__ . '/public',
     __DIR__ . '/src',
     __DIR__ . '/tests',
 ];

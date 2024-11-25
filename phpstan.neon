@@ -1,15 +1,11 @@
 parameters:
 	level: max
 	paths:
-		- public
 		- src
 		- tests
 	bootstrapFiles:
 		- vendor/autoload.php
 	ignoreErrors:
-		-
-			path: public/src/Parsedown.php
-			message: '#.*#'
 		-
 			path: tests
 			identifier: offsetAccess.nonOffsetAccessible

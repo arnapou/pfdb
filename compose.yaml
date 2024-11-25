@@ -1,6 +1,0 @@
-services:
-
-  app:
-    image: registry.gitlab.com/arnapou/lib/pfdb:latest
-    ports:
-      - '8080:80'

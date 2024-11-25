@@ -24,7 +24,7 @@ class PhpFileStorageTest extends TestCase
 
     public static function pfdbStorage(): PhpFileStorage
     {
-        return new PhpFileStorage(__DIR__ . '/../../public/database');
+        return new PhpFileStorage(__DIR__ . '/../database');
     }
 
     private function chmodFailed(string $filename): bool
