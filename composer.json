@@ -22,6 +22,7 @@
     "require-dev": {
         "ext-redis": "*",
         "ext-yaml": "*",
+        "arnapou/behat": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.52",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.0",
@@ -56,11 +57,13 @@
         "cs": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix",
         "sa": "vendor/bin/phpstan analyse",
         "test": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html tests/coverage --colors=always",
+        "behat": "vendor/bin/behat",
         "test:ci": "XDEBUG_MODE=coverage vendor/bin/phpunit --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never",
         "all": [
             "@cs",
             "@sa",
-            "@test"
+            "@test",
+            "@behat"
         ]
     }
 }

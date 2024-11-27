@@ -56,7 +56,7 @@ class QueryTest extends TestCase
                 'id' => 5,
                 'mark' => 'Peugeot',
                 'color' => 'Red',
-                'price' => '1550',
+                'price' => 1550,
             ],
             $this->table()->find()->first(),
         );
@@ -69,7 +69,7 @@ class QueryTest extends TestCase
                 'id' => 89,
                 'mark' => 'Nissan',
                 'color' => 'Red',
-                'price' => '1500',
+                'price' => 1500,
             ],
             $this->table()->find()->last(),
         );
@@ -78,7 +78,7 @@ class QueryTest extends TestCase
     public function testGet(): void
     {
         self::assertSame(
-            ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => '1700'],
+            ['id' => 67, 'mark' => 'Nissan', 'color' => 'Brown', 'price' => 1700],
             $this->table('id')->get(67),
         );
     }
@@ -259,7 +259,7 @@ class QueryTest extends TestCase
                     'id' => 45,
                     'mark' => 'Citroen',
                     'color' => 'Yellow',
-                    'price' => '1800',
+                    'price' => 1800,
                 ],
             ],
             iterator_to_array(

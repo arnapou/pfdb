@@ -26,6 +26,7 @@ test:
   extends: .php
   script:
     - sudo -Eu www-data composer run test:ci
+    - sudo -Eu www-data composer run behat
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   artifacts:
     when: always
