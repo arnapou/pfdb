@@ -12,7 +12,7 @@ stages:
     paths: [vendor]
   parallel:
     matrix:
-      - PHPVER: [ '8.3', '8.4' ]
+      - PHPVER: [ '8.3', '8.4' ] # TODO '8.5'
 
 cs + sa:
   <<: *php

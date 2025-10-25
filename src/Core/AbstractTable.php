@@ -108,7 +108,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
                 if (!\array_key_exists($pk, $row)) {
                     throw new PrimaryKeyNotFoundException();
                 }
-                $this->data[$row[$pk]] = $row;
+                $this->data[Enforce::arrayKey($row[$pk])] = $row;
             }
         } else {
             $this->data = $rows;
@@ -255,7 +255,7 @@ abstract class AbstractTable implements IteratorAggregate, TableInterface
             $row[$pk] = $key;
         }
 
-        $this->data[$key] = $row;
+        $this->data[Enforce::arrayKey($key)] = $row;
         $this->changed = true;
         $this->lastInsertedKey = Ensure::nullableArrayKey($key);
 
