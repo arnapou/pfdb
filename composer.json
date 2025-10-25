@@ -54,7 +54,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "cs": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix",
+        "cs": "vendor/bin/php-cs-fixer fix",
         "sa": "vendor/bin/phpstan analyse",
         "test": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html tests/coverage --colors=always",
         "behat": "vendor/bin/behat",

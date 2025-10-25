@@ -44,6 +44,7 @@ $rules = [
 ];
 
 return (new PhpCsFixer\Config())
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setCacheFile(sys_get_temp_dir() . '/.php-cs-fixer.cache')
     ->setRiskyAllowed(true)
     ->setRules($rules)
